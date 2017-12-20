@@ -1,7 +1,9 @@
 package classes.Scenes.Areas.Plains
 {
 	import classes.*;
-	import classes.internals.*;
+	import classes.BodyParts.*;
+import classes.StatusEffects.Combat.GnollSpearDebuff;
+import classes.internals.*;
 
 	/**
 	 * ...
@@ -78,7 +80,7 @@ package classes.Scenes.Areas.Plains
 			}
 			else {
 				if (damage < 10) outputText("The gnoll runs forward, fury in her dark eyes as twin fists glance off your chest.  The glancing blow sends her off balance and the flashing ivory jaws barely miss your throat.  You push back, stumbling away from the furious hyena.");
-				else outputText("The gnoll rushes forward, almost too fast to detect before twin fists slam into your torso.  Before you can recover, ivory jaws flash before your eyes and you feel the sharp teeth start to clamp onto the " + player.skinDesc + " of your neck.  Blinding pain causes you to fling yourself backwards, away from the teeth and drawing angry scrapes as you escape the jaws.  You roll away before picking yourself up, the hyena moving confidently towards you as you try to shake off the pain from the blow.");
+				else outputText("The gnoll rushes forward, almost too fast to detect before twin fists slam into your torso.  Before you can recover, ivory jaws flash before your eyes and you feel the sharp teeth start to clamp onto the " + player.skin.desc + " of your neck.  Blinding pain causes you to fling yourself backwards, away from the teeth and drawing angry scrapes as you escape the jaws.  You roll away before picking yourself up, the hyena moving confidently towards you as you try to shake off the pain from the blow.");
 			}
 			if (damage > 0) {
 				if (short == "fetish zealot") {
@@ -135,16 +137,7 @@ package classes.Scenes.Areas.Plains
 			//<Hyena Attack 2 – Javelin – Successful – Player Entangled>
 			else if (rand(3) >= 1) {
 				outputText("The gnoll pulls a long, black javelin from over her shoulder.  Her spotted arm strikes forward, launching the missile through the air.  You attempt to dive to the side, but are too late.  The powerful shaft slams, hard, into your back.  Pain radiates from the powerful impact.  Instead of piercing you, however, the tip seems to explode into a sticky goo that instantly bonds with your " + player.armorName + ".  The four foot, heavy shaft pulls down on you awkwardly, catching at things and throwing your balance off.  You try to tug the javelin off of you but find that it has glued itself to you.  It will take time and effort to remove; making it impossible to do while a dominant hyena stalks you. ");
-				if (!player.hasStatusEffect(StatusEffects.GnollSpear)) player.createStatusEffect(StatusEffects.GnollSpear,0,0,0,0);
-				slow = 15;
-				while(slow > 0 && player.spe > 2) {
-					slow--;
-					player.addStatusValue(StatusEffects.GnollSpear,1,1);
-					player.spe--;
-					showStatDown( 'spe' );
-					// speDown.visible = true;
-					// speUp.visible = false;
-				}
+				player.createOrFindStatusEffect(StatusEffects.GnollSpear);
 				damage = player.takeDamage(25+rand(20), true);
 			}
 			//<Hyena Attack 2 – Javelin – Successful – Player Not Entangled>
@@ -286,7 +279,7 @@ package classes.Scenes.Areas.Plains
 			}
 			else {
 				if (damage < 10) outputText("The gnoll runs forward, fury in her dark eyes as twin fists glance off your chest.  The glancing blow sends her off balance and the flashing ivory jaws barely miss your throat.  You push back, stumbling away from the furious hyena.");
-				else outputText("The gnoll rushes forward, almost too fast to detect before twin fists slam into your torso.  Before you can recover, ivory jaws flash before your eyes and you feel the sharp teeth start to clamp onto the " + player.skinDesc + " of your neck.  Blinding pain causes you to fling yourself backwards, away from the teeth and drawing angry scrapes as you escape the jaws.  You roll away before picking yourself up, the hyena moving confidently towards you as you try to shake off the pain from the blow.");
+				else outputText("The gnoll rushes forward, almost too fast to detect before twin fists slam into your torso.  Before you can recover, ivory jaws flash before your eyes and you feel the sharp teeth start to clamp onto the " + player.skin.desc + " of your neck.  Blinding pain causes you to fling yourself backwards, away from the teeth and drawing angry scrapes as you escape the jaws.  You roll away before picking yourself up, the hyena moving confidently towards you as you try to shake off the pain from the blow.");
 			}
 			if (damage > 0) {
 				if (short == "fetish zealot") {
@@ -341,19 +334,19 @@ package classes.Scenes.Areas.Plains
 			this.imageName = "gnollspearthrower";
 			this.long = "You are fighting a gnoll.  An amalgam of voluptuous, sensual lady and snarly, pissed off hyena, she clearly intends to punish you for trespassing.  Her dark-tan, spotted hide blends into a soft cream-colored fur covering her belly and two D-cup breasts, leaving two black nipples poking through the fur.  A crude loincloth is tied around her waist, obscuring her groin from view.  A leather strap cuts between her heavy breasts, holding a basket of javelins on her back.  Large, dish-shaped ears focus on you, leaving no doubt that she can hear every move you make.  Sharp, dark eyes are locked on your body, filled with aggression and a hint of lust.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_LOOSE);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_LOOSE);
 			createBreastRow(Appearance.breastCupInverse("D"));
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,25,0,0,0);
 			this.tallness = 72;
-			this.hipRating = HIP_RATING_AMPLE;
-			this.buttRating = BUTT_RATING_TIGHT;
-			this.skinTone = "tawny";
-			this.skinType = SKIN_TYPE_FUR;
-			//this.skinDesc = Appearance.Appearance.DEFAULT_SKIN_DESCS[SKIN_TYPE_FUR];
-			this.hairColor = "black";
-			this.hairLength = 22;
+			this.hips.rating = Hips.RATING_AMPLE;
+			this.butt.rating = Butt.RATING_TIGHT;
+			this.skin.tone = "tawny";
+			this.theSkinType = Skin.FUR;
+			//this.skin.desc = Appearance.Appearance.DEFAULT_SKIN_DESCS[Skin.FUR];
+			this.hair.color = "black";
+			this.hair.length = 22;
 			initStrTouSpeInte(85, 60, 100, 50);
 			initLibSensCor(65, 45, 60);
 			this.weaponName = "teeth";

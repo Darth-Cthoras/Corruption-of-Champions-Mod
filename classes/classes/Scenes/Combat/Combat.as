@@ -1,39 +1,25 @@
-//Combat 2.0
+﻿//Combat 2.0
 package classes.Scenes.Combat 
 {
-	import classes.*;
-	import classes.internals.*;
-	import classes.GlobalFlags.*;
-	import classes.Items.*;
-	import classes.Scenes.Areas.Bog.*;
-	import classes.Scenes.Areas.Desert;
-	import classes.Scenes.Areas.Desert.*;
-	import classes.Scenes.Areas.Forest.*;
-	import classes.Scenes.Areas.GlacialRift.*;
-	import classes.Scenes.Areas.HighMountains.*;
-	import classes.Scenes.Areas.Lake.*;
-	import classes.Scenes.Areas.Mountain.*;
-	import classes.Scenes.Areas.Plains.*;
-	import classes.Scenes.Areas.Swamp.*;
-	import classes.Scenes.Areas.VolcanicCrag.*;
-	import classes.Scenes.Dungeons.DeepCave.*;
-	import classes.Scenes.Dungeons.DesertCave.*;
-	import classes.Scenes.Dungeons.D3.*;
-	import classes.Scenes.Dungeons.Factory.*;
-	import classes.Scenes.Dungeons.HelDungeon.*;
-	import classes.Scenes.Monsters.*;
-	import classes.Scenes.NPCs.*;
-	import classes.Scenes.Places.Boat.*;
-	import classes.Scenes.Places.Farm.*;
-	import classes.Scenes.Places.Owca.*;
-	import classes.Scenes.Places.Prison.*;
-	import classes.Scenes.Quests.UrtaQuest.*;
-	import classes.Scenes.Places.TelAdre.UmasShop;
+import classes.*;
+import classes.BodyParts.*;
+import classes.GlobalFlags.*;
+import classes.Items.*;
+import classes.Scenes.Areas.Desert.*;
+import classes.Scenes.Areas.Forest.*;
+import classes.Scenes.Areas.GlacialRift.*;
+import classes.Scenes.Areas.HighMountains.*;
+import classes.Scenes.Areas.Mountain.*;
+import classes.Scenes.Dungeons.HelDungeon.*;
+import classes.Scenes.Dungeons.LethicesKeep.*;
+import classes.Scenes.Monsters.*;
+import classes.Scenes.NPCs.*;
+import classes.Scenes.Places.TelAdre.UmasShop;
+import classes.display.SpriteDb;
 
-	import coc.view.MainView;
-	import classes.internals.Utils;
+import coc.view.MainView;
 
-	public class Combat extends BaseContent
+public class Combat extends BaseContent
 	{
 		public function Combat() {}
 		
@@ -84,7 +70,7 @@ package classes.Scenes.Combat
 			if (prison.inPrison && prison.prisonCombatWinEvent != null) nextFunc = prison.prisonCombatWinEvent;
 			if (inCombat) {
 				//clear status
-				clearStatuses(false);
+				clearStatuses();
 				
 				//reset the stored image for next monster
 				imageText = "";
@@ -261,24 +247,24 @@ package classes.Scenes.Combat
 			var attacks:Function = normalAttack;
 			//Standard menu before modifications.
 			if (!isWieldingRangedWeapon())
-				addButton(0, "Attack", attacks, null, null, null, "Attempt to attack the enemy with your " + player.weaponName + ".  Damage done is determined by your strength and weapon.");
+				addButton(0, "Attack", attacks).hint("Attempt to attack the enemy with your " + player.weaponName + ".  Damage done is determined by your strength and weapon.");
 			else if (player.weaponName.indexOf("staff") != -1)
-				addButton(0, "M.Bolt", attacks, null, null, null, "Attempt to attack the enemy with magic bolt from your " + player.weaponName + ".  Damage done is determined by your intelligence, speed and weapon.", "Magic Bolt");
+				addButton(0, "M.Bolt", attacks).hint("Attempt to attack the enemy with magic bolt from your " + player.weaponName + ".  Damage done is determined by your intelligence, speed and weapon.", "Magic Bolt");
 			else if (flags[kFLAGS.FLINTLOCK_PISTOL_AMMO] <= 0 && player.weaponName == "flintlock pistol")
-				addButton(0, "Reload", attacks, null, null, null, "Your " + player.weaponName + " is out of ammo.  You'll have to reload it before attack.");
+				addButton(0, "Reload", attacks).hint("Your " + player.weaponName + " is out of ammo.  You'll have to reload it before attack.");
 			else
-				addButton(0, "Shoot", attacks, null, null, null, "Fire a round at your opponent with your " + player.weaponName + "!  Damage done is determined by your strength, speed and weapon.");
+				addButton(0, "Shoot", attacks).hint("Fire a round at your opponent with your " + player.weaponName + "!  Damage done is determined by your strength, speed and weapon.");
 				
-			addButton(1, "Tease", combatTeases.teaseAttack, null, null, null, "Attempt to make an enemy more aroused by striking a seductive pose and exposing parts of your body.");
-			if (combatAbilities.canUseMagic()) addButton(2, "Spells", combatAbilities.magicMenu, null, null, null, "Opens your spells menu, where you can cast any spells you have learned.  Beware, casting spells increases your fatigue, and if you become exhausted you will be easier to defeat.");
-			addButton(3, "Items", inventory.inventoryMenu, null, null, null, "The inventory allows you to use an item.  Be careful as this leaves you open to a counterattack when in combat.");
-			addButton(4, "Run", runAway, null, null, null, "Choosing to run will let you try to escape from your enemy. However, it will be hard to escape enemies that are faster than you and if you fail, your enemy will get a free attack.");
-			addButton(5, "P. Specials", combatAbilities.physicalSpecials, null, null, null, "Physical special attack menu.", "Physical Specials");
-			addButton(6, "M. Specials", combatAbilities.magicalSpecials, null, null, null, "Mental and supernatural special attack menu.", "Magical Specials");
-			addButton(7, "Wait", wait, null, null, null, "Take no action for this round.  Why would you do this?  This is a terrible idea.");
-			if (monster.hasStatusEffect(StatusEffects.Level)) addButton(7, "Climb", wait, null, null, null, "Climb the sand to move away from the sand trap.");
-			addButton(8, "Fantasize", fantasize, null, null, null, "Fantasize about your opponent in a sexual way.  Its probably a pretty bad idea to do this unless you want to end up getting raped.");
-			if (CoC_Settings.debugBuild && !debug) addButton(9, "Inspect", debugInspect, null, null, null, "Use your debug powers to inspect your enemy.");
+			addButton(1, "Tease", combatTeases.teaseAttack).hint("Attempt to make an enemy more aroused by striking a seductive pose and exposing parts of your body.");
+			if (combatAbilities.canUseMagic()) addButton(2, "Spells", combatAbilities.magicMenu).hint("Opens your spells menu, where you can cast any spells you have learned.  Beware, casting spells increases your fatigue, and if you become exhausted you will be easier to defeat.");
+			addButton(3, "Items", inventory.inventoryMenu).hint("The inventory allows you to use an item.  Be careful as this leaves you open to a counterattack when in combat.");
+			addButton(4, "Run", runAway).hint("Choosing to run will let you try to escape from your enemy. However, it will be hard to escape enemies that are faster than you and if you fail, your enemy will get a free attack.");
+			addButton(5, "P. Specials", combatAbilities.physicalSpecials).hint("Physical special attack menu.", "Physical Specials");
+			addButton(6, "M. Specials", combatAbilities.magicalSpecials).hint("Mental and supernatural special attack menu.", "Magical Specials");
+			addButton(7, "Wait", wait).hint("Take no action for this round.  Why would you do this?  This is a terrible idea.");
+			if (monster.hasStatusEffect(StatusEffects.Level)) addButton(7, "Climb", wait).hint("Climb the sand to move away from the sand trap.");
+			addButton(8, "Fantasize", fantasize).hint("Fantasize about your opponent in a sexual way.  Its probably a pretty bad idea to do this unless you want to end up getting raped.");
+			if (CoC_Settings.debugBuild && !debug) addButton(9, "Inspect", debugInspect).hint("Use your debug powers to inspect your enemy.");
 			//Modify menus.
 			if (monster.hasStatusEffect(StatusEffects.AttackDisabled)) {
 				if (monster.short == "minotaur lord") {
@@ -300,10 +286,10 @@ package classes.Scenes.Combat
 			{
 				outputText("\n<b>You'll need to close some distance before you can use any physical attacks!</b>");
 				if (isWieldingRangedWeapon()) {
-					if (flags[kFLAGS.FLINTLOCK_PISTOL_AMMO] <= 0 && player.weaponName == "flintlock pistol") addButton(10, "Reload&Approach", approachAfterKnockback, null, null, null, "Reload your flintlock pistol while approaching.", "Reload and Approach");
-					else addButton(10, "Fire&Approach", approachAfterKnockback, null, null, null, "Land a shot at your opponent and approach.", "Fire and Approach");
+					if (flags[kFLAGS.FLINTLOCK_PISTOL_AMMO] <= 0 && player.weaponName == "flintlock pistol") addButton(10, "Reload&Approach", approachAfterKnockback).hint("Reload your flintlock pistol while approaching.", "Reload and Approach");
+					else addButton(10, "Fire&Approach", approachAfterKnockback).hint("Land a shot at your opponent and approach.", "Fire and Approach");
 				}
-				else addButton(0, "Approach", approachAfterKnockback, null, null, null, "Close some distance between you and your opponent.");
+				else addButton(0, "Approach", approachAfterKnockback).hint("Close some distance between you and your opponent.");
 				if (player.hasKeyItem("Bow") >= 0 || player.hasKeyItem("Kelt's Bow") >= 0) addButton(5, "Bow", combatAbilities.fireBow);
 			}
 			//Disabled physical attacks
@@ -347,7 +333,7 @@ package classes.Scenes.Combat
 			}
 			else if (monster.hasStatusEffect(StatusEffects.Constricted)) {
 				menu();
-				addButton(0, "Squeeze", getGame().desert.nagaScene.naggaSqueeze, null, null, null, "Squeeze some HP out of your opponent! \n\nFatigue Cost: " + player.physicalCost(20) + "");
+				addButton(0, "Squeeze", getGame().desert.nagaScene.naggaSqueeze).hint("Squeeze some HP out of your opponent! \n\nFatigue Cost: " + player.physicalCost(20) + "");
 				addButton(1, "Tease", getGame().desert.nagaScene.naggaTease);
 				addButton(4, "Release", getGame().desert.nagaScene.nagaLeggoMyEggo);
 			}
@@ -759,7 +745,8 @@ package classes.Scenes.Combat
 				if (monster.hasStatusEffect(StatusEffects.Blind))
 					outputText("Blind basilisk can't use his eyes, so you can actually aim your strikes!  ");
 				//basilisk counter attack (block attack, significant speed loss): 
-				else if (player.inte/5 + rand(20) < 25) {
+				else if (player.inte / 5 + rand(20) < 25) {
+					outputText("Holding the basilisk in your peripheral vision, you charge forward to strike it.  Before the moment of impact, the reptile shifts its posture, dodging and flowing backward skillfully with your movements, trying to make eye contact with you. You find yourself staring directly into the basilisk's face!  Quickly you snap your eyes shut and recoil backwards, swinging madly at the lizard to force it back, but the damage has been done; you can see the terrible grey eyes behind your closed lids, and you feel a great weight settle on your bones as it becomes harder to move.");
 					Basilisk.speedReduce(player,20);
 					player.removeStatusEffect(StatusEffects.FirstAttack);
 					combatRoundOver();
@@ -782,7 +769,7 @@ package classes.Scenes.Combat
 				if (rand(100) + player.inte/3 >= 50) {
 					temp = int(player.str/5 - rand(5));
 					if (temp == 0) temp = 1;
-					outputText("You strike at the amalgamation, crushing countless worms into goo, dealing <b><font color=\"#800000\">" + temp + "</font></b> damage.\n\n");
+					outputText("You strike at the amalgamation, crushing countless worms into goo, dealing <b><font color=\"" + mainViewManager.colorHpMinus() + "\">" + temp + "</font></b> damage.\n\n");
 					monster.HP -= temp;
 					if (monster.HP <= 0) {
 						doNext(endHpVictory);
@@ -887,6 +874,7 @@ package classes.Scenes.Combat
 			
 			//GHOUL REVEAL, HOPEFULLY
 			if (!ghoulReveal && monster is Ghoul) {
+				spriteSelect(SpriteDb.s_ghoul);
 				outputText("Your " + kGAMECLASS.player.weaponName + " strikes the hyena, causing it to recoil and vanish in a cloud of sandy dust. You stumble back in surprise and look up to see a snarling, ghostly creature in the air. Your enemy wasn't a hyena. <b>It was a ghoul!</b>\n\n");
 				if (silly()) outputText("<b>The wild Ghoul's illusion wore off!</b>\n\n");
 				this.ghoulReveal = true;
@@ -958,7 +946,7 @@ package classes.Scenes.Combat
 			else {
 				outputText("You hit " + monster.a + monster.short + "! ");
 				if (crit) outputText("<b>Critical hit! </b>");
-				outputText("<b>(<font color=\"#800000\">" + damage + "</font>)</b>")
+				outputText("<b>(<font color=\"" + mainViewManager.colorHpMinus() + "\">" + damage + "</font>)</b>")
 			}
 			if (player.findPerk(PerkLib.BrutalBlows) >= 0 && player.str > 75) {
 				if (monster.armorDef > 0) outputText("\nYour hits are so brutal that you damage " + monster.a + monster.short + "'s defenses!");
@@ -1095,7 +1083,7 @@ package classes.Scenes.Combat
 		}
 		public function combatParry():Boolean {
 			return player.findPerk(PerkLib.Parry) >= 0 && player.spe >= 50 && player.str >= 50 && rand(100) < ((player.spe - 50) / 5) && player.weapon != WeaponLib.FISTS;
-			trace("Parried!");
+			//trace("Parried!");
 		}
 		
 		public function combatCritical():Boolean {
@@ -1105,7 +1093,7 @@ package classes.Scenes.Combat
 		public function getCritChance():Number {
 			var critChance:Number = 5;
 			if (player.findPerk(PerkLib.Tactician) >= 0 && player.inte >= 50) critChance += (player.inte - 50) / 5;
-			if (player.findPerk(PerkLib.Blademaster) >= 0 && (player.weaponVerb == "slash" || player.weaponVerb == "cleave" || player.weaponVerb == "keen cut") && player.shield == ShieldLib.NOTHING) critChance += 5;
+			if (player.findPerk(PerkLib.Blademaster) >= 0 && (player.weaponVerb.search("slash") >= 0 || player.weaponVerb.search("cleave") >= 0 || player.weaponVerb == "keen cut") && player.shield == ShieldLib.NOTHING) critChance += 5;
 			if (player.jewelry.effectId == JewelryLib.MODIFIER_CRITICAL) critChance += player.jewelry.effectMagnitude;
 			return critChance;
 		}
@@ -1181,9 +1169,9 @@ package classes.Scenes.Combat
 		public function getDamageText(damage:Number):String
 		{
 			var color:String;
-			if (damage > 0)  color = "#800000";
+			if (damage > 0)  color = mainViewManager.colorHpMinus();
 			if (damage == 0) color = "#000080";
-			if (damage < 0)  color = "#008000";
+			if (damage < 0)  color = mainViewManager.colorHpPlus();
 			return "<b>(<font color=\"" + color + "\">" + damage + "</font>)</b>";
 		}
 
@@ -1364,12 +1352,16 @@ package classes.Scenes.Combat
 			player.gems += monster.gems;
 			player.XP += monster.XP;
 			mainView.statsView.showStatUp('xp');
-			dynStats("lust", 0, "resisted", false); //Forces up arrow.
+			dynStats("lust", 0, "scale", false); //Forces up arrow.
 		}
 
 		//Clear statuses
-		public function clearStatuses(visibility:Boolean):void {
-			player.clearStatuses(visibility);
+		public function clearStatuses():void {
+			player.clearStatuses();
+			for (var a:/*StatusEffectClass*/Array=monster.statusEffects.slice(),n:int=a.length,i:int=0;i<n;i++) {
+				// Using a copy of array because some effects will be removed
+				a[i].onCombatEnd();
+			}
 		}
 		//Update combat status effects
 		private function combatStatusesUpdate():void {
@@ -1485,14 +1477,14 @@ package classes.Scenes.Combat
 					var bleed:Number = (2 + rand(4))/100;
 					bleed *= player.HP;
 					bleed = takeDamage(bleed);
-					outputText("<b>You gasp and wince in pain, feeling fresh blood pump from your wounds. (<font color=\"#800000\">" + temp + "</font>)</b>\n\n");
+					outputText("<b>You gasp and wince in pain, feeling fresh blood pump from your wounds. (<font color=\"" + mainViewManager.colorHpMinus() + "\">" + temp + "</font>)</b>\n\n");
 				}
 			}
 			if (player.hasStatusEffect(StatusEffects.AcidSlap)) {
 				var slap:Number = 3 + (player.maxHP() * 0.02);
-				outputText("<b>Your muscles twitch in agony as the acid keeps burning you. <b>(<font color=\"#800000\">" + slap + "</font>)</b></b>\n\n");
+				outputText("<b>Your muscles twitch in agony as the acid keeps burning you. <b>(<font color=\"" + mainViewManager.colorHpMinus() + "\">" + slap + "</font>)</b></b>\n\n");
 			}
-			if (player.findPerk(PerkLib.ArousingAura) >= 0 && monster.lustVuln > 0 && player.cor >= (70 - player.corruptionTolerance())) {
+			if (player.findPerk(PerkLib.ArousingAura) >= 0 && monster.lustVuln > 0 && player.isCorruptEnough(70)) {
 				if (monster.lust100 < 50) outputText("Your aura seeps into " + monster.a + monster.short + " but does not have any visible effects just yet.\n\n");
 				else if (monster.lust100 < 60) {
 					if (!monster.plural) outputText(monster.capitalA + monster.short + " starts to squirm a little from your unholy presence.\n\n");
@@ -1616,26 +1608,7 @@ package classes.Scenes.Combat
 				if (monster.plural) outputText("our " + player.multiCockDescriptLight() + " dribbles pre-cum as you think about plowing " + monster.a + monster.short + " right here and now, fucking " + monster.pronoun3 + " " + monster.vaginaDescript() + "s until they're totally fertilized and pregnant.\n\n");
 				else outputText("our " + player.multiCockDescriptLight() + " dribbles pre-cum as you think about plowing " + monster.a + monster.short + " right here and now, fucking " + monster.pronoun3 + " " + monster.vaginaDescript() + " until it's totally fertilized and pregnant.\n\n");
 			}
-			if (player.hasStatusEffect(StatusEffects.NagaVenom)) {
-				//Chance to cleanse!
-				if (player.findPerk(PerkLib.Medicine) >= 0 && rand(100) <= 14) {
-					outputText("You manage to cleanse the naga venom from your system with your knowledge of medicine!\n\n");
-					player.spe += player.statusEffectv1(StatusEffects.NagaVenom);
-					mainView.statsView.showStatUp( 'spe' );
-					// speUp.visible = true;
-					// speDown.visible = false;
-					player.removeStatusEffect(StatusEffects.NagaVenom);
-				}
-				else if (player.spe > 3) {
-					player.addStatusValue(StatusEffects.NagaVenom,1,2);
-					//stats(0,0,-2,0,0,0,0,0);
-					player.spe -= 2;
-				}
-				else takeDamage(5);
-				outputText("You wince in pain and try to collect yourself, the naga's venom still plaguing you.\n\n");
-				takeDamage(2);
-			}
-			else if (player.hasStatusEffect(StatusEffects.TemporaryHeat)) {
+			if (player.hasStatusEffect(StatusEffects.TemporaryHeat)) {
 				//Chance to cleanse!
 				if (player.findPerk(PerkLib.Medicine) >= 0 && rand(100) <= 14) {
 					outputText("You manage to cleanse the heat and rut drug from your system with your knowledge of medicine!\n\n");
@@ -1677,15 +1650,6 @@ package classes.Scenes.Combat
 			if (player.hasStatusEffect(StatusEffects.GiantBoulder)) {
 				outputText("<b>There is a large boulder coming your way. If you don't avoid it in time, you might take some serious damage.</b>\n\n");
 			}
-			if (player.hasStatusEffect(StatusEffects.DriderIncubusVenom)) {
-				//Chance to cleanse!
-				if (player.findPerk(PerkLib.Medicine) >= 0 && rand(100) <= 14) {
-					outputText("You manage to cleanse the drider incubus venom from your system with your knowledge of medicine!\n\n");
-					player.str += player.statusEffectv1(StatusEffects.DriderIncubusVenom);
-					mainView.statsView.showStatUp('str');
-					player.removeStatusEffect(StatusEffects.DriderIncubusVenom);
-				}
-			}
 			//Drider Incubus' purple haze
 			if (player.hasStatusEffect(StatusEffects.PurpleHaze)) {
 				outputText("<b>The purple haze is filling your vision with unsubtle erotic imagery, arousing you.</b>");
@@ -1721,6 +1685,13 @@ package classes.Scenes.Combat
 					outputText("The cord has finally came loose and falls off your neck. It dissipates immediately. You can cast spells again now!\n\n");
 					player.removeStatusEffect(StatusEffects.WhipSilence);
 				}
+			}
+			for (var a:/*StatusEffectClass*/Array=player.statusEffects.slice(),n:int=a.length,i:int=0;i<n;i++) {
+				// Using a copy of array because some effects will be removed
+				a[i].onCombatRound();
+			}
+			for (a=monster.statusEffects.slice(),n=a.length,i=0;i<n;i++) {
+				a[i].onCombatRound();
 			}
 			regeneration(true);
 			if (player.lust >= player.maxLust()) doNext(endLustLoss);
@@ -1786,15 +1757,15 @@ package classes.Scenes.Combat
 				if (monster.armorDef <= 10) monster.armorDef = 0;
 				else monster.armorDef -= 10;
 			}
+			//Raises lust~ Not disabled because it's an item perk :3
+			if (player.findPerk(PerkLib.WellspringOfLust) >= 0 && player.lust < 50) {
+				player.lust = 50;
+			}
 			if (player.findPerk(PerkLib.Battlemage) >= 0 && player.lust >= 50) {
 				combatAbilities.spellMight(true); // XXX: message?
 			}
 			if (player.findPerk(PerkLib.Spellsword) >= 0 && player.lust100 < combatAbilities.getWhiteMagicLustCap()) {
 				combatAbilities.spellChargeWeapon(true); // XXX: message?
-			}
-			//Raises lust~ Not disabled because it's an item perk :3
-			if (player.findPerk(PerkLib.WellspringOfLust) >= 0 && player.lust < 50) {
-				player.lust = 50;
 			}
 			monster.str += 25 * player.newGamePlusMod();
 			monster.tou += 25 * player.newGamePlusMod();
@@ -1814,7 +1785,7 @@ package classes.Scenes.Combat
 			if (player.weaponName == "flintlock pistol") flags[kFLAGS.FLINTLOCK_PISTOL_AMMO] = 4;
 			if (player.weaponName == "blunderbuss") flags[kFLAGS.FLINTLOCK_PISTOL_AMMO] = 12;
 			if (prison.inPrison && prison.prisonCombatAutoLose) {
-				dynStats("lus", player.maxLust(), "resisted", false);
+				dynStats("lus", player.maxLust(), "scale", false);
 				doNext(endLustLoss);
 				return;
 			}
@@ -1839,7 +1810,7 @@ package classes.Scenes.Combat
 			var lustDisplay:String = "";
 			var math:Number = monster.HPRatio();
 			//hpDisplay = "(<b>" + String(int(math * 1000) / 10) + "% HP</b>)";
-			hpDisplay   = Math.floor(monster.HP) + " / " + monster.maxHP() + " (" + (int(math * 1000) / 10) + "%)";
+			hpDisplay   = Math.floor(monster.HP) + " / " + monster.maxHP() + " (" + floor(math*100,1) + "%)";
 			lustDisplay = Math.floor(monster.lust) + " / " + monster.maxLust();
 			;
 			//imageText set in beginCombat()
@@ -2000,7 +1971,7 @@ package classes.Scenes.Combat
 				//High
 				else if (monster.lust100 > 30) {
 					//High (redhead only)
-					if (monster.hairColor == "red") outputText("The kitsune is openly aroused, unable to hide the obvious bulge in her robes as she seems to be struggling not to stroke it right here and now.");
+					if (monster.hair.color == "red") outputText("The kitsune is openly aroused, unable to hide the obvious bulge in her robes as she seems to be struggling not to stroke it right here and now.");
 					else outputText("The kitsune is openly aroused, licking her lips frequently and desperately trying to hide the trail of fluids dripping down her leg.");
 				}
 			}
@@ -2098,7 +2069,7 @@ package classes.Scenes.Combat
 				clearOutput();
 				outputText("You flex the muscles in your back and, shaking clear of the sand, burst into the air!  Wasting no time you fly free of the sandtrap and its treacherous pit.  \"One day your wings will fall off, little ant,\" the snarling voice of the thwarted androgyne carries up to you as you make your escape.  \"And I will be waiting for you when they do!\"");
 				inCombat = false;
-				clearStatuses(false);
+				clearStatuses();
 				doNext(camp.returnToCampUseOneHour);
 				return;
 			}
@@ -2131,7 +2102,7 @@ package classes.Scenes.Combat
 				//(Free run away) 
 				outputText("You slink away while the pack of brutes is arguing.  Once they finish that argument, they'll be sorely disappointed!");
 				inCombat = false;
-				clearStatuses(false);
+				clearStatuses();
 				doNext(camp.returnToCampUseOneHour);
 				return;
 			}
@@ -2170,7 +2141,7 @@ package classes.Scenes.Combat
 			if (monster.short == "lizan rogue") {
 				outputText("As you retreat the lizan doesn't even attempt to stop you. When you look back to see if he's still there you find nothing but the empty bog around you.");
 				inCombat = false;
-				clearStatuses(false);
+				clearStatuses();
 				doNext(camp.returnToCampUseOneHour);
 				return;
 			}
@@ -2195,7 +2166,7 @@ package classes.Scenes.Combat
 			//Calculations
 			var escapeMod:Number = 20 + monster.level * 3;
 			if (debug) escapeMod -= 300;
-			if (player.tailType == TAIL_TYPE_RACCOON && player.earType == EARS_RACCOON && player.findPerk(PerkLib.Runner) >= 0) escapeMod -= 25;
+			if (player.tail.type == Tail.RACCOON && player.ears.type == Ears.RACCOON && player.findPerk(PerkLib.Runner) >= 0) escapeMod -= 25;
 			if (monster.hasStatusEffect(StatusEffects.Blind)) escapeMod -= 35;
 			if (monster.hasStatusEffect(StatusEffects.Illusion)) escapeMod -= 20; // Not as much as blindness, but it also affects speed by itself.
 			if (player.hasStatusEffect(StatusEffects.Blind) && (!player.canFly() || monster.canFly())) escapeMod += 35; // If you can fly you don't have to see where the sky is. But if your foe can fly too, it won't give you much.
@@ -2205,8 +2176,8 @@ package classes.Scenes.Combat
 			else {
 				if (player.biggestTitSize() >= 35) escapeMod += 5;
 				if (player.biggestTitSize() >= 66) escapeMod += 10;
-				if (player.hipRating >= 20) escapeMod += 5;
-				if (player.buttRating >= 20) escapeMod += 5;
+				if (player.hips.rating >= 20) escapeMod += 5;
+				if (player.butt.rating >= 20) escapeMod += 5;
 				if (player.ballSize >= 24 && player.balls > 0) escapeMod += 5;
 				if (player.ballSize >= 48 && player.balls > 0) escapeMod += 10;
 				if (player.ballSize >= 120 && player.balls > 0) escapeMod += 10;
@@ -2218,7 +2189,7 @@ package classes.Scenes.Combat
 				if (player.lust100 < 60) {
 					outputText("Marshalling your thoughts, you frown at the strange girl and turn to march up the beach.  After twenty paces inshore you turn back to look at her again.  The anemone is clearly crestfallen by your departure, pouting heavily as she sinks beneath the water's surface.");
 					inCombat = false;
-					clearStatuses(false);
+					clearStatuses();
 					doNext(camp.returnToCampUseOneHour);
 					return;
 				}
@@ -2227,7 +2198,7 @@ package classes.Scenes.Combat
 					//Success
 					if (player.spe > rand(monster.spe+escapeMod)) {
 						inCombat = false;
-						clearStatuses(false);
+						clearStatuses();
 						outputText("Marshalling your thoughts, you frown at the strange girl and turn to march up the beach.  After twenty paces inshore you turn back to look at her again.  The anemone is clearly crestfallen by your departure, pouting heavily as she sinks beneath the water's surface.");
 						doNext(camp.returnToCampUseOneHour);
 						return;
@@ -2247,7 +2218,7 @@ package classes.Scenes.Combat
 				if (player.hasStatusEffect(StatusEffects.KnockedBack)) {
 					outputText("It's not very difficult to run from the immobile creature.");
 					inCombat = false;
-					clearStatuses(false);
+					clearStatuses();
 					doNext(camp.returnToCampUseOneHour);
 				} else {
 					if (player.spe > rand(monster.spe + escapeMod) || player.getEvasionRoll()) {
@@ -2270,7 +2241,7 @@ package classes.Scenes.Combat
 					outputText("You easily outpace the dragon, who begins hurling imprecations at you.  \"What the hell, [name], you weenie; are you so scared that you can't even stick out your punishment?\"");
 					outputText("\n\nNot to be outdone, you call back, \"Sucks to you!  If even the mighty Last Ember of Hope can't catch me, why do I need to train?  Later, little bird!\"");
 					inCombat = false;
-					clearStatuses(false);
+					clearStatuses();
 					doNext(camp.returnToCampUseOneHour);
 				}
 				//Fail: 
@@ -2286,7 +2257,7 @@ package classes.Scenes.Combat
 				if (prison.inPrison) {
 					outputText("You quickly bolt out of the main entrance and after hiding for a good while, there's no sign of " + monster.a + " " + monster.short + ". You sneak back inside to retrieve whatever you had before you were captured. ");
 					inCombat = false;
-					clearStatuses(false);
+					clearStatuses();
 					prison.prisonEscapeSuccessText();
 					doNext(prison.prisonEscapeFinalePart1);
 					return;
@@ -2294,7 +2265,7 @@ package classes.Scenes.Combat
 				//Fliers flee!
 				else if (player.canFly()) outputText(monster.capitalA + monster.short + " can't catch you.");
 				//sekrit benefit: if you have coon ears, coon tail, and Runner perk, change normal Runner escape to flight-type escape
-				else if (player.tailType == TAIL_TYPE_RACCOON && player.earType == EARS_RACCOON && player.findPerk(PerkLib.Runner) >= 0) {
+				else if (player.tail.type == Tail.RACCOON && player.ears.type == Ears.RACCOON && player.findPerk(PerkLib.Runner) >= 0) {
 					outputText("Using your running skill, you build up a head of steam and jump, then spread your arms and flail your tail wildly; your opponent dogs you as best " + monster.pronoun1 + " can, but stops and stares dumbly as your spastic tail slowly propels you several meters into the air!  You leave " + monster.pronoun2 + " behind with your clumsy, jerky, short-range flight.");
 				}
 				//Non-fliers flee
@@ -2304,7 +2275,7 @@ package classes.Scenes.Combat
 				}
 				if (monster is Ghoul) ghoulReveal = false;
 				inCombat = false;
-				clearStatuses(false);
+				clearStatuses();
 				doNext(camp.returnToCampUseOneHour);
 				return;
 			}
@@ -2315,7 +2286,7 @@ package classes.Scenes.Combat
 				if (monster.short == "Izma") {
 					outputText("\n\nAs you leave the tigershark behind, her taunting voice rings out after you.  \"<i>Oooh, look at that fine backside!  Are you running or trying to entice me?  Haha, looks like we know who's the superior specimen now!  Remember: next time we meet, you owe me that ass!</i>\"  Your cheek tingles in shame at her catcalls.");
 				}
-				clearStatuses(false);
+				clearStatuses();
 				doNext(camp.returnToCampUseOneHour);
 				return;
 			}
@@ -2331,7 +2302,7 @@ package classes.Scenes.Combat
 					else outputText(monster.capitalA + monster.short + " manages to grab your " + player.legs() + " and drag you back to the ground before you can fly away!");
 				}
 				//fail
-				else if (player.tailType == TAIL_TYPE_RACCOON && player.earType == EARS_RACCOON && player.findPerk(PerkLib.Runner) >= 0) outputText("Using your running skill, you build up a head of steam and jump, but before you can clear the ground more than a foot, your opponent latches onto you and drags you back down with a thud!");
+				else if (player.tail.type == Tail.RACCOON && player.ears.type == Ears.RACCOON && player.findPerk(PerkLib.Runner) >= 0) outputText("Using your running skill, you build up a head of steam and jump, but before you can clear the ground more than a foot, your opponent latches onto you and drags you back down with a thud!");
 				//Nonflyer messages
 				else {
 					//Huge balls messages
@@ -2340,38 +2311,38 @@ package classes.Scenes.Combat
 						else outputText("With your " + player.ballsDescriptLight() + " dragging along the ground, getting away is far harder than it should be.  ");
 					}
 					//FATASS BODY MESSAGES
-					if (player.biggestTitSize() >= 35 || player.buttRating >= 20 || player.hipRating >= 20)
+					if (player.biggestTitSize() >= 35 || player.butt.rating >= 20 || player.hips.rating >= 20)
 					{
 						//FOR PLAYERS WITH GIANT BREASTS
 						if (player.biggestTitSize() >= 35 && player.biggestTitSize() < 66)
 						{
-							if (player.hipRating >= 20)
+							if (player.hips.rating >= 20)
 							{
-								outputText("Your " + player.hipDescript() + " forces your gait to lurch slightly side to side, which causes the fat of your " + player.skinTone + " ");
-								if (player.buttRating >= 20) outputText(player.buttDescript() + " and ");
+								outputText("Your " + player.hipDescript() + " forces your gait to lurch slightly side to side, which causes the fat of your " + player.skin.tone + " ");
+								if (player.butt.rating >= 20) outputText(player.buttDescript() + " and ");
 								outputText(player.chestDesc() + " to wobble immensely, throwing you off balance and preventing you from moving quick enough to escape.");
 							}
-							else if (player.buttRating >= 20) outputText("Your " + player.skinTone + player.buttDescript() + " and " + player.chestDesc() + " wobble and bounce heavily, throwing you off balance and preventing you from moving quick enough to escape.");
-							else outputText("Your " + player.chestDesc() + " jiggle and wobble side to side like the " + player.skinTone + " sacks of milky fat they are, with such force as to constantly throw you off balance, preventing you from moving quick enough to escape.");
+							else if (player.butt.rating >= 20) outputText("Your " + player.skin.tone + player.buttDescript() + " and " + player.chestDesc() + " wobble and bounce heavily, throwing you off balance and preventing you from moving quick enough to escape.");
+							else outputText("Your " + player.chestDesc() + " jiggle and wobble side to side like the " + player.skin.tone + " sacks of milky fat they are, with such force as to constantly throw you off balance, preventing you from moving quick enough to escape.");
 						}
 						//FOR PLAYERS WITH MASSIVE BREASTS
 						else if (player.biggestTitSize() >= 66) {
-							if (player.hipRating >= 20) {
+							if (player.hips.rating >= 20) {
 								outputText("Your " + player.chestDesc() + " nearly drag along the ground while your " + player.hipDescript() + " swing side to side ");
-								if (player.buttRating >= 20) outputText("causing the fat of your " + player.skinTone + player.buttDescript() + " to wobble heavily, ");
+								if (player.butt.rating >= 20) outputText("causing the fat of your " + player.skin.tone + player.buttDescript() + " to wobble heavily, ");
 								outputText("forcing your body off balance and preventing you from moving quick enough to get escape.");
 							}
-							else if (player.buttRating >= 20) outputText("Your " + player.chestDesc() + " nearly drag along the ground while the fat of your " + player.skinTone + player.buttDescript() + " wobbles heavily from side to side, forcing your body off balance and preventing you from moving quick enough to escape.");
+							else if (player.butt.rating >= 20) outputText("Your " + player.chestDesc() + " nearly drag along the ground while the fat of your " + player.skin.tone + player.buttDescript() + " wobbles heavily from side to side, forcing your body off balance and preventing you from moving quick enough to escape.");
 							else outputText("Your " + player.chestDesc() + " nearly drag along the ground, preventing you from moving quick enough to get escape.");
 						}
 						//FOR PLAYERS WITH EITHER GIANT HIPS OR BUTT BUT NOT THE BREASTS
-						else if (player.hipRating >= 20) {
+						else if (player.hips.rating >= 20) {
 							outputText("Your " + player.hipDescript() + " swing heavily from side to side ");
-							if (player.buttRating >= 20) outputText("causing your " + player.skinTone + player.buttDescript() + " to wobble obscenely ");
+							if (player.butt.rating >= 20) outputText("causing your " + player.skin.tone + player.buttDescript() + " to wobble obscenely ");
 							outputText("and forcing your body into an awkward gait that slows you down, preventing you from escaping.");
 						}
 						//JUST DA BOOTAH
-						else if (player.buttRating >= 20) outputText("Your " + player.skinTone + player.buttDescript() + " wobbles so heavily that you're unable to move quick enough to escape.");
+						else if (player.butt.rating >= 20) outputText("Your " + player.skin.tone + player.buttDescript() + " wobbles so heavily that you're unable to move quick enough to escape.");
 					}
 					//NORMAL RUN FAIL MESSAGES
 					else if (monster.plural) outputText(monster.capitalA + monster.short + " stay hot on your heels, denying you a chance at escape!");

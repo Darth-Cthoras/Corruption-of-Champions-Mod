@@ -1,6 +1,8 @@
 package classes.Scenes.NPCs
 {
 	import classes.*;
+	import classes.BodyParts.*;
+	import classes.BodyParts.Hips;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.GlobalFlags.kGAMECLASS;
 	import classes.internals.*;
@@ -125,7 +127,7 @@ package classes.Scenes.NPCs
 						counter--;
 					}
 				}
-				game.dynStats("lus", 30 + player.lib/10 + player.cor/10);
+				player.takeLustDamage(30 + player.lib/10 + player.cor/10, true);
 			}
 			combatRoundOver();
 		}
@@ -140,7 +142,7 @@ package classes.Scenes.NPCs
 			else if (game.sheilaScene.sheilaCorruption() < 150) {
 				outputText("  As her hands run over the soft-looking mammaries, kneading and squeezing them, teasing the nipples relentlessly until she lets out a cute little moan, you feel the blood rush to your face.  \"<i>Enjoying this, are you?</i>\" she calls sweetly.  \"<i>Why don't you stop being contrary and come play with them too?</i>\"");
 				//med lib-based lust damage if 20 < sheila corruption < 150
-				game.dynStats("lus", 25+player.lib/10);
+				player.takeLustDamage(25+player.lib/10, true);
 			}
 			//(else; 'miss')
 			else {
@@ -195,13 +197,13 @@ package classes.Scenes.NPCs
 			//Miss:
 			if (player.inte / 15 + rand(20) + 1 > 16) {
 				outputText("\n\nBefore the fantasy can advance, you recoil and pull out of the demon's hands, shoving her away.");
-				game.dynStats("lus", 15+player.sens/20 + player.lib/20);
+				player.takeLustDamage(15+player.sens/20 + player.lib/20, true);
 			}
 			//(int check failed)
 			else {
 				outputText("\n\nYour ego's urgent danger warnings are drowned in a sea of rising lust, and you find yourself transfixed.  The vision continues until Sheila tires of fantasizing.");
 				//mild lib-based lust gain if PC resists; else big int drop and big lib-based lust gain plus Infest lock for remainder of fight
-				game.dynStats("lus", 25+player.sens/20 + player.lib/20);
+				player.takeLustDamage(25+player.sens/20 + player.lib/20, true);
 				//harder to resist and bigger damage than normal Suspicious Glint
 			}
 			combatRoundOver();
@@ -215,11 +217,11 @@ package classes.Scenes.NPCs
 			//[(sheila corruption < 100; hit, 'light damage')]
 			if (game.sheilaScene.sheilaCorruption() < 100) {
 				outputText("The silence is broken with a giggle as the demon catches you in an embrace, pressing her " + game.sheilaScene.sheilaCup() + " breasts into you.  You shiver as she drags the perky nipples over your " + player.skinFurScales() + ", but push her away.");
-				game.dynStats("lus", 15+player.sens/20 + player.lib/20);
+				player.takeLustDamage(15+player.sens/20 + player.lib/20, true);
 			}
 			else if (game.sheilaScene.sheilaCorruption() < 300) {
 				outputText("A sigh ends the silence as your body is partially enfolded in the hot valley of an aroused Sheila's cleavage. As the demon grabs you and pushes her tits into you, the skin-on-" + player.skinFurScales() + " contact makes you shiver, and your attempts to get free meet with some resistance... or rather, a lack of resistance, as the soft, yielding breast flesh quivers and heats to your touch without moving the demon overmuch.  You accidentally brush her nipples several times before you can escape, unleashing horny moans from Sheila that linger in your mind.");
-				game.dynStats("lus", 25+player.sens/20 + player.lib/20);
+				player.takeLustDamage(25+player.sens/20 + player.lib/20, true);
 			}
 			else {//; miss)
 				outputText("You're a bit unnerved, but soon realize that you can tell where Sheila is by listening for the telltale sounds of her colossal breasts scraping the ground as she draws closer to you.  With this in mind, you continue to face your opponent and back away as you wipe your eyes.");
@@ -291,19 +293,19 @@ package classes.Scenes.NPCs
 			}
 			
 			// this.plural = false;
-			this.createVagina(game.flags[kFLAGS.SHEILA_XP] <= 3 && !sheilaDemon, VAGINA_WETNESS_SLICK, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(game.flags[kFLAGS.SHEILA_XP] <= 3 && !sheilaDemon, VaginaClass.WETNESS_SLICK, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 30, 0, 0, 0);
 			this.createBreastRow(game.flags[kFLAGS.SHEILA_CORRUPTION]/10);
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,20,0,0,0);
 			this.tallness = 6*12;
-			this.hipRating = HIP_RATING_AVERAGE;
-			this.buttRating = BUTT_RATING_AVERAGE+1;
-			this.lowerBody = LOWER_BODY_TYPE_KANGAROO;
-			this.skinTone = "tan";
-			this.hairColor = "auburn";
-			this.hairLength = 11;
+			this.hips.rating = Hips.RATING_AVERAGE;
+			this.butt.rating = Butt.RATING_AVERAGE+1;
+			this.lowerBody.type = LowerBody.KANGAROO;
+			this.skin.tone = "tan";
+			this.hair.color = "auburn";
+			this.hair.length = 11;
 			initStrTouSpeInte(80, 45, 95, 50);
 			initLibSensCor(30, 45, 25);
 			var lust:Number = 30;
@@ -342,7 +344,7 @@ package classes.Scenes.NPCs
 						add(consumables.SUCMILK,1/3).
 						add(consumables.INCUBID,1/2);
 			}
-			this.tailType = TAIL_TYPE_KANGAROO;
+			this.tail.type = Tail.KANGAROO;
 			checkMonster();
 		}
 

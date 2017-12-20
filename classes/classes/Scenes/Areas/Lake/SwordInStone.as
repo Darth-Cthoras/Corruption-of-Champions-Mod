@@ -43,13 +43,17 @@ public class SwordInStone extends AbstractLakeContent implements Encounter {
 				
 				player.createStatusEffect(StatusEffects.BSwordBroken,0,0,0,0);
 			}
+			//Picture is here
+			outputText(images.showImage("item-Bsword"));
 		}
 
 		private function tryToTakeSwordInStone():void 
 		{
 			clearOutput();
+			//Picture is here
+			outputText(images.showImage("item-Bsword"));
 			//if corrupted...
-			if (player.cor >= 25 + player.corruptionTolerance()) 
+			if (!player.isPureEnough(25))
 			{
 				outputText("You grip the handle with both hands and ");
 				

@@ -1,14 +1,16 @@
 ﻿		//Calls are now made through kGAMECLASS rather than thisPtr. This allows the compiler to detect if/when a function is inaccessible.
+		import classes.GlobalFlags.kFLAGS;
 		import classes.GlobalFlags.kGAMECLASS;
 		import classes.Items.ArmorLib;
+		import classes.Items.WeaponLib;
 		import classes.Items.UndergarmentLib;
 
-
-
-		// Possible text arguments in the conditional of a if statement
-		// First, there is an attempt to cast the argument to a Number. If that fails,
-		// a dictionary lookup is performed to see if the argument is in the conditionalOptions[]
-		// object. If that fails, we just fall back to returning 0
+		/**
+		 * Possible text arguments in the conditional of a if statement
+		 * First, there is an attempt to cast the argument to a Number. If that fails,
+		 * a dictionary lookup is performed to see if the argument is in the conditionalOptions[]
+		 * object. If that fails, we just fall back to returning 0
+		 */
 		public var conditionalOptions:Object =
 		{
 				"strength"			: function(thisPtr:*):* {return  kGAMECLASS.player.str;},
@@ -26,8 +28,9 @@
 				"days"				: function(thisPtr:*):* {return  kGAMECLASS.model.time.days;},
 				"hasarmor"			: function(thisPtr:*):* {return  kGAMECLASS.player.armor != ArmorLib.NOTHING;},
 				"haslowergarment"	: function(thisPtr:*):* {return  kGAMECLASS.player.lowerGarment != UndergarmentLib.NOTHING;},
+				"hasweapon"			: function(thisPtr:*):* {return  kGAMECLASS.player.weapon != WeaponLib.FISTS;},
 				"tallness"			: function(thisPtr:*):* {return  kGAMECLASS.player.tallness;},
-				"hairlength"		: function(thisPtr:*):* {return  kGAMECLASS.player.hairLength;},
+				"hairlength"		: function(thisPtr:*):* {return  kGAMECLASS.player.hair.length;},
 				"femininity"		: function(thisPtr:*):* {return  kGAMECLASS.player.femininity;},
 				"masculinity"		: function(thisPtr:*):* {return  100 - kGAMECLASS.player.femininity;},
 				"cocks"				: function(thisPtr:*):* {return  kGAMECLASS.player.cockTotal();},
@@ -51,7 +54,19 @@
 				"hascock"			: function(thisPtr:*):* {return  kGAMECLASS.player.hasCock();},
 				"hassheath"			: function(thisPtr:*):* {return  kGAMECLASS.player.hasSheath();},
 				"hasbeak"			: function(thisPtr:*):* {return  kGAMECLASS.player.hasBeak();},
-				"isherm"			: function(thisPtr:*):* {return  (kGAMECLASS.player.gender == 3);},
+				"hasdragonneck"		: function(thisPtr:*):* {return  kGAMECLASS.player.hasDragonNeck();},
+				"neckpos"			: function(thisPtr:*):* {return  kGAMECLASS.player.neck.pos;},
+				"hasfur"			: function(thisPtr:*):* {return  kGAMECLASS.player.hasFur();},
+				"haswool"			: function(thisPtr:*):* {return  kGAMECLASS.player.hasWool();},
+				"hasfeathers"		: function(thisPtr:*):* {return  kGAMECLASS.player.hasFeathers();},
+				"hasfurryunderbody"	: function(thisPtr:*):* {return  kGAMECLASS.player.hasFurryUnderBody();},
+				"isfurry"			: function(thisPtr:*):* {return  kGAMECLASS.player.isFurry();},
+				"isfluffy"			: function(thisPtr:*):* {return  kGAMECLASS.player.isFluffy();},
+				"ismale"			: function(thisPtr:*):* {return  (kGAMECLASS.player.isMale());},
+				"isfemale"			: function(thisPtr:*):* {return  (kGAMECLASS.player.isFemale());},
+				"isherm"			: function(thisPtr:*):* {return  (kGAMECLASS.player.isHerm());},
+				"ismaleorherm"		: function(thisPtr:*):* {return  (kGAMECLASS.player.isMaleOrHerm());},
+				"isfemaleorherm"	: function(thisPtr:*):* {return  (kGAMECLASS.player.isFemaleOrHerm());},
 				"cumnormal"			: function(thisPtr:*):* {return  (kGAMECLASS.player.cumQ() <= 150);},
 				"cummedium"			: function(thisPtr:*):* {return  (kGAMECLASS.player.cumQ() > 150 && kGAMECLASS.player.cumQ() <= 350);},
 				"cumhigh"			: function(thisPtr:*):* {return  (kGAMECLASS.player.cumQ() > 350 && kGAMECLASS.player.cumQ() <= 1000);},
@@ -60,7 +75,7 @@
 				"issquirter"		: function(thisPtr:*):* {return  (kGAMECLASS.player.wetness() >= 4);},
 				"vaginalwetness"	: function(thisPtr:*):* {return  kGAMECLASS.player.wetness();},
 				"anallooseness"		: function(thisPtr:*):* {return  kGAMECLASS.player.ass.analLooseness;},
-				"buttrating"		: function(thisPtr:*):* {return  kGAMECLASS.player.buttRating;},
+				"buttrating"		: function(thisPtr:*):* {return  kGAMECLASS.player.butt.rating;},
 				"ispregnant"		: function(thisPtr:*):* {return  (kGAMECLASS.player.pregnancyIncubation > 0);},
 				"isbuttpregnant"	: function(thisPtr:*):* {return  (kGAMECLASS.player.buttPregnancyIncubation > 0);},
 				"hasnipplecunts"	: function(thisPtr:*):* {return  kGAMECLASS.player.hasFuckableNipples();},
@@ -74,5 +89,12 @@
 				//Prison
 				"esteem"			: function(thisPtr:*):* {return  kGAMECLASS.player.esteem; },
 				"obey"				: function(thisPtr:*):* {return  kGAMECLASS.player.obey; },
-				"will"				: function(thisPtr:*):* {return  kGAMECLASS.player.will; }
+				"will"				: function(thisPtr:*):* {return  kGAMECLASS.player.will; },
+
+				//---[NPCs]---
+				//Joy
+				"joyhascock"		: function(thisPtr:*):* {return  kGAMECLASS.joyScene.joyHasCock(); },
+
+				//Tel Adre
+				"bakerytalkedroot"	: function(thisPtr:*):* {return  kGAMECLASS.flags[kFLAGS.MINO_CHEF_TALKED_RED_RIVER_ROOT] > 0; }
 			}

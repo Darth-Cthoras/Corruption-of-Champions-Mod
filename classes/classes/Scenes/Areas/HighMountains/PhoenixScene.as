@@ -3,6 +3,7 @@ package classes.Scenes.Areas.HighMountains
 	import classes.*;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.GlobalFlags.kGAMECLASS;
+	import classes.display.SpriteDb;
 
 	public class PhoenixScene extends BaseContent
 	{
@@ -11,6 +12,11 @@ package classes.Scenes.Areas.HighMountains
 		{
 		}
 		
+		public function phoenixSprite(nude:Boolean = false):void {
+			if (nude) spriteSelect(SpriteDb.s_phoenix_nude);
+			else spriteSelect(SpriteDb.s_phoenix);
+		}
+
 		public function encounterPhoenix():void {
 			if (flags[kFLAGS.PHOENIX_ENCOUNTERED] <= 0) encounterPhoenixFirstTime();
 			else encounterPhoenixRepeat();
@@ -18,6 +24,7 @@ package classes.Scenes.Areas.HighMountains
 		
 		public function encounterPhoenixFirstTime():void {
 			clearOutput();
+			phoenixSprite();
 			outputText("Strolling along the mountain path, you realise that you are quite close to the tower where you and Hel fought the Harpy Queen and her little army of hybrids. Pausing for a moment, you are relieved to hear a distinct lack of noise, which hopefully means that no-one's tried to move back into the stronghold after ");
 			if (flags[kFLAGS.HARPY_QUEEN_EXECUTED] > 0) outputText("her Highness became an ex-harpy.");
 			else outputText("you evicted her Majesty from her seat of power.");
@@ -33,6 +40,8 @@ package classes.Scenes.Areas.HighMountains
 		}
 		
 		public function encounterPhoenixRepeat():void {
+			clearOutput();
+			phoenixSprite();
 			outputText("Strolling along the mountain path, you spot the familiar Phoenix. You ready your " + player.weaponName + ".");
 			if (flags[kFLAGS.PHOENIX_ENCOUNTERED] == 1) outputText("\n\n\"<i>Back again?</i>\" The phoenix says with a glare. \"<i>But... I guess you're a worthy opponent. Let's see what you're made of!</i>\" The phoenix yells as she readies her scimitar and shield. You assume a combat stance.");
 			else outputText("\n\n\"<i>Back again?</i>\" The phoenix says with a glare. \"<i>Get ready for a rematch!</i>\" The phoenix yells as she readies her scimitar and shield. You assume a combat stance.");
@@ -43,9 +52,10 @@ package classes.Scenes.Areas.HighMountains
 		//VICTORY!
 		public function winAgainstPhoenix():void {
 			flags[kFLAGS.PHOENIX_HP_LOSS_COUNTER] = 0; //Reset counter if you win.
-	
+			clearOutput();
+			phoenixSprite(true);
+
 			if (flags[kFLAGS.SFW_MODE] > 0) {
-				clearOutput();
 				outputText("You smile in satisfaction as the " + monster.short + " collapses, unable to continue fighting.");
 				combat.cleanupAfterCombat();
 				return;
@@ -192,6 +202,7 @@ outputText("With one final grunt, the phoenix collapses against a nearby rock, b
 		//LOSS! GET RAPED!
 		public function loseToPhoenix():void {
 			clearOutput();
+			phoenixSprite(true);
 			if (player.HP < 1) {
 				flags[kFLAGS.PHOENIX_HP_LOSS_COUNTER]++;
 				if (flags[kFLAGS.PHOENIX_HP_LOSS_COUNTER] >= 4) {
@@ -251,7 +262,7 @@ outputText("With one final grunt, the phoenix collapses against a nearby rock, b
 			outputText("You come to your senses a few hours later, barely able to open your eyes and feeling like you’ve just been fed through a thresher. Every movement is agony to your worn, abused body, but you manage to bring a hand to your face, shivering as your fingers sink into a thick layer of cold, congealed spunk. As you start wiping away as much as possible, you can only guess how at the number of orgasms it took for the phoenix to build up such a thick coating. You jerkily start to sit up, moving as slowly as possible to try and avoid overwhelming your cramped muscles.");
 			outputText("\n\nLooking down at your filth-encrusted body, you wince at the state of your " + player.armorName + ", then nearly gag as you see the ungodly amount of half-dried spunk that covers your crotch. The cold, jelly-like liquid clings to your [cock], slowly dripping down to the floor in huge globules that run along your shaft. The feeling makes your cock twitch and you instantly cry out, painfully realising that one of the after-effects of getting ridden for so long is an incredible amount of soreness.");
 			outputText("\n\nYou look around, just in case that feathery bitch is still around and just waiting for you to feel safe, but you only spy a trail of spunk leading away from you. A closer look reveals that the path it marks out bears a heavy resemblance to the way a drunk would stagger after a long night at the tavern. Reasoning that she’ll probably be out of the way for a while, you start to look for the rest of your armour, finally spotting it lying a few feet away from you, blissfully untouched by the multitude of fluids that have stained the ground in the immediate area. ");
-			outputText("\n\nYou carefully clean around your crotch as best you can, wiping a ridiculous amount of dubious fluid from your stomach" + (player.tailType > 0 ? ", tailbase": "" ) + " and thighs. All the while your ass throbs with pain, still spasming slightly from the intense stretching it received both before and after your little nap. Clenching your teeth in hopes of shutting out the pain, you start to climb to your feet, too wary of the pain to risk cleaning your flaccid member. Instead you leave it swinging freely between your legs, every so often dripping a huge blob of half-congealed spunk that splatters onto your feet. ");
+			outputText("\n\nYou carefully clean around your crotch as best you can, wiping a ridiculous amount of dubious fluid from your stomach" + (player.tail.type > 0 ? ", tailbase": "" ) + " and thighs. All the while your ass throbs with pain, still spasming slightly from the intense stretching it received both before and after your little nap. Clenching your teeth in hopes of shutting out the pain, you start to climb to your feet, too wary of the pain to risk cleaning your flaccid member. Instead you leave it swinging freely between your legs, every so often dripping a huge blob of half-congealed spunk that splatters onto your feet. ");
 			outputText("\n\nYou gingerly take a couple of steps, all too aware of the stinging of your stretched ass, before stopping as something begins to seep down your inner thigh. Your heart sinks as you reach back behind you, fingers trailing between your legs until you find a streak of wet, still slightly warm. ");
 			outputText("\n\nAlmost too afraid to look, you bring your fingers back around to find them covered with a layer of cum, groaning out loud as you quickly piece together that the phoenix must’ve decided to blow her last load in your now-impossibly sensitive ass. The gentle sloshing in your gut coupled with how much warm spunk is now leaking out of your abused body leaves you to suspect that the girl took her time with you. After grabbing your scattered gear as quickly as possible and finding your gem pouch a little lighter, you start to hobble back to camp, desperate for some rest after this ordeal. ");
 			outputText("\n\nToo pained to redress yourself, the spunk dripping from you marks out your path back down the mountain, almost as if the gods are making sure you have a way of finding the route back for another round.");
@@ -292,6 +303,7 @@ outputText("With one final grunt, the phoenix collapses against a nearby rock, b
 		//Non-sexy bad end, loss by HP 4 times in a row.
 		public function phoenixBadEnd():void {
 			clearOutput();
+			phoenixSprite();
 			outputText("\"<i>Seriously? I've beaten you several times in a row? I guess... I've made a final decision; you must die. I'm sorry but I have to,</i>\" the phoenix says.");
 			outputText("\n\n\"<i>The harpy queen will be avenged,</i>\" she says with a glare on your face. She raises her scimitar. You look up at the sharp blade. You clearly know where it's going.");
 			outputText("\n\n\"<i>Hasta la vista, baby!</i>\" These are the last words you hear as the speeding scimitar finally makes contact with your neck.");

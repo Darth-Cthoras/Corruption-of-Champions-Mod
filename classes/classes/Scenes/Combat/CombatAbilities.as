@@ -1,18 +1,21 @@
 package classes.Scenes.Combat 
 {
 	import classes.*;
+	import classes.BodyParts.*;
 	import classes.GlobalFlags.*;
 	import classes.Items.*;
 	import classes.Scenes.Areas.Forest.TentacleBeast;
 	import classes.Scenes.Areas.GlacialRift.FrostGiant;
-	import classes.Scenes.Dungeons.D3.*;
 	import classes.Scenes.Dungeons.DeepCave.*;
 	import classes.Scenes.Dungeons.HelDungeon.*;
+	import classes.Scenes.Dungeons.LethicesKeep.*;
 	import classes.Scenes.Monsters.Mimic;
 	import classes.Scenes.NPCs.*;
 	import classes.Scenes.Places.TelAdre.UmasShop;
+import classes.StatusEffects.Combat.BasiliskSlowDebuff;
+import classes.StatusEffects.Combat.MightBuff;
 
-	public class CombatAbilities extends BaseContent
+public class CombatAbilities extends BaseContent
 	{
 		public function CombatAbilities() {}
 		
@@ -32,7 +35,7 @@ package classes.Scenes.Combat
 		
 		public function getWhiteMagicLustCap():Number {
 			var whiteLustCap:Number = player.maxLust() * 0.75;
-			if (player.findPerk(PerkLib.Enlightened) >= 0 && player.cor < (10 + player.corruptionTolerance())) whiteLustCap += (player.maxLust() * 0.1);
+			if (player.findPerk(PerkLib.Enlightened) >= 0 && player.isPureEnough(10)) whiteLustCap += (player.maxLust() * 0.1);
 			if (player.findPerk(PerkLib.FocusedMind) >= 0) whiteLustCap += (player.maxLust() * 0.1);
 			return whiteLustCap;
 		}
@@ -81,32 +84,32 @@ package classes.Scenes.Combat
 			else {
 				if (player.hasStatusEffect(StatusEffects.KnowsCharge)) {
 					if (!player.hasStatusEffect(StatusEffects.ChargeWeapon))
-						addButton(0, "Charge W.", spellChargeWeapon, null, null, null, "The Charge Weapon spell will surround your weapon in electrical energy, causing it to do even more damage.  The effect lasts for the entire combat.  \n\nFatigue Cost: " + player.spellCost(15) + "", "Charge Weapon");
+						addButton(0, "Charge W.", spellChargeWeapon).hint("The Charge Weapon spell will surround your weapon in electrical energy, causing it to do even more damage.  The effect lasts for the entire combat.  \n\nFatigue Cost: " + player.spellCost(15) + "", "Charge Weapon");
 					else outputText("<b>Charge weapon is already active and cannot be cast again.</b>\n\n");
 				}
 				if (player.hasStatusEffect(StatusEffects.KnowsBlind)) {
 					if (!monster.hasStatusEffect(StatusEffects.Blind))
-						addButton(1, "Blind", spellBlind, null, null, null, "Blind is a fairly self-explanatory spell.  It will create a bright flash just in front of the victim's eyes, blinding them for a time.  However if they blink it will be wasted.  \n\nFatigue Cost: " + player.spellCost(20) + "");
+						addButton(1, "Blind", spellBlind).hint("Blind is a fairly self-explanatory spell.  It will create a bright flash just in front of the victim's eyes, blinding them for a time.  However if they blink it will be wasted.  \n\nFatigue Cost: " + player.spellCost(20) + "");
 					else outputText("<b>" + monster.capitalA + monster.short + " is already affected by blind.</b>\n\n");
 				}
-				if (player.hasStatusEffect(StatusEffects.KnowsWhitefire)) addButton(2, "Whitefire", spellWhitefire, null, null, null, "Whitefire is a potent fire based attack that will burn your foe with flickering white flames, ignoring their physical toughness and most armors.  \n\nFatigue Cost: " + player.spellCost(30) + "");
+				if (player.hasStatusEffect(StatusEffects.KnowsWhitefire)) addButton(2, "Whitefire", spellWhitefire).hint("Whitefire is a potent fire based attack that will burn your foe with flickering white flames, ignoring their physical toughness and most armors.  \n\nFatigue Cost: " + player.spellCost(30) + "");
 			}
 			//BLACK MAGICSKS
 			if (player.lust < 50)
 				outputText("You aren't turned on enough to use any black magics.\n\n");
 			else {
-				if (player.hasStatusEffect(StatusEffects.KnowsArouse)) addButton(5, "Arouse", spellArouse, null, null, null, "The arouse spell draws on your own inner lust in order to enflame the enemy's passions.  \n\nFatigue Cost: " + player.spellCost(15) + "");
-				if (player.hasStatusEffect(StatusEffects.KnowsHeal)) addButton(6, "Heal", spellHeal, null, null, null, "Heal will attempt to use black magic to close your wounds and restore your body, however like all black magic used on yourself, it has a chance of backfiring and greatly arousing you.  \n\nFatigue Cost: " + player.spellCost(20) + "");
+				if (player.hasStatusEffect(StatusEffects.KnowsArouse)) addButton(5, "Arouse", spellArouse).hint("The arouse spell draws on your own inner lust in order to enflame the enemy's passions.  \n\nFatigue Cost: " + player.spellCost(15) + "");
+				if (player.hasStatusEffect(StatusEffects.KnowsHeal)) addButton(6, "Heal", spellHeal).hint("Heal will attempt to use black magic to close your wounds and restore your body, however like all black magic used on yourself, it has a chance of backfiring and greatly arousing you.  \n\nFatigue Cost: " + player.spellCost(20) + "");
 				if (player.hasStatusEffect(StatusEffects.KnowsMight)) {
 					if (!player.hasStatusEffect(StatusEffects.Might))
-						addButton(7, "Might", spellMight, null, null, null, "The Might spell draws upon your lust and uses it to fuel a temporary increase in muscle size and power.  It does carry the risk of backfiring and raising lust, like all black magic used on oneself.  \n\nFatigue Cost: " + player.spellCost(25) + "");
+						addButton(7, "Might", spellMight).hint("The Might spell draws upon your lust and uses it to fuel a temporary increase in muscle size and power.  It does carry the risk of backfiring and raising lust, like all black magic used on oneself.  \n\nFatigue Cost: " + player.spellCost(25) + "");
 					else outputText("<b>You are already under the effects of Might and cannot cast it again.</b>\n\n");
 				}
-				if (player.hasStatusEffect(StatusEffects.KnowsBlackfire)) addButton(8, "Blackfire", spellBlackfire, null, null, null, "Blackfire is the black magic variant of Whitefire. It is a potent fire based attack that will burn your foe with flickering black and purple flames, ignoring their physical toughness and most armors.\n\nFatigue Cost: " + player.spellCost(40) + "");
+				if (player.hasStatusEffect(StatusEffects.KnowsBlackfire)) addButton(8, "Blackfire", spellBlackfire).hint("Blackfire is the black magic variant of Whitefire. It is a potent fire based attack that will burn your foe with flickering black and purple flames, ignoring their physical toughness and most armors.\n\nFatigue Cost: " + player.spellCost(40) + "");
 			}
 			// JOJO ABILITIES -- kind makes sense to stuff it in here along side the white magic shit (also because it can't fit into M. Specials :|
-			if (player.findPerk(PerkLib.CleansingPalm) >= 0 && player.cor < (10 + player.corruptionTolerance())) {
-				addButton(3, "C.Palm", spellCleansingPalm, null, null, null, "Unleash the power of your cleansing aura! More effective against corrupted opponents. Doesn't work on the pure.  \n\nFatigue Cost: " + player.spellCost(30) + "", "Cleansing Palm");
+			if (player.findPerk(PerkLib.CleansingPalm) >= 0 && player.isPureEnough(10)) {
+				addButton(3, "C.Palm", spellCleansingPalm).hint("Unleash the power of your cleansing aura! More effective against corrupted opponents. Doesn't work on the pure.  \n\nFatigue Cost: " + player.spellCost(30) + "", "Cleansing Palm");
 			}
 			addButton(14, "Back", combat.combatMenu, false);
 		}
@@ -295,10 +298,10 @@ package classes.Scenes.Combat
 			temp = calcInfernoMod(temp);
 			if (monster.short == "goo-girl") temp = Math.round(temp * 1.5);
 			if (monster.short == "tentacle beast") temp = Math.round(temp * 1.2);
-			outputText(monster.capitalA + monster.short + " takes <b><font color=\"#800000\">" + temp + "</font></b> damage.");
+			outputText(monster.capitalA + monster.short + " takes <b><font color=\"" + mainViewManager.colorHpMinus() + "\">" + temp + "</font></b> damage.");
 			//Using fire attacks on the goo]
 			if (monster.short == "goo-girl") {
-				outputText("  Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skinTone + " skin has lost some of its shimmer.");
+				outputText("  Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skin.tone + " skin has lost some of its shimmer.");
 				if (monster.findPerk(PerkLib.Acid) < 0) monster.createPerk(PerkLib.Acid,0,0,0,0);
 			}
 			if (monster.short == "Holli" && !monster.hasStatusEffect(StatusEffects.HolliBurning)) (monster as Holli).lightHolliOnFireMagically();
@@ -375,18 +378,18 @@ package classes.Scenes.Combat
 			}
 			if (monster.vaginas.length > 0) {
 				if (monster.plural) {
-					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VAGINA_WETNESS_NORMAL) outputText(monster.capitalA + monster.short + "'s " + monster.vaginaDescript() + "s dampen perceptibly.  ");
-					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VAGINA_WETNESS_WET) outputText(monster.capitalA + monster.short + "'s crotches become sticky with girl-lust.  ");
-					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VAGINA_WETNESS_SLICK) outputText(monster.capitalA + monster.short + "'s " + monster.vaginaDescript() + "s become sloppy and wet.  ");
-					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VAGINA_WETNESS_DROOLING) outputText("Thick runners of girl-lube stream down the insides of " + monster.a + monster.short + "'s thighs.  ");
-					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VAGINA_WETNESS_SLAVERING) outputText(monster.capitalA + monster.short + "'s " + monster.vaginaDescript() + "s instantly soak " + monster.pronoun2 + " groin.  ");
+					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_NORMAL) outputText(monster.capitalA + monster.short + "'s " + monster.vaginaDescript() + "s dampen perceptibly.  ");
+					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_WET) outputText(monster.capitalA + monster.short + "'s crotches become sticky with girl-lust.  ");
+					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_SLICK) outputText(monster.capitalA + monster.short + "'s " + monster.vaginaDescript() + "s become sloppy and wet.  ");
+					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_DROOLING) outputText("Thick runners of girl-lube stream down the insides of " + monster.a + monster.short + "'s thighs.  ");
+					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_SLAVERING) outputText(monster.capitalA + monster.short + "'s " + monster.vaginaDescript() + "s instantly soak " + monster.pronoun2 + " groin.  ");
 				}
 				else {
-					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VAGINA_WETNESS_NORMAL) outputText(monster.capitalA + monster.short + "'s " + monster.vaginaDescript() + " dampens perceptibly.  ");
-					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VAGINA_WETNESS_WET) outputText(monster.capitalA + monster.short + "'s crotch becomes sticky with girl-lust.  ");
-					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VAGINA_WETNESS_SLICK) outputText(monster.capitalA + monster.short + "'s " + monster.vaginaDescript() + " becomes sloppy and wet.  ");
-					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VAGINA_WETNESS_DROOLING) outputText("Thick runners of girl-lube stream down the insides of " + monster.a + monster.short + "'s thighs.  ");
-					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VAGINA_WETNESS_SLAVERING) outputText(monster.capitalA + monster.short + "'s " + monster.vaginaDescript() + " instantly soaks her groin.  ");
+					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_NORMAL) outputText(monster.capitalA + monster.short + "'s " + monster.vaginaDescript() + " dampens perceptibly.  ");
+					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_WET) outputText(monster.capitalA + monster.short + "'s crotch becomes sticky with girl-lust.  ");
+					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_SLICK) outputText(monster.capitalA + monster.short + "'s " + monster.vaginaDescript() + " becomes sloppy and wet.  ");
+					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_DROOLING) outputText("Thick runners of girl-lube stream down the insides of " + monster.a + monster.short + "'s thighs.  ");
+					if (monster.lust100 >= 60 && monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_SLAVERING) outputText(monster.capitalA + monster.short + "'s " + monster.vaginaDescript() + " instantly soaks her groin.  ");
 				}
 			}
 			monster.teased(lustDmg);
@@ -449,25 +452,9 @@ package classes.Scenes.Combat
 		//and increasing lust by 15.
 		public function spellMight(silent:Boolean = false):void {
 			
-			var doEffect:Function = function():* {
-				player.createStatusEffect(StatusEffects.Might,0,0,0,0);
-				temp = 10 * player.spellMod();
-				if (temp > 100) temp = 100;
-				tempStr = temp;
-				tempTou = temp;
-				//if (player.str + temp > 100) tempStr = 100 - player.str;
-				//if (player.tou + temp > 100) tempTou = 100 - player.tou;
-				player.changeStatusValue(StatusEffects.Might,1,tempStr);
-				player.changeStatusValue(StatusEffects.Might,2,tempTou);
-				mainView.statsView.showStatUp('str');
-				mainView.statsView.showStatUp('tou');
-				player.str += player.statusEffectv1(StatusEffects.Might);
-				player.tou += player.statusEffectv2(StatusEffects.Might);
-				statScreenRefresh();
-			}
-			
+
 			if (silent)	{ // for Battlemage
-				doEffect.call();
+				player.addStatusEffect(new MightBuff());
 				return;
 			}
 			
@@ -479,8 +466,6 @@ package classes.Scenes.Combat
 			}
 			doNext(combat.combatMenu);
 			player.changeFatigue(25,1);
-			var tempStr:Number = 0;
-			var tempTou:Number = 0;
 			if (monster is FrostGiant && player.hasStatusEffect(StatusEffects.GiantBoulder)) {
 				(monster as FrostGiant).giantBoulderHit(2);
 				monster.doAI();
@@ -504,7 +489,7 @@ package classes.Scenes.Combat
 			}
 			else {
 				outputText("The rush of success and power flows through your body.  You feel like you can do anything!");
-				doEffect.call();
+				player.addStatusEffect(new MightBuff());
 			}
 			outputText("\n\n");
 			flags[kFLAGS.SPELLS_CAST]++;
@@ -571,7 +556,7 @@ package classes.Scenes.Combat
 				outputText(monster.capitalA + monster.short + " takes <b><font color=\"#800000\">" + temp + "</font></b> damage.");
 				//Using fire attacks on goo
 				if (monster.short == "goo-girl") {
-					outputText("  Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skinTone + " skin has lost some of its shimmer.");
+					outputText("  Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skin.tone + " skin has lost some of its shimmer.");
 					if (monster.findPerk(PerkLib.Acid) < 0) monster.createPerk(PerkLib.Acid,0,0,0,0);
 				}
 				if (monster.short == "Holli" && !monster.hasStatusEffect(StatusEffects.HolliBurning)) (monster as Holli).lightHolliOnFireMagically();
@@ -675,15 +660,10 @@ package classes.Scenes.Combat
 			}
 			if (player.hasStatusEffect(StatusEffects.Might)) {
 				outputText("\nYou feel a bit weaker as your strength-enhancing spell wears off.");
-				player.str -= player.statusEffectv1(StatusEffects.Might);
-				player.tou -= player.statusEffectv2(StatusEffects.Might);
 				player.removeStatusEffect(StatusEffects.Might);
-				showStatDown("str");
-				showStatDown("tou");
-				statScreenRefresh();
 			}
 			//Remove opponent's effects
-				if (player.hasStatusEffect(StatusEffects.ChargeWeapon)) {
+			if (monster.hasStatusEffect(StatusEffects.ChargeWeapon)) {
 				outputText("\nThe glow around " + monster.a + monster.short + "'s " + monster.weaponName + " fades completely.");
 				monster.weaponAttack -= monster.statusEffectv1(StatusEffects.ChargeWeapon);
 				monster.removeStatusEffect(StatusEffects.ChargeWeapon);
@@ -694,17 +674,15 @@ package classes.Scenes.Combat
 				monster.removeStatusEffect(StatusEffects.Fear);
 			}
 			if (monster.hasStatusEffect(StatusEffects.Illusion)) {
-				outputText("\nThe reality around " + monster.a + " " + monster.short + " finally snaps back in place as your illusion spell fades.");
+				outputText("\nThe reality around " + monster.a + " " + monster.short + " finally snaps back in place as " + monster.pronoun3 +" illusion spell fades.");
 				monster.spe += monster.statusEffectv1(StatusEffects.Illusion);
 				monster.removeStatusEffect(StatusEffects.Illusion);
 			}
-
-			if (player.hasStatusEffect(StatusEffects.Might)) {
-				outputText("\nYou feel a bit weaker as your strength-enhancing spell wears off.");
+			if (monster.hasStatusEffect(StatusEffects.Might)) {
+				outputText("\n" + monster.a + monster.short + " feels a bit weaker as " + monster.pronoun3 + " strength-enhancing spell wears off.");
 				monster.str -= monster.statusEffectv1(StatusEffects.Might);
 				monster.tou -= monster.statusEffectv2(StatusEffects.Might);
 				monster.removeStatusEffect(StatusEffects.Might);
-				statScreenRefresh();
 			}
 			if (monster.hasStatusEffect(StatusEffects.Shell)) {
 				outputText("\nThe magical shell around " + monster.a + " " + monster.short + " shatters!");
@@ -732,7 +710,7 @@ package classes.Scenes.Combat
 			temp = combat.doDamage(temp, true, true);
 			monster.createStatusEffect(StatusEffects.OnFire, 2 + rand(player.inte / 25), 0, 0, 0);
 			if (monster.short == "goo girl") {
-				outputText(" Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skinTone + " skin has lost some of its shimmer. ");
+				outputText(" Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skin.tone + " skin has lost some of its shimmer. ");
 				if (monster.findPerk(PerkLib.Acid) < 0) monster.createPerk(PerkLib.Acid,0,0,0,0);
 			}
 			getGame().arianScene.clearTalisman();
@@ -771,41 +749,41 @@ package classes.Scenes.Combat
 			var button:int = 0;
 			//Berserk
 			if (player.findPerk(PerkLib.Berzerker) >= 0) {
-				addButton(button++, "Berserk", berzerk, null, null, null, "Throw yourself into a rage!  Greatly increases the strength of your weapon and increases lust resistance, but your armor defense is reduced to zero!");
+				addButton(button++, "Berserk", berzerk).hint("Throw yourself into a rage!  Greatly increases the strength of your weapon and increases lust resistance, but your armor defense is reduced to zero!");
 			}
 			//Lustzerk
 			if (player.findPerk(PerkLib.Lustzerker) >= 0) {
-				addButton(button++, "Lustserk", lustzerk, null, null, null, "Throw yourself into a lust rage!  Greatly increases the strength of your weapon and increases armor defense, but your lust resistance is halved!");
+				addButton(button++, "Lustserk", lustzerk).hint("Throw yourself into a lust rage!  Greatly increases the strength of your weapon and increases armor defense, but your lust resistance is halved!");
 			}
 			//Fire Breath
 			if (player.findPerk(PerkLib.Dragonfire) >= 0) {
-				addButton(button++, "DragonFire", dragonBreath, null, null, null, "Unleash fire from your mouth. This can only be done once a day. \n\nFatigue Cost: " + player.spellCost(20), "Dragon Fire");
+				addButton(button++, "DragonFire", dragonBreath).hint("Unleash fire from your mouth. This can only be done once a day. \n\nFatigue Cost: " + player.spellCost(20), "Dragon Fire");
 			}
 			if (player.findPerk(PerkLib.FireLord) >= 0) {
-				addButton(button++, "Terra Fire", fireballuuuuu, null, null, null, "Unleash terrestrial fire from your mouth. \n\nFatigue Cost: 20", "Terra Fire");
+				addButton(button++, "Terra Fire", fireballuuuuu).hint("Unleash terrestrial fire from your mouth. \n\nFatigue Cost: 20", "Terra Fire");
 			}
 			if (player.findPerk(PerkLib.Hellfire) >= 0) {
-				addButton(button++, "Hellfire", hellFire, null, null, null, "Unleash fire from your mouth. \n\nFatigue Cost: " + player.spellCost(20));
+				addButton(button++, "Hellfire", hellFire).hint("Unleash fire from your mouth. \n\nFatigue Cost: " + player.spellCost(20));
 			}
 			//Possess
 			if (player.findPerk(PerkLib.Incorporeality) >= 0) {
-				addButton(button++, "Possess", possess, null, null, null, "Attempt to temporarily possess a foe and force them to raise their own lusts.");
+				addButton(button++, "Possess", possess).hint("Attempt to temporarily possess a foe and force them to raise their own lusts.");
 			}
 			//Whisper
 			if (player.findPerk(PerkLib.Whispered) >= 0) {
-				addButton(button++, "Whisper", superWhisperAttack, null, null, null, "Whisper and induce fear in your opponent. \n\nFatigue Cost: " + player.spellCost(10) + "");
+				addButton(button++, "Whisper", superWhisperAttack).hint("Whisper and induce fear in your opponent. \n\nFatigue Cost: " + player.spellCost(10) + "");
 			}
 			//Kitsune Spells
 			if (player.findPerk(PerkLib.CorruptedNinetails) >= 0) {
-				addButton(button++, "C.FoxFire", corruptedFoxFire, null, null, null, "Unleash a corrupted purple flame at your opponent for high damage. Less effective against corrupted enemies. \n\nFatigue Cost: " + player.spellCost(35), "Corrupted FoxFire");
-				addButton(button++, "Terror", kitsuneTerror, null, null, null, "Instill fear into your opponent with eldritch horrors. The more you cast this in a battle, the lesser effective it becomes. \n\nFatigue Cost: " + player.spellCost(20));
+				addButton(button++, "C.FoxFire", corruptedFoxFire).hint("Unleash a corrupted purple flame at your opponent for high damage. Less effective against corrupted enemies. \n\nFatigue Cost: " + player.spellCost(35), "Corrupted FoxFire");
+				addButton(button++, "Terror", kitsuneTerror).hint("Instill fear into your opponent with eldritch horrors. The more you cast this in a battle, the lesser effective it becomes. \n\nFatigue Cost: " + player.spellCost(20));
 			}
 			if (player.findPerk(PerkLib.EnlightenedNinetails) >= 0) {
-				addButton(button++, "FoxFire", foxFire, null, null, null, "Unleash an ethereal blue flame at your opponent for high damage. More effective against corrupted enemies. \n\nFatigue Cost: " + player.spellCost(35));
-				addButton(button++, "Illusion", kitsuneIllusion, null, null, null, "Warp the reality around your opponent, lowering their speed. The more you cast this in a battle, the lesser effective it becomes. \n\nFatigue Cost: " + player.spellCost(25));
+				addButton(button++, "FoxFire", foxFire).hint("Unleash an ethereal blue flame at your opponent for high damage. More effective against corrupted enemies. \n\nFatigue Cost: " + player.spellCost(35));
+				addButton(button++, "Illusion", kitsuneIllusion).hint("Warp the reality around your opponent, lowering their speed. The more you cast this in a battle, the lesser effective it becomes. \n\nFatigue Cost: " + player.spellCost(25));
 			}
 			if (player.canUseStare()) {
-				addButton(button++, "Stare", paralyzingStare, null, null, null, "Focus your gaze at your opponent, lowering their speed. The more you use this in a battle, the lesser effective it becomes. \n\nFatigue Cost: " + player.spellCost(20));
+				addButton(button++, "Stare", paralyzingStare).hint("Focus your gaze at your opponent, lowering their speed. The more you use this in a battle, the lesser effective it becomes. \n\nFatigue Cost: " + player.spellCost(20));
 			}
 			if (player.hasKeyItem("Arian's Charged Talisman") >= 0) {
 				if (player.keyItemv1("Arian's Charged Talisman") == 1) addButton(button++, "Dispel", dispellingSpell);
@@ -920,7 +898,7 @@ package classes.Scenes.Combat
 			}
 			//Goos burn
 			else if (monster.short == "goo-girl") {
-				outputText(" Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skinTone + " skin has lost some of its shimmer. ");
+				outputText(" Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skin.tone + " skin has lost some of its shimmer. ");
 				if (monster.findPerk(PerkLib.Acid) < 0) monster.createPerk(PerkLib.Acid,0,0,0,0);
 				damage = Math.round(damage * 1.5);
 				damage = combat.doDamage(damage);
@@ -1037,7 +1015,7 @@ package classes.Scenes.Combat
 			else {
 				//Using fire attacks on the goo]
 				if (monster.short == "goo-girl") {
-					outputText(" Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skinTone + " skin has lost some of its shimmer. ");
+					outputText(" Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skin.tone + " skin has lost some of its shimmer. ");
 					if (monster.findPerk(PerkLib.Acid) < 0) monster.createPerk(PerkLib.Acid,0,0,0,0);
 					damage = Math.round(damage * 1.5);
 				}
@@ -1265,7 +1243,7 @@ package classes.Scenes.Combat
 			if (monster.short == "goo-girl") temp = Math.round(temp * 1.5);
 			//Using fire attacks on the goo]
 			if (monster.short == "goo-girl") {
-				outputText("Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skinTone + " skin has lost some of its shimmer.  ");
+				outputText("Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skin.tone + " skin has lost some of its shimmer.  ");
 				if (monster.findPerk(PerkLib.Acid) < 0) monster.createPerk(PerkLib.Acid,0,0,0,0);
 			}
 			dmg = combat.doDamage(dmg, true, true);
@@ -1311,7 +1289,7 @@ package classes.Scenes.Combat
 			if (monster.short == "goo-girl") temp = Math.round(temp * 1.5);
 			//Using fire attacks on the goo]
 			if (monster.short == "goo-girl") {
-				outputText("Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skinTone + " skin has lost some of its shimmer.  ");
+				outputText("Your flames lick the girl's body and she opens her mouth in pained protest as you evaporate much of her moisture. When the fire passes, she seems a bit smaller and her slimy " + monster.skin.tone + " skin has lost some of its shimmer.  ");
 				if (monster.findPerk(PerkLib.Acid) < 0) monster.createPerk(PerkLib.Acid,0,0,0,0);
 			}
 			dmg = combat.doDamage(dmg, true, true);
@@ -1422,13 +1400,14 @@ package classes.Scenes.Combat
 		//Stare
 		public function paralyzingStare():void
 		{
-			var theMonster:String = monster.a + monster.short;
-			var TheMonster:String = monster.capitalA + monster.short;
-			var stareTraining:Number = flags[kFLAGS.BASILISK_RESISTANCE_TRACKER] / 100;
-			var slowEffect:Number = monster.statusEffectv1(StatusEffects.BasiliskSlow);
-			var oldSpeed:Number = monster.spe;
-			var speedDiff:int = 0;
-			var message:String = "";
+			var theMonster:String      = monster.a + monster.short;
+			var TheMonster:String      = monster.capitalA + monster.short;
+			var stareTraining:Number   = flags[kFLAGS.BASILISK_RESISTANCE_TRACKER] / 100;
+			var bse:BasiliskSlowDebuff = monster.createOrFindStatusEffect(StatusEffects.BasiliskSlow) as BasiliskSlowDebuff;
+			var slowEffect:Number      = -bse.buffValue('spe');
+			var oldSpeed:Number        = monster.spe;
+			var speedDiff:int          = 0;
+			var message:String         = "";
 			if (stareTraining > 1) stareTraining = 1;
 
 			output.clear();
@@ -1456,16 +1435,14 @@ package classes.Scenes.Combat
 				return;
 			}
 			if (monster.findPerk(PerkLib.BasiliskResistance) >= 0) {
-				output.text("You attempt to apply your paralyzing stare at " + theMonster + ", but you soon realize, that " + monster.pronoun1
-				           +" is immune to your eyes, so you quickly back up.\n\n");
+				output.text("You attempt to apply your paralyzing stare at " + theMonster + ", but you soon realize, that " + monster.pronoun1 + " is immune to your eyes, so you quickly back up.\n\n");
 				player.changeFatigue(10, 1);
 				monster.doAI();
 				return;
 			}
 			player.changeFatigue(20, 1);
 			if (monster.hasStatusEffect(StatusEffects.Shell)) {
-				output.text("As soon as your magic touches the multicolored shell around " + theMonster + ", it sizzles and fades to nothing."
-				           +"  Whatever that thing is, it completely blocks your magic!\n\n");
+				output.text("As soon as your magic touches the multicolored shell around " + theMonster + ", it sizzles and fades to nothing. Whatever that thing is, it completely blocks your magic!\n\n");
 				monster.doAI();
 				return;
 			}
@@ -1481,13 +1458,8 @@ package classes.Scenes.Combat
 				        + monster.pronoun3 + " thoughts, making " + monster.pronoun2 + " feel sluggish and unable to coordinate. Something about the"
 				        + " helplessness of it feels so good... " + monster.pronoun1 + " can't banish the feeling that really, " + monster.pronoun1
 				        + " wants to look into your eyes forever, for you to have total control over " + monster.pronoun2 + ". ";
-				if (slowEffect > 0)
-					monster.addStatusValue(StatusEffects.BasiliskSlow, 1, 1);
-				else
-					monster.createStatusEffect(StatusEffects.BasiliskSlow, 1, 0, 0, 0);
 				slowEffect++;
-				if (monster.spe > 1) monster.spe -= 16 + stareTraining * 8 - slowEffect * (4 + stareTraining * 2);
-				if (monster.spe < 1) monster.spe = 1;
+				bse.applyEffect(16 + stareTraining * 8 - slowEffect * (4 + stareTraining * 2));
 				flags[kFLAGS.BASILISK_RESISTANCE_TRACKER] += 4;
 				speedDiff = Math.round(oldSpeed - monster.spe);
 				output.text(message + combat.getDamageText(speedDiff) + "\n\n");
@@ -1514,71 +1486,72 @@ package classes.Scenes.Combat
 			}
 			menu();
 			var button:int = 0;
-			if (player.hairType == 4) {
-				addButton(button++, "AnemoneSting", anemoneSting, null, null, null, "Attempt to strike an opponent with the stinging tentacles growing from your scalp.  Reduces enemy speed and increases enemy lust.", "Anemone Sting");
+			//Anemone STINGZ!
+			if (player.hair.type == 4) {
+				addButton(button++, "AnemoneSting", anemoneSting).hint("Attempt to strike an opponent with the stinging tentacles growing from your scalp. Reduces enemy speed and increases enemy lust. \n\nNo Fatigue Cost", "Anemone Sting");
 			}
 			//Bitez
-			if (player.faceType == FACE_SHARK_TEETH) {
-				addButton(button++, "Bite", bite, null, null, null, "Attempt to bite your opponent with your shark-teeth.");
+			if (player.face.type == Face.SHARK_TEETH) {
+				addButton(button++, "Bite", bite).hint("Attempt to bite your opponent with your shark-teeth. \n\nFatigue Cost: " + player.physicalCost(25));
 			}
-			else if (player.faceType == FACE_SNAKE_FANGS) {
-				addButton(button++, "Bite", nagaBiteAttack, null, null, null, "Attempt to bite your opponent and inject venom.");
+			else if (player.face.type == Face.SNAKE_FANGS) {
+				addButton(button++, "Bite", nagaBiteAttack).hint("Attempt to bite your opponent and inject venom. \n\nFatigue Cost: " + player.physicalCost(10));
 			}
-			else if (player.faceType == FACE_SPIDER_FANGS) {
-				addButton(button++, "Bite", spiderBiteAttack, null, null, null, "Attempt to bite your opponent and inject venom.");
+			else if (player.face.type == Face.SPIDER_FANGS) {
+				addButton(button++, "Bite", spiderBiteAttack).hint("Attempt to bite your opponent and inject venom. \n\nFatigue Cost: " + player.physicalCost(10));
 			}
 			//Bow attack
 			if (player.hasKeyItem("Bow") >= 0 || player.hasKeyItem("Kelt's Bow") >= 0) {
-				addButton(button++, "Bow", fireBow, null, null, null, "Use a bow to fire an arrow at your opponent.");
+				addButton(button++, "Bow", fireBow).hint("Use a bow to fire an arrow at your opponent. \n\nFatigue Cost: " + player.physicalCost(25));
 			}
 			//Constrict
-			if (player.lowerBody == LOWER_BODY_TYPE_NAGA) {
-				addButton(button++, "Constrict", getGame().desert.nagaScene.nagaPlayerConstrict, null, null, null, "Attempt to bind an enemy in your long snake-tail.");
+			if (player.lowerBody.type == LowerBody.NAGA) {
+				addButton(button++, "Constrict", getGame().desert.nagaScene.nagaPlayerConstrict).hint("Attempt to bind an enemy in your long snake-tail. \n\nFatigue Cost: " + player.physicalCost(10));
 			}
 			//Kick attackuuuu
-			else if (player.isTaur() || player.lowerBody == LOWER_BODY_TYPE_HOOFED || player.lowerBody == LOWER_BODY_TYPE_BUNNY || player.lowerBody == LOWER_BODY_TYPE_KANGAROO) {
-				addButton(button++, "Kick", kick, null, null, null, "Attempt to kick an enemy using your powerful lower body.");
+			else if (player.isTaur() || player.lowerBody.type == LowerBody.HOOFED || player.lowerBody.type == LowerBody.BUNNY || player.lowerBody.type == LowerBody.KANGAROO) {
+				addButton(button++, "Kick", kick).hint("Attempt to kick an enemy using your powerful lower body. \n\nFatigue Cost: " + player.physicalCost(15));
 			}
 			//Gore if mino horns
-			if (player.hornType == HORNS_COW_MINOTAUR && player.horns >= 6) {
-				addButton(button++, "Gore", goreAttack, null, null, null, "Lower your head and charge your opponent, attempting to gore them on your horns.  This attack is stronger and easier to land with large horns.");
+			if (player.horns.type == Horns.COW_MINOTAUR && player.horns.value >= 6) {
+				addButton(button++, "Gore", goreAttack).hint("Lower your head and charge your opponent, attempting to gore them on your horns. This attack is stronger and easier to land with large horns. \n\nFatigue Cost: " + player.physicalCost(15));
 			}
 			//Rams Attack - requires rams horns
-			if (player.hornType == HORNS_RAM && player.horns >= 2) {
-				addButton(button++, "Horn Stun", ramsStun, null, null, null, "Use a ramming headbutt to try and stun your foe. \n\nFatigue Cost: " + player.physicalCost(10) + "");
+			if (player.horns.type == Horns.RAM && player.horns.value >= 2) {
+				addButton(button++, "Horn Stun", ramsStun).hint("Use a ramming headbutt to try and stun your foe. \n\nFatigue Cost: " + player.physicalCost(10));
 			}
 			//Upheaval - requires rhino horn
-			if (player.hornType == HORNS_RHINO && player.horns >= 2 && player.faceType == FACE_RHINO) {
-				addButton(button++, "Upheaval", upheavalAttack, null, null, null, "Send your foe flying with your dual nose mounted horns. \n\nFatigue Cost: " + player.physicalCost(15) + "");
+			if (player.horns.type == Horns.RHINO && player.horns.value >= 2 && player.face.type == Face.RHINO) {
+				addButton(button++, "Upheaval", upheavalAttack).hint("Send your foe flying with your dual nose mounted horns. \n\nFatigue Cost: " + player.physicalCost(15));
 			}
 			//Infest if infested
 			if (player.hasStatusEffect(StatusEffects.Infested) && player.statusEffectv1(StatusEffects.Infested) == 5 && player.hasCock()) {
-				addButton(button++, "Infest", getGame().mountain.wormsScene.playerInfest, null, null, null, "The infest attack allows you to cum at will, launching a stream of semen and worms at your opponent in order to infest them.  Unless your foe is very aroused they are likely to simply avoid it.  Only works on males or herms. \n\nAlso great for reducing your lust.");
+				addButton(button++, "Infest", getGame().mountain.wormsScene.playerInfest).hint("The infest attack allows you to cum at will, launching a stream of semen and worms at your opponent in order to infest them. Unless your foe is very aroused they are likely to simply avoid it. Only works on males or herms. \n\nAlso great for reducing your lust. \n\nFatigue Cost: " + player.physicalCost(40));
 			}
 			//Kiss supercedes bite.
 			if (player.hasStatusEffect(StatusEffects.LustStickApplied)) {
-				addButton(button++, "Kiss", kissAttack, null, null, null, "Attempt to kiss your foe on the lips with drugged lipstick.  It has no effect on those without a penis.");
+				addButton(button++, "Kiss", kissAttack).hint("Attempt to kiss your foe on the lips with drugged lipstick. It has no effect on those without a penis. \n\nNo Fatigue Cost");
 			}
-			switch (player.tailType) {
-				case TAIL_TYPE_BEE_ABDOMEN:
-					addButton(button++, "Sting", playerStinger, null, null, null, "Attempt to use your venomous bee stinger on an enemy.  Be aware it takes quite a while for your venom to build up, so depending on your abdomen's refractory period, you may have to wait quite a while between stings.  \n\nVenom: " + Math.floor(player.tailVenom) + "/100");
+			switch (player.tail.type) {
+				case Tail.BEE_ABDOMEN:
+					addButton(button++, "Sting", playerStinger).hint("Attempt to use your venomous bee stinger on an enemy.  Be aware it takes quite a while for your venom to build up, so depending on your abdomen's refractory period, you may have to wait quite a while between stings.  \n\nVenom: " + Math.floor(player.tail.venom) + "/100");
 					break;
-				case TAIL_TYPE_SPIDER_ADBOMEN:
-					addButton(button++, "Web", PCWebAttack, null, null, null, "Attempt to use your abdomen to spray sticky webs at an enemy and greatly slow them down.  Be aware it takes a while for your webbing to build up.  \n\nWeb Amount: " + Math.floor(player.tailVenom) + "/100");
+				case Tail.SPIDER_ABDOMEN:
+					addButton(button++, "Web", PCWebAttack).hint("Attempt to use your abdomen to spray sticky webs at an enemy and greatly slow them down.  Be aware it takes a while for your webbing to build up.  \n\nWeb Amount: " + Math.floor(player.tail.venom) + "/100");
 					break;
-				case TAIL_TYPE_SALAMANDER:
-					addButton(button++, "Tail Slap", tailSlapAttack, null, null, null, "Set your tail ablaze in red-hot flames to whip your foe with it to hurt and burn them!");
+				case Tail.SALAMANDER:
+					addButton(button++, "Tail Slap", tailSlapAttack).hint("Set your tail ablaze in red-hot flames to whip your foe with it to hurt and burn them! \n\nFatigue Cost: " + player.physicalCost(30));
 					//break;
-				case TAIL_TYPE_SHARK:
-				case TAIL_TYPE_LIZARD:
-				case TAIL_TYPE_KANGAROO:
-				case TAIL_TYPE_DRACONIC:
-				case TAIL_TYPE_RACCOON:
-					addButton(button++, "Tail Whip", tailWhipAttack, null, null, null, "Whip your foe with your tail to enrage them and lower their defense!");
+				case Tail.SHARK:
+				case Tail.LIZARD:
+				case Tail.KANGAROO:
+				case Tail.DRACONIC:
+				case Tail.RACCOON:
+					addButton(button++, "Tail Whip", tailWhipAttack).hint("Whip your foe with your tail to enrage them and lower their defense! \n\nFatigue Cost: " + player.physicalCost(15));
 				default:
 			}
 			if (player.shield != ShieldLib.NOTHING) {
-				addButton(button++, "Shield Bash", shieldBash, null, null, null, "Bash your opponent with a shield. Has a chance to stun. Bypasses stun immunity. \n\nThe more you stun your opponent, the harder it is to stun them again.");
+				addButton(button++, "Shield Bash", shieldBash).hint("Bash your opponent with a shield. Has a chance to stun. Bypasses stun immunity. \n\nThe more you stun your opponent, the harder it is to stun them again. \n\nFatigue Cost: " + player.physicalCost(20));
 			}
 			addButton(14, "Back", combat.combatMenu, false);
 		}
@@ -1592,7 +1565,7 @@ package classes.Scenes.Combat
 			//Decreased by 1% for every inch of hair the PC has
 			var prob:Number = 70;
 			if (monster.spe > player.spe) prob -= monster.spe - player.spe;
-			prob += player.hairLength;
+			prob += player.hair.length;
 			if (prob < rand(100)) {
 				//-miss a sting
 				if (monster.plural) outputText("You rush " + monster.a + monster.short + ", whipping your hair around to catch them with your tentacles, but " + monster.pronoun1 + " easily dodge.  Oy, you hope you didn't just give yourself whiplash.");
@@ -1609,9 +1582,9 @@ package classes.Scenes.Combat
 				//Each sting does 5-10 lust damage and 2.5-5 speed damage
 				var damage:Number = 0;
 				temp = 1 + rand(2);
-				if (player.hairLength >= 12) temp += 1 + rand(2);
-				if (player.hairLength >= 24) temp += 1 + rand(2);
-				if (player.hairLength >= 36) temp += 1;
+				if (player.hair.length >= 12) temp += 1 + rand(2);
+				if (player.hair.length >= 24) temp += 1 + rand(2);
+				if (player.hair.length >= 36) temp += 1;
 				while(temp > 0) {
 					temp--;
 					damage += 5 + rand(6);
@@ -1620,7 +1593,7 @@ package classes.Scenes.Combat
 				monster.spe -= damage/2;
 				damage = monster.lustVuln * damage;
 				//Clean up down to 1 decimal point
-				damage = Math.round(damage*10)/10;		
+				damage = round(damage,1);
 				monster.teased(damage);
 			}
 			//New lines and moving on!
@@ -1872,7 +1845,7 @@ package classes.Scenes.Combat
 				return;
 			}
 			//[Bow Response]
-			if (monster.short == "Isabella") {
+			if (monster.short == "Isabella" && !monster.hasStatusEffect(StatusEffects.Stunned)) {
 				if (monster.hasStatusEffect(StatusEffects.Blind))
 					outputText("Isabella hears the shot and turns her shield towards it, completely blocking it with her wall of steel.\n\n");
 				else outputText("You arrow thunks into Isabella's shield, completely blocked by the wall of steel.\n\n");
@@ -1955,16 +1928,16 @@ package classes.Scenes.Combat
 			}
 			player.changeFatigue(15,2);
 			//Variant start messages!
-			if (player.lowerBody == LOWER_BODY_TYPE_KANGAROO) {
+			if (player.lowerBody.type == LowerBody.KANGAROO) {
 				//(tail)
-				if (player.tailType == TAIL_TYPE_KANGAROO) outputText("You balance on your flexible kangaroo-tail, pulling both legs up before slamming them forward simultaneously in a brutal kick.  ");
+				if (player.tail.type == Tail.KANGAROO) outputText("You balance on your flexible kangaroo-tail, pulling both legs up before slamming them forward simultaneously in a brutal kick.  ");
 				//(no tail) 
 				else outputText("You balance on one leg and cock your powerful, kangaroo-like leg before you slam it forward in a kick.  ");
 			}
 			//(bunbun kick) 
-			else if (player.lowerBody == LOWER_BODY_TYPE_BUNNY) outputText("You leap straight into the air and lash out with both your furred feet simultaneously, slamming forward in a strong kick.  ");
+			else if (player.lowerBody.type == LowerBody.BUNNY) outputText("You leap straight into the air and lash out with both your furred feet simultaneously, slamming forward in a strong kick.  ");
 			//(centaur kick)
-			else if (player.lowerBody == LOWER_BODY_TYPE_HOOFED || player.lowerBody == LOWER_BODY_TYPE_PONY || player.lowerBody == LOWER_BODY_TYPE_CLOVEN_HOOFED)
+			else if (player.lowerBody.type == LowerBody.HOOFED || player.lowerBody.type == LowerBody.PONY || player.lowerBody.type == LowerBody.CLOVEN_HOOFED)
 				if (player.isTaur()) outputText("You lurch up onto your backlegs, lifting your forelegs from the ground a split-second before you lash them out in a vicious kick.  ");
 				//(bipedal hoof-kick) 
 				else outputText("You twist and lurch as you raise a leg and slam your hoof forward in a kick.  ");
@@ -2023,10 +1996,10 @@ package classes.Scenes.Combat
 			damage = player.str;
 			//Leg bonus
 			//Bunny - 20, Kangaroo - 35, 1 hoof = 30, 2 hooves = 40
-			if (player.lowerBody == LOWER_BODY_TYPE_HOOFED || player.lowerBody == LOWER_BODY_TYPE_PONY || player.lowerBody == LOWER_BODY_TYPE_CLOVEN_HOOFED)
+			if (player.lowerBody.type == LowerBody.HOOFED || player.lowerBody.type == LowerBody.PONY || player.lowerBody.type == LowerBody.CLOVEN_HOOFED)
 				damage += 30;
-			else if (player.lowerBody == LOWER_BODY_TYPE_BUNNY) damage += 20;
-			else if (player.lowerBody == LOWER_BODY_TYPE_KANGAROO) damage += 35;
+			else if (player.lowerBody.type == LowerBody.BUNNY) damage += 20;
+			else if (player.lowerBody.type == LowerBody.KANGAROO) damage += 35;
 			if (player.isTaur()) damage += 10;
 			//Damage post processing!
 			if (player.findPerk(PerkLib.HistoryFighter) >= 0) damage *= 1.1;
@@ -2090,15 +2063,15 @@ package classes.Scenes.Combat
 			}
 			//Bigger horns = better success chance.
 			//Small horns - 60% hit
-			if (player.horns >= 6 && player.horns < 12) {
+			if (player.horns.value >= 6 && player.horns.value < 12) {
 				temp = 60;
 			}
 			//bigger horns - 75% hit
-			if (player.horns >= 12 && player.horns < 20) {
+			if (player.horns.value >= 12 && player.horns.value < 20) {
 				temp = 75;
 			}
 			//huge horns - 90% hit
-			if (player.horns >= 20) {
+			if (player.horns.value >= 20) {
 				temp = 80;
 			}
 			//Vala dodgy bitch!
@@ -2111,8 +2084,8 @@ package classes.Scenes.Combat
 			temp += player.spe/2;
 			//Hit & calculation
 			if (temp >= rand(100)) {
-				var horns:Number = player.horns;
-				if (player.horns > 40) player.horns = 40;
+				var horns:Number = player.horns.value;
+				if (player.horns.value > 40) player.horns.value = 40;
 				damage = int(player.str + horns * 2 * (monster.damagePercent() / 100)); //As normal attack + horn length bonus
 				//normal
 				if (rand(4) > 0) {
@@ -2178,7 +2151,7 @@ package classes.Scenes.Combat
 			}
 			if (player.fatigue + player.physicalCost(10) > player.maxFatigue()) {
 				outputText("You're too fatigued to use a charge attack!");
-				doNext(combat.combatMenu);
+				doNext(curry(combat.combatMenu,false));
 				return;
 			}
 			player.changeFatigue(10,2);
@@ -2191,19 +2164,19 @@ package classes.Scenes.Combat
 			}
 			//Bigger horns = better chance of not missing
 			//Tiny horns - 30% hit
-			if (player.horns < 6) {
+			if (player.horns.value < 6) {
 				temp = 30;
 			}
 			//Small horns - 60% hit
-			if (player.horns >= 6 && player.horns < 12) {
+			if (player.horns.value >= 6 && player.horns.value < 12) {
 				temp = 60;
 			}
 			//bigger horns - 75% hit
-			if (player.horns >= 12 && player.horns < 20) {
+			if (player.horns.value >= 12 && player.horns.value < 20) {
 				temp = 75;
 			}
 			//huge horns - 90% hit
-			if (player.horns >= 20) {
+			if (player.horns.value >= 20) {
 				temp = 80;
 			}
 			//Vala, who is a Fuckening
@@ -2241,6 +2214,7 @@ package classes.Scenes.Combat
 				outputText("<b>Your impact also manages to stun " + monster.a + monster.short + "!</b> ");
 				monster.createStatusEffect(StatusEffects.Stunned, 2, 0, 0, 0);
 			}
+				outputText("<b>(<font color=\"" + mainViewManager.colorHpMinus() + "\">" + damage + "</font>)</b>");
 				outputText("\n\n");
 			}
 			//Miss
@@ -2285,19 +2259,7 @@ package classes.Scenes.Combat
 				monster.doAI();
 				return;
 			}
-			//Bigger horns = better success chance.
-			//Small horns - 60% hit
-			if (player.horns >= 6 && player.horns < 12) {
-				temp = 60;
-			}
-			//bigger horns - 75% hit
-			if (player.horns >= 12 && player.horns < 20) {
-				temp = 75;
-			}
-			//huge horns - 90% hit
-			if (player.horns >= 20) {
-				temp = 80;
-			}
+			temp = 80; // Basic chance. Just as minos with fully grown horns.
 			//Vala dodgy bitch!
 			if (monster.short == "Vala") {
 				temp = 20;
@@ -2308,8 +2270,6 @@ package classes.Scenes.Combat
 			temp += player.spe/2;
 			//Hit & calculation
 			if (temp >= rand(100)) {
-				var horns:Number = player.horns;
-				if (player.horns > 40) player.horns = 40;
 				damage = int(player.str + (player.tou / 2) + (player.spe / 2) + (player.level * 2) * 1.2 * (monster.damagePercent() / 100)); //As normal attack + horn length bonus
 				if (damage < 0) damage = 5;
 				//Normal
@@ -2355,7 +2315,7 @@ package classes.Scenes.Combat
 		//Player sting attack
 		public function playerStinger():void {
 			clearOutput();
-			if (player.tailVenom < 33) {
+			if (player.tail.venom < 33) {
 				outputText("You do not have enough venom to sting right now!");
 				doNext(physicalSpecials);
 				return;
@@ -2402,7 +2362,7 @@ package classes.Scenes.Combat
 			//New line before monster attack
 			outputText("\n\n");
 			//Use tail mp
-			player.tailVenom -= 25;
+			player.tail.venom -= 25;
 			//Kick back to main if no damage occured!
 			if (monster.HP > 0 && monster.lust < monster.maxLust()) monster.doAI();
 			else doNext(combat.endLustVictory);
@@ -2411,12 +2371,12 @@ package classes.Scenes.Combat
 		public function PCWebAttack():void {
 			clearOutput();
 			//Keep logic sane if this attack brings victory
-			if (player.tailVenom < 33) {
+			if (player.tail.venom < 33) {
 				outputText("You do not have enough webbing to shoot right now!");
 				doNext(physicalSpecials);
 				return;
 			}
-			player.tailVenom-= 33;
+			player.tail.venom-= 33;
 			//Amily!
 			if (monster.hasStatusEffect(StatusEffects.Concentration)) {
 				outputText("Amily easily glides around your attack thanks to her complete concentration on your movements.\n\n");
@@ -2565,6 +2525,11 @@ package classes.Scenes.Combat
 		//hit
 		public function tailWhipAttack():void {
 			clearOutput();
+			if (player.fatigue + player.physicalCost(10) > player.maxFatigue()) {
+				outputText("You are too tired to perform a tail whip.");
+				doNext(curry(combat.combatMenu,false));
+				return;
+			}
 			//miss
 			if ((player.hasStatusEffect(StatusEffects.Blind) && rand(2) == 0) || (monster.spe - player.spe > 0 && int(Math.random()*(((monster.spe-player.spe)/4)+80)) > 80)) {
 				outputText("Twirling like a top, you swing your tail, but connect with only empty air.");
@@ -2580,14 +2545,20 @@ package classes.Scenes.Combat
 					temp--;
 				}
 				monster.addStatusValue(StatusEffects.CoonWhip,2,2);
-				if (player.tailType == TAIL_TYPE_RACCOON) monster.addStatusValue(StatusEffects.CoonWhip,2,2);
+				if (player.tail.type == Tail.RACCOON) monster.addStatusValue(StatusEffects.CoonWhip,2,2);
 			}
+			player.changeFatigue(15,2);
 			outputText("\n\n");
 			monster.doAI();
 		}
 		
 		public function tailSlapAttack():void {
 			clearOutput();
+			if (player.fatigue + player.physicalCost(30) > player.maxFatigue()) {
+				outputText("You are too tired to perform a tail slap.");
+				doNext(curry(combat.combatMenu,false));
+				return;
+			}
 			outputText("With a simple thought you set your tail ablaze.");
 			//miss
 			if((player.hasStatusEffect(StatusEffects.Blind) && rand(2) == 0) || (monster.spe - player.spe > 0 && int(Math.random()*(((monster.spe-player.spe)/4)+80)) > 80)) {
@@ -2602,7 +2573,7 @@ package classes.Scenes.Combat
 				outputText("  Your tail slams against " + monster.a + monster.short + ", dealing <b><font color=\"#800000\">" + damage + "</font></b> damage! ");
 				combat.checkAchievementDamage(damage);
 			}
-			player.changeFatigue(40,2);
+			player.changeFatigue(30,2);
 			outputText("\n\n");
 			monster.doAI();
 		}

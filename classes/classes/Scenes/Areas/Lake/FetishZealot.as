@@ -1,6 +1,8 @@
 package classes.Scenes.Areas.Lake
 {
 	import classes.*;
+	import classes.BodyParts.Butt;
+	import classes.BodyParts.Hips;
 	import classes.internals.*;
 
 	public class FetishZealot extends Monster
@@ -79,7 +81,7 @@ package classes.Scenes.Areas.Lake
 		//A pirate costume; 
 		if (armorName == PIRATE_CLOTHES) {
 			//You are faced with one of the strangest things you have ever seen in your life.  A stereotypical pirate, who has not replaced his hand with a hook, but rather a collection of sex toys.  You can see at least two dildos, a fleshlight, and numerous other toys that you're incapable of recognizing.
-			outputText("The zealot turns to the side holding his prosthetic towards you and doing something that sends the devices spinning and clicking.  <i>So that's how that would work...<i> you find yourself thinking for a few moments before realizing that he had both distracted and aroused you.");
+			outputText("The zealot turns to the side holding his prosthetic towards you and doing something that sends the devices spinning and clicking.  <i>So that's how that would work...</i> you find yourself thinking for a few moments before realizing that he had both distracted and aroused you.");
 		}
 		//Military attire;
 		if (armorName == MILITARY_CLOTHES) {
@@ -142,8 +144,7 @@ package classes.Scenes.Areas.Lake
 
 		public function FetishZealot()
 		{
-			trace("FetishZealot Constructor!");
-		
+			//trace("FetishZealot Constructor!");
 			this.a = "the ";
 			this.short = "fetish zealot";
 			this.imageName = "fetishzealot";
@@ -151,15 +152,15 @@ package classes.Scenes.Areas.Lake
 			// this.plural = false;
 			this.createCock(7,1.5);
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_LOOSE;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_LOOSE;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,40,0,0,0);
 			this.tallness = 6*12;
-			this.hipRating = HIP_RATING_BOYISH+1;
-			this.buttRating = BUTT_RATING_TIGHT;
-			this.skinTone = "tan";
-			this.hairColor = "black";
-			this.hairLength = 4;
+			this.hips.rating = Hips.RATING_BOYISH+1;
+			this.butt.rating = Butt.RATING_TIGHT;
+			this.skin.tone = "tan";
+			this.hair.color = "black";
+			this.hair.length = 4;
 			initStrTouSpeInte(35, 35, 30, 1);
 			initLibSensCor(75, 80, 90);
 			this.weaponName = "wavy dagger";

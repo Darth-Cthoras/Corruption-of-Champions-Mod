@@ -1,8 +1,12 @@
 package classes.Scenes.NPCs
 {
 	import classes.*;
+	import classes.BodyParts.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.StatusEffects.Combat.AmilyVenomDebuff;
 
-	/**
+/**
 	 * ...
 	 * @author ...
 	 */
@@ -187,25 +191,8 @@ package classes.Scenes.NPCs
 			else {
 				outputText("Amily dashes at you and swipes her knife at you, surprisingly slowly.  You easily dodge the attack; but it was a feint - her other hand tries to strike at you with a poisoned dart. However, she only manages to scratch you, only causing your muscles to grow slightly numb.");
 				//Set status
-				if (!player.hasStatusEffect(StatusEffects.AmilyVenom)) player.createStatusEffect(StatusEffects.AmilyVenom, 0, 0, 0, 0);
-				var poison:Number = 2 + rand(5);
-				while (poison > 0) {
-					poison--;
-					if (player.str >= 2) {
-						player.str--;
-						showStatDown("str");
-						// strDown.visible = true;
-						// strUp.visible = false;
-						player.addStatusValue(StatusEffects.AmilyVenom, 1, 1);
-					}
-					if (player.spe >= 2) {
-						player.spe--;
-						showStatDown("spe");
-						// speDown.visible = true;
-						// speUp.visible = false;
-						player.addStatusValue(StatusEffects.AmilyVenom, 2, 1);
-					}
-				}
+				var venom:AmilyVenomDebuff = player.createOrFindStatusEffect(StatusEffects.AmilyVenom) as AmilyVenomDebuff;
+				venom.increase();
 				//If PC is reduced to 0 Speed and Strength, normal defeat by HP plays.
 				if (player.spe <= 2 && player.str <= 2) {
 					outputText("  You've become so weakened that you can't even make an attempt to defend yourself, and Amily rains blow after blow down upon your helpless form.");
@@ -248,19 +235,19 @@ package classes.Scenes.NPCs
 			this.imageName = "amily";
 			this.long = "You are currently fighting Amily. The mouse-morph is dressed in rags and glares at you in rage, knife in hand. She keeps herself close to the ground, ensuring she can quickly close the distance between you two or run away.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_NORMAL, VAGINA_LOOSENESS_NORMAL);
+			this.createVagina(false, VaginaClass.WETNESS_NORMAL, VaginaClass.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 48, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("C"));
-			this.ass.analLooseness = ANAL_LOOSENESS_VIRGIN;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_VIRGIN;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.tallness = 4*12;
-			this.hipRating = HIP_RATING_AMPLE;
-			this.buttRating = BUTT_RATING_TIGHT;
-			this.skinTone = "tawny";
-			this.skinType = SKIN_TYPE_FUR;
-			//this.skinDesc = Appearance.Appearance.DEFAULT_SKIN_DESCS[SKIN_TYPE_FUR];
-			this.hairColor = "brown";
-			this.hairLength = 5;
+			this.hips.rating = Hips.RATING_AMPLE;
+			this.butt.rating = Butt.RATING_TIGHT;
+			this.skin.tone = "tawny";
+			this.theSkinType = Skin.FUR;
+			//this.skin.desc = Appearance.Appearance.DEFAULT_SKIN_DESCS[Skin.FUR];
+			this.hair.color = "brown";
+			this.hair.length = 5;
 			initStrTouSpeInte(30, 30, 85, 60);
 			initLibSensCor(45, 45, 10);
 			this.weaponName = "knife";

@@ -1,4 +1,4 @@
-package classes 
+﻿package classes 
 {
 	import classes.GlobalFlags.kFLAGS;
 	import classes.GlobalFlags.kGAMECLASS;
@@ -7,12 +7,13 @@ package classes
 	import classes.Scenes.Combat.Combat;
 	import classes.Scenes.Places.Ingnam;
 	import classes.Scenes.Places.Prison;
-	import classes.Scenes.Dungeons.D3.D3;
+	import classes.Scenes.Dungeons.LethicesKeep.LethicesKeep;
 	import classes.Scenes.Inventory;
 	import classes.internals.Utils;
 
 	import coc.model.GameModel;
 	import coc.model.TimeModel;
+	import coc.view.CoCButton;
 	import coc.view.MainView;
 	/**
 	 * Quick hacky method to wrap new content in a class-based structure
@@ -24,9 +25,6 @@ package classes
 	 */
 	public class BaseContent extends Utils
 	{
-		// TODO remove when we have proper enums for this
-		include "../../includes/appearanceDefs.as";
-
 		public function BaseContent()
 		{
 			
@@ -68,8 +66,8 @@ package classes
 			return kGAMECLASS.prison;
 		}
 		
-		protected function get d3():D3 {
-			return kGAMECLASS.d3;
+		protected function get lethicesKeep():LethicesKeep {
+			return kGAMECLASS.lethicesKeep;
 		}
 
 		protected function get combat():Combat
@@ -150,6 +148,15 @@ package classes
 			kGAMECLASS.inRoomedDungeonResume = v;
 		}
 
+		protected function get inRoomedDungeonName():String
+		{
+			return kGAMECLASS.inRoomedDungeonName;
+		}
+		protected function set inRoomedDungeonName(v:String):void
+		{
+			kGAMECLASS.inRoomedDungeonName = v;
+		}
+		
 		/**
 		 * Displays the sprite on the lower-left corner.
 		 * Can accept frame index or SpriteDb.s_xxx (class extends Bitmap)
@@ -239,6 +246,12 @@ package classes
 			kGAMECLASS.doNext(eventNo);
 		}
 		
+		/**
+		 * Hides all bottom buttons.
+		 * 
+		 * <b>Note:</b> Calling this with open formatting tags can result in strange behaviour, 
+		 * e.g. all text will be formatted instead of only a section.
+		 */
 		protected function menu():void
 		{
 			kGAMECLASS.menu();
@@ -297,29 +310,27 @@ package classes
 			kGAMECLASS.doYesNo(eventYes, eventNo);
 		}
 
-		protected function addButton(pos:int, text:String = "", func1:Function = null, arg1:* = -9000, arg2:* = -9000, arg3:* = -9000, toolTipText:String = "", toolTipHeader:String = ""):void
+		protected function addButton(pos:int, text:String = "", func1:Function = null, arg1:* = -9000, arg2:* = -9000, arg3:* = -9000, toolTipText:String = "", toolTipHeader:String = ""):CoCButton
 		{
-			kGAMECLASS.addButton(pos, text, func1, arg1, arg2, arg3, toolTipText, toolTipHeader);
+			return kGAMECLASS.addButton(pos, text, func1, arg1, arg2, arg3, toolTipText, toolTipHeader);
 		}
 		
-		protected function addButtonDisabled(pos:int, text:String = "", toolTipText:String = "", toolTipHeader:String = ""):void
+		protected function addButtonDisabled(pos:int, text:String = "", toolTipText:String = "", toolTipHeader:String = ""):CoCButton
 		{
-			kGAMECLASS.addButtonDisabled(pos, text, toolTipText, toolTipHeader);
+			return kGAMECLASS.addButtonDisabled(pos, text, toolTipText, toolTipHeader);
 		}
-		
-		protected function addDisabledButton(pos:int, text:String = "", toolTipText:String = "", toolTipHeader:String = ""):void
+		protected function addDisabledButton(pos:int, text:String = "", toolTipText:String = "", toolTipHeader:String = ""):CoCButton
 		{
-			kGAMECLASS.addButtonDisabled(pos, text, toolTipText, toolTipHeader);
+			return kGAMECLASS.addButtonDisabled(pos, text, toolTipText, toolTipHeader);
+		}
+		protected function button(pos:int):CoCButton
+		{
+			return kGAMECLASS.button(pos);
 		}
 		
 		protected function removeButton(arg:*):void
 		{
 			kGAMECLASS.removeButton(arg);
-		}
-
-		protected function hasButton(arg:*):Boolean
-		{
-			return kGAMECLASS.hasButton(arg);
 		}
 		
 		protected function openURL(url:String):void{
@@ -340,11 +351,12 @@ package classes
 		 *     will add 1 to str, subtract 2 from tou, increase spe by 10%, decrease int by 50%, and set cor to 0
 		 * 
 		 * @param	... args
+		 * @return Object of (newStat-oldStat) with keys str, tou, spe, int, lib, sen, lus, cor
 		 */
-		protected function dynStats(... args):void
+		protected function dynStats(... args):Object
 		{
 			// Bullshit to unroll the incoming array
-			kGAMECLASS.dynStats.apply(null, args);
+			return kGAMECLASS.dynStats.apply(null, args);
 		}
 
 		protected function silly():Boolean
@@ -504,12 +516,12 @@ package classes
 		{
 			return kGAMECLASS.mainView;
 		}
-		
-		protected function set mainView(val:*):void
+
+		protected function get mainViewManager():MainViewManager
 		{
-			kGAMECLASS.mainView = val;
+			return kGAMECLASS.mainViewManager;
 		}
-		
+
 		protected function get model():GameModel
 		{
 			return kGAMECLASS.model;

@@ -1,38 +1,31 @@
-package classes 
+package classes
 {
 
 	import classes.GlobalFlags.*;
 	import classes.Scenes.Achievements;
 	import coc.view.MainView;
-	
+
 	public class MainMenu extends BaseContent
 	{
-		
+
 		public function MainMenu() {}
-		
+
 		//------------
 		// MAIN MENU
 		//------------
 		//MainMenu - kicks player out to the main menu
-		public function mainMenu():void 
+		public function mainMenu():void
 		{
-			kGAMECLASS.stage.focus = (kGAMECLASS.mainView as MainView).mainText;
-			
-			if (CONFIG::debug)
-				CoC_Settings.debugBuild = true;
-			else
-				CoC_Settings.debugBuild = false;
+			kGAMECLASS.stage.focus = kGAMECLASS.mainView.mainText;
 
-			if (mainView.aCb.parent != null)
+			/*if (mainView.aCb.parent != null)
 			{
 				mainView.removeChild(mainView.aCb);
-			}
+			}*/
 			kGAMECLASS.mainViewManager.registerShiftKeys();
 			kGAMECLASS.mainView.eventTestInput.x = -10207.5;
 			kGAMECLASS.mainView.eventTestInput.y = -1055.1;
 			hideStats();
-			kGAMECLASS.mainView.background.gotoAndStop(flags[kFLAGS.BACKGROUND_STYLE] + 1);
-			kGAMECLASS.mainView.sideBarBG.gotoAndStop(flags[kFLAGS.BACKGROUND_STYLE] + 1);
 			kGAMECLASS.mainViewManager.startUpButtons();
 			kGAMECLASS.saves.loadPermObject();
 			kGAMECLASS.mainViewManager.setTheme();
@@ -41,23 +34,18 @@ package classes
 			mainView.hideAllMenuButtons();
 			mainView.showMenuButton(MainView.MENU_NEW_MAIN);
 			mainView.showMenuButton(MainView.MENU_DATA);
-			
-			mainView.newGameButton.toolTipText = "Start a new game.";
-			mainView.dataButton.toolTipHeader = "New Game";
-			mainView.dataButton.toolTipText = "Save or load your files.";
-			mainView.dataButton.toolTipHeader = "Data";
-			mainView.statsButton.toolTipText = "View your stats.";
-			mainView.statsButton.toolTipHeader = "Stats";
-			mainView.perksButton.toolTipText = "View your perks.";
-			mainView.perksButton.toolTipHeader = "Perks";
-			mainView.appearanceButton.toolTipText = "View your appearance.";
-			mainView.appearanceButton.toolTipHeader = "Appearance";
+
+			mainView.newGameButton.hint("Start a new game.","New Game");
+			mainView.dataButton.hint("Save or load your files.","Data");
+			mainView.statsButton.hint("View your stats.","Stats");
+			mainView.perksButton.hint("View your perks.","Perks");
+			mainView.appearanceButton.hint("View your appearance.","Appearance");
 			//Sets game state to 3, used for determining back functionality of save/load menu.
 			kGAMECLASS.gameStateDirectSet(3);
 			clearOutput();
 			//outputText("<img src=\"logo\" id=\"coc-logo\" height=\"300\" width=\"400\" />\n");
 			outputText("<b>Corruption of Champions (" + kGAMECLASS.version + ")</b>");
-			
+
 			if (CoC_Settings.debugBuild)
 				outputText(" Debug Build");
 			else
@@ -71,18 +59,18 @@ package classes
 			// Therefore, the imageCreditScreen will just have to say "No image pack" if you don't have any images
 
 			menu();
-			if (player.str > 0) addButton(0, "Resume", playerMenu, null, null, null, "Get back to gameplay?");
+			if (player.str > 0) addButton(0, "Resume", playerMenu).hint("Get back to gameplay?");
 			else addButtonDisabled(0, "Resume", "Please start or load a game first.");
-			addButton(1, "Settings", kGAMECLASS.gameSettings.settingsScreenMain, null, null, null, "Configure game settings and enable cheats.");
-			addButton(2, "Instructions", howToPlay, null, null, null, "How to play.  Starting tips.  And hotkeys for easy left-handed play...");
-			addButton(3, "Achievements", kGAMECLASS.achievementList.achievementsScreen, null, null, null, "View all achievements you have unlocked so far.");
+			addButton(1, "Settings", kGAMECLASS.gameSettings.settingsScreenMain).hint("Configure game settings and enable cheats.");
+			addButton(2, "Instructions", howToPlay).hint("How to play.  Starting tips.  And hotkeys for easy left-handed play...");
+			addButton(3, "Achievements", kGAMECLASS.achievementList.achievementsScreen).hint("View all achievements you have unlocked so far.");
 			addButton(4, "Mod Thread", openURL, "https://forum.fenoxo.com/threads/coc-revamp-mod.3/", null, null, "Check the official mod thread on Fenoxo's forum.");
-				
-			addButton(5, "Credits", creditsScreen, null, null, null, "See a list of all the cool people who have contributed to content for this game!");
-			addButton(6, "Image Credits", imageCreditsScreen, null, null, null, "Check out who contributed to the image pack.");
-			addButton(7, "Debug Info", kGAMECLASS.debugPane, null, null, null, "View debug information. You can also input to access any scenes, if you know the function names!");
+
+			addButton(5, "Credits", creditsScreen).hint("See a list of all the cool people who have contributed to content for this game!");
+			addButton(6, "Image Credits", imageCreditsScreen).hint("Check out who contributed to the image pack.");
+			addButton(7, "Debug Info", kGAMECLASS.debugPane).hint("View debug information. You can also input to access any scenes, if you know the function names!");
 		}
-		
+
 		public function startupScreenBody():void {
 			// NO FUCKING DECENT MULTI-LINE STRING LITERALS BECAUSE FUCKING STUPID
 			// WTF ACTIONSCRIPT YOUR DEV'S ARE ON CRACK
@@ -135,7 +123,7 @@ package classes
 				outputText("\n\n<b>It's Helia's Birthday Month!</b>");
 
 		}
-		
+
 		//------------
 		// INSTRUCTIONS
 		//------------
@@ -202,14 +190,18 @@ package classes
 			outputText("<li> kalleangka (github)</li>");
 			outputText("<li> sworve (github)</li>");
 			outputText("<li> Netys (github)</li>");
-			outputText("<ul>");
+			outputText("<li> Drake713 (github)</li>");
+			outputText("<li> NineRed (github)</li>");
+			outputText("<li> Fergusson951 (github)</li>");
+			outputText("<li> aimozg (github)</li>");
+			outputText("<li> Stadler76 (github + bug fix coding)</li>");
 			outputText("</ul>");
 			outputText("<b>Typo Reporting</b>\n");
 			outputText("<ul>");
 			outputText("<li> SoS</li>");
 			outputText("<li> Prisoner416</li>");
 			outputText("<li> Chibodee</li>");
-			outputText("");
+			outputText("</ul>");
 			outputText("<b>Graphical Prettiness:</b>")
 			outputText("<ul>");;
 			outputText("<li> Dasutin (Background Images)</li>");
@@ -352,7 +344,7 @@ package classes
 			doNext(mainMenu);
 		}
 
-		
+
 	}
 
 }

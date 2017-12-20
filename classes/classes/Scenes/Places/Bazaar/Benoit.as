@@ -1,5 +1,6 @@
-package classes.Scenes.Places.Bazaar {
+﻿package classes.Scenes.Places.Bazaar {
 	import classes.*;
+	import classes.BodyParts.*;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.Items.Consumable;
 
@@ -337,7 +338,7 @@ public function benoitIntro():void {
 		addButton(5, "Suggest", eggySuggest);
 	if (player.hasCock() && flags[kFLAGS.BENOIT_STATUS] > 0 && player.lust >= 33)
 		addButton(6, "Sex", (flags[kFLAGS.TIMES_FUCKED_FEMOIT] == 0 ? femoitFirstTimeYes : femoitSexIntro));
-	if (flags[kFLAGS.BENOIT_EYES_TALK_UNLOCKED] == 1 && player.eyeType != EYES_BASILISK)
+	if (flags[kFLAGS.BENOIT_EYES_TALK_UNLOCKED] == 1 && player.eyes.type != Eyes.BASILISK)
 		addButton(7, "Basil. Eyes", convertToBassyEyes);
 }
 //Buy or Sell First Time, only if prelover/prefem: You ask him what the deal is with his shop.
@@ -352,7 +353,7 @@ public function benoitsBuyMenu():void {
 	if (flags[kFLAGS.BENOIT_EXPLAINED_SHOP] == 0) buyOrSellExplanationFirstTime();
 	var buyMod:Number = 2;
 	
-	if (flags[kFLAGS.BENOIT_STATUS] == 1) 
+	if (flags[kFLAGS.BENOIT_STATUS] != 0) 
 	{
 		buyMod = 1.66;
 		outputText("\"<i>Some may call zis junk,</i>\" says Benoite, indicating her latest wares.  \"<i>Me... I call it garbage.</i>\"");
@@ -369,9 +370,9 @@ public function benoitsBuyMenu():void {
 	addButton(0, flags[kFLAGS.BENOIT_1], benoitTransactBuy, 1);
 	addButton(1, flags[kFLAGS.BENOIT_2], benoitTransactBuy, 2);
 	addButton(2, flags[kFLAGS.BENOIT_3], benoitTransactBuy, 3);
-	if (player.keyItemv1("Backpack") < 5) addButton(5, "Backpack", buyBackpack, null, null, null, "This backpack will allow you to carry more items.");
+	if (player.keyItemv1("Backpack") < 5) addButton(5, "Backpack", buyBackpack).hint("This backpack will allow you to carry more items.");
 	if (flags[kFLAGS.BENOIT_PISTOL_BOUGHT] <= 0) addButton(6, "Flintlock", buyFlintlock);
-	if (flags[kFLAGS.BENOIT_CLOCK_BOUGHT] <= 0 && flags[kFLAGS.CAMP_CABIN_FURNITURE_NIGHTSTAND] > 0) addButton(7, "Alarm Clock", buyAlarmClock, null, null, null, "This mechanical clock looks like it was originally constructed by the Goblins before the corruption spread throughout Mareth.");
+	if (flags[kFLAGS.BENOIT_CLOCK_BOUGHT] <= 0 && flags[kFLAGS.CAMP_CABIN_FURNITURE_NIGHTSTAND] > 0) addButton(7, "Alarm Clock", buyAlarmClock).hint("This mechanical clock looks like it was originally constructed by the Goblins before the corruption spread throughout Mareth.");
 	addButton(14, "Back", benoitIntro);
 }
 
@@ -403,12 +404,12 @@ private function benoitTransactBuy(slot:int = 1):void {
 	var itype:ItemType;
 	var buyMod:Number = 2;
 	
-	if (flags[kFLAGS.BENOIT_STATUS] == 1) buyMod = 1.66;
+	if (flags[kFLAGS.BENOIT_STATUS] != 0) buyMod = 1.66;
 	
 	if (slot == 1) itype = ItemType.lookupItem(flags[kFLAGS.BENOIT_1]);
 	else if (slot == 2) itype = ItemType.lookupItem(flags[kFLAGS.BENOIT_2]);
 	else itype = ItemType.lookupItem(flags[kFLAGS.BENOIT_3]);
-	if (player.gems < int(buyMod * itype.value)) {
+	if (player.gems < Math.round(buyMod * itype.value)) {
 		outputText("You consider making a purchase, but you lack the gems to go through with it.");
 		doNext(benoitsBuyMenu);
 		return;
@@ -418,7 +419,7 @@ private function benoitTransactBuy(slot:int = 1):void {
 	//(+3 Affection)
 	benoitAffection(3);
 	
-	player.gems -= int(buyMod * itype.value);
+	player.gems -= Math.round(buyMod * itype.value);
 	statScreenRefresh();
 	
 	if (flags[kFLAGS.SHIFT_KEY_DOWN] == 1 && itype is Consumable) {
@@ -636,7 +637,7 @@ private function talkToBenoit():void {
 		benoitAffection(5);
 	}
 	if (flags[kFLAGS.BENOIT_BASIL_EYES_GRANTED] > 0 && player.hasKeyItem("Feathery hair-pin") < 0) {
-		var hasSolidHair:Boolean = (player.hairType != HAIR_GOO && player.hairLength > 0);
+		var hasSolidHair:Boolean = (player.hair.type != Hair.GOO && player.hair.length > 0);
 		// Talk scene written by MissBlackthorne
 		outputText("\"<i>Ah [name]! I 'ad been 'oping to speak wiz you.</i>\" your basilisk lover says with a toothy smile. \"<i>I 'ave a gift for "
 		          +"you... For all you 'ave done.</i>\" You notice the scales on " + benoitMF("Benoit", "Benoite") + "'s face turn a deeper green,"
@@ -654,13 +655,14 @@ private function talkToBenoit():void {
 		          +" you of me in your travels.</i>\"");
 		outputText("\n\nYou feel a blush creep across your [face] as you thank the blind basilisk, hugging " + benoitMF("him", "her")
 		          +" to you tight before you leave");
-		// Equip only, if you have hair and if it's not gooey.
-		outputText((hasSolidHair && player.cor < Math.max(80, (55 + player.corruptionTolerance()))) ? ", slipping the pin into your [hair] as you exit the store." : ".");
-		// value1: hairPinIsEquipped, value2: just (re)equipped, but TF not triggered yet.
-		if (hasSolidHair && player.cor < Math.max(80, (55 + player.corruptionTolerance())))
+		if (hasSolidHair && player.cor < 55) { // Equip only, if you have hair and if it's not gooey.
+			outputText(", slipping the pin into your [hair] as you exit the store.");
+			// value1: hairPinIsEquipped, value2: just (re)equipped, but TF not triggered yet.
 			player.createKeyItem("Feathery hair-pin", 1, 1, 0, 0);
-		else
+		} else {
+			outputText(".");
 			player.createKeyItem("Feathery hair-pin", 0, 0, 0, 0);
+		}
 		outputText("\n\n(<b>Gained Key Item: Feathery hair-pin</b>)");
 		doNext(camp.returnToCampUseOneHour);
 		return;
@@ -940,7 +942,7 @@ private function benoitHairPinTalk():void
 
 private function benoitHairPinTFCheck():void
 {
-	if (player.cor < Math.max(80, (30 + player.corruptionTolerance())) && player.isFemaleOrHerm() && player.featheryHairPinEquipped() && [HAIR_BASILISK_PLUME, HAIR_GOO].indexOf(player.hairType) == -1)
+	if (player.cor < 30 && player.isFemaleOrHerm() && player.featheryHairPinEquipped() && [Hair.BASILISK_PLUME, Hair.GOO].indexOf(player.hair.type) == -1)
 	{
 		outputText("\n\nYou feel the hair pin " + benoitMF("Benoit", "Benoite") + " gave you heat up, a gentle warmth suffusing through your body."
 		          +" Something tells you that if you let it, this feminine hair piece will evoke some sort of change.");
@@ -975,9 +977,9 @@ private function benoitHairPinTFYes():void
 		outputText("\n\n<b>Your hair is now a plume of short red feathers.</b>");
 
 	flags[kFLAGS.HAIR_GROWTH_STOPPED_BECAUSE_LIZARD] = 0;
-	player.hairLength = 2;
-	player.hairColor = "red";
-	player.hairType = HAIR_BASILISK_PLUME;
+	player.hair.length = 2;
+	player.hair.color = "red";
+	player.hair.type = Hair.BASILISK_PLUME;
 	benoitHairPinTalkFinal();
 }
 
@@ -1069,25 +1071,25 @@ private function eggySuggest():void {
 		outputText("\n\n\"<i>Zis will sound strange,</i>\" says " + benoitMF("Benoit","Benoite") + " in a low, thick voice, \"<i>But - would you mind if I just touched you a bit first?  All I know about you is your smell and ze sound of your voice.</i>\"  You acquiesce and draw close, taking " + benoitMF("his","her") + " hands once again and gently laying them upon your body.  You sigh as, holding " + benoitMF("his","her") + " index claws back, " + benoitMF("he","she") + " begins to move them slowly up and down.");
 		
 	//[Demon: 
-		if (player.horns > 0 && player.hornType == HORNS_DEMON && player.tailType == TAIL_TYPE_DEMONIC && player.demonScore() >= 3) outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " touches your horns and pauses; " + benoitMF("he","she") + " reaches around, finds and grips your tail, running " + benoitMF("his","her") + " pads up to the spaded point.  \"<i>So,</i>\" " + benoitMF("he","she") + " says quietly.  \"<i>You are one of zem.</i>\"  " + benoitMF("He","She") + " is silent for a while before finding a warm smile.  \"<i>But I am being silly.  I know you are different inside.</i>\"");
+		if (player.horns.value > 0 && player.horns.type == Horns.DEMON && player.tail.type == Tail.DEMONIC && player.demonScore() >= 3) outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " touches your horns and pauses; " + benoitMF("he","she") + " reaches around, finds and grips your tail, running " + benoitMF("his","her") + " pads up to the spaded point.  \"<i>So,</i>\" " + benoitMF("he","she") + " says quietly.  \"<i>You are one of zem.</i>\"  " + benoitMF("He","She") + " is silent for a while before finding a warm smile.  \"<i>But I am being silly.  I know you are different inside.</i>\"");
 		//[Dog enough for ears and tail: 
-		else if (player.earType == EARS_DOG && player.tailType == TAIL_TYPE_DOG && player.dogScore() >= 3) outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " grins as " + benoitMF("he","she") + " finds your floppy ears and outright laughs when " + benoitMF("he","she") + " reaches around and touches your tail. \"<i>I like dogs, but not ZAT much, [name],</i>\" " + benoitMF("he","she") + " laughs.");
+		else if (player.ears.type == Ears.DOG && player.tail.type == Tail.DOG && player.dogScore() >= 3) outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " grins as " + benoitMF("he","she") + " finds your floppy ears and outright laughs when " + benoitMF("he","she") + " reaches around and touches your tail. \"<i>I like dogs, but not ZAT much, [name],</i>\" " + benoitMF("he","she") + " laughs.");
 		//[Cat/Bunny enough for ditto: 
-		else if (player.catScore() >= 3 && player.tailType == TAIL_TYPE_CAT && player.earType == EARS_CAT) outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " grins as " + benoitMF("he","she") + " finds your ears, outright laughs when " + benoitMF("he","she") + " reaches around and touches your soft tail.  \"<i>I always wondered why Pierre gets all excited when 'e sees you,</i>\" " + benoitMF("he","she") + " chuckles huskily.");
+		else if (player.catScore() >= 3 && player.tail.type == Tail.CAT && player.ears.type == Ears.CAT) outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " grins as " + benoitMF("he","she") + " finds your ears, outright laughs when " + benoitMF("he","she") + " reaches around and touches your soft tail.  \"<i>I always wondered why Pierre gets all excited when 'e sees you,</i>\" " + benoitMF("he","she") + " chuckles huskily.");
 		//[Avian with wings and feet:  
-		else if (player.lowerBody == LOWER_BODY_TYPE_HARPY && player.wingType == WING_TYPE_FEATHERED_LARGE) outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " finds your wings and follows them up as far as " + benoitMF("he","she") + " can reach, making you twitch as " + benoitMF("he","she") + " caresses your delicate pinfeathers; " + benoitMF("he","she") + " carefully shifts " + benoitMF("his","her") + " feet forward to touch at your own clawed toes.  \"<i>So,</i>\" " + benoitMF("he","she") + " sighs, a smile playing on " + benoitMF("his","her") + " lips as " + benoitMF("he","she") + " touches your shoulder.  \"<i>What is in front of me is a terrible 'arpy.  Come from ze skies to ravish me.</i>\"");
+		else if (player.lowerBody.type == LowerBody.HARPY && player.wings.type == Wings.FEATHERED_LARGE) outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " finds your wings and follows them up as far as " + benoitMF("he","she") + " can reach, making you twitch as " + benoitMF("he","she") + " caresses your delicate pinfeathers; " + benoitMF("he","she") + " carefully shifts " + benoitMF("his","her") + " feet forward to touch at your own clawed toes.  \"<i>So,</i>\" " + benoitMF("he","she") + " sighs, a smile playing on " + benoitMF("his","her") + " lips as " + benoitMF("he","she") + " touches your shoulder.  \"<i>What is in front of me is a terrible 'arpy.  Come from ze skies to ravish me.</i>\"");
 		//[Reptile/Naga: 
 		else if (player.hasReptileScales() && (player.lizardScore() >= 3 || player.nagaScore() >= 3) || player.dragonScore() >= 3) outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " starts slightly when " + benoitMF("he","she") + " touches your scales, and then caresses the reptilian parts of your body with increasing interest.  \"<i>I cannot believe I did not realize you were a sister of ze scales,</i>\" " + benoitMF("he","she") + " says huskily.  \"<i>Zat is very... interesting.</i>\"  You can see real arousal in the tense lines of " + benoitMF("his","her") + " face now.");
 		//[Bee: 
-		else if ((player.wingType == WING_TYPE_BEE_LIKE_SMALL || player.wingType == WING_TYPE_BEE_LIKE_LARGE) && player.lowerBody == LOWER_BODY_TYPE_BEE) outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " finds your diaphanous wings and follows them up as far as " + benoitMF("he","she") + " can reach, " + benoitMF("his","her") + " grip on your sensitive membranes making you twitch a bit; then " + benoitMF("he","she") + " sends " + benoitMF("his","her") + " hands trailing down your carapace-armored limbs.  \"<i>I sought you just liked wearing big boots,</i>\" " + benoitMF("he","she") + " murmurs.  \"<i>But zis is actually a part of you?  'Ow... interesting.</i>\"");
+		else if ((player.wings.type == Wings.BEE_LIKE_SMALL || player.wings.type == Wings.BEE_LIKE_LARGE) && player.lowerBody.type == LowerBody.BEE) outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " finds your diaphanous wings and follows them up as far as " + benoitMF("he","she") + " can reach, " + benoitMF("his","her") + " grip on your sensitive membranes making you twitch a bit; then " + benoitMF("he","she") + " sends " + benoitMF("his","her") + " hands trailing down your carapace-armored limbs.  \"<i>I sought you just liked wearing big boots,</i>\" " + benoitMF("he","she") + " murmurs.  \"<i>But zis is actually a part of you?  'Ow... interesting.</i>\"");
 		//[Centaur: 
 		else if (player.isTaur()) outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  \"<i>Good Gods,</i>\" " + benoitMF("he","she") + " murmurs as " + benoitMF("his","her") + " hands lead back onto your flanks.  \"<i>Good Gods!</i>\" " + benoitMF("he","she") + " cries out as " + benoitMF("he","she") + " follows you all the way back to your mighty, powerful rear.  \"<i>I knew you were a centaur because of all ze clopping,</i>\" " + benoitMF("he","she") + " says, rubbing your flank back and forth in wonder.  \"<i>But to know it and actually feel it, zey are very different.</i>\"  " + benoitMF("He","She") + " sighs.  \"<i>Zis is going to be a bit... awkward, but I am guessing you are all too used to zat by now, yes?</i>\"");
 		else if (player.isDrider()) outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  \"<i>Good Gods,</i>\" " + benoitMF("he","she") + " murmurs as " + benoitMF("his","her") + " hands lead back onto your tough exoskeleton. \"<i>Good Gods!</i>\" " + benoitMF("he","she") + " cries out as " + benoitMF("he","she") + " follows your bulging abdomen all the way back to your spinnerets. \"<i>I knew you were a spider because of all ze click-clacking,</i>\" " + benoitMF("he","she") + " says, " + benoitMF("his","her") + " fingers feeling around one of your intricate, many-jointed legs in wonder.  \"<i>But to know it and actually feel it, zey are very different.</i>\"");
 		//[Slime: 
 		else if (player.isGoo()) outputText("\n\n" + benoitMF("His", "Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  \"<i>I knew you were different from ze squishy sounds you made,</i>\" " + benoitMF("he", "she") + " murmurs as " + benoitMF("his", "her") + " hands sink into your soft, amorphous mass.  \"<i>But zis is...good Gods, zis is strange.  And zis doesn't 'urt you at all?</i>\" " + benoitMF("he", "she") + " asks incredulously as " + benoitMF("he", "she") + " gently pokes a finger into you.  You answer " + benoitMF("his", "her") + " question by giggling.  \"<i>Zat must come in very useful,</i>\" " + benoitMF("he", "she") + " says, shaking " + benoitMF("his", "her") + " head in wonder.  You push yourself slowly up " + benoitMF("his", "her") + " arms and tell " + benoitMF("him", "her") + " " + benoitMF("he", "she") + " has no idea.");
 		//[Fox:
-		else if ((player.foxScore() >= 4 || player.kitsuneScore() >= 4) && player.earType == EARS_FOX && player.tailType == TAIL_TYPE_FOX) {
-			if (player.tailVenom <= 1) outputText("\n\n" + benoitMF("His", "Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " grins as " + benoitMF("he","she") + " finds your perky ears, outright laughs when " + benoitMF("he","she") + " reaches around and touches your fluffy tail.  \"<i>I always wondered why Pierre gets all excited when 'e sees you,</i>\" " + benoitMF("he laughs", "she giggles") + ".");
+		else if ((player.foxScore() >= 4 || player.kitsuneScore() >= 4) && player.ears.type == Ears.FOX && player.tail.type == Tail.FOX) {
+			if (player.tail.venom <= 1) outputText("\n\n" + benoitMF("His", "Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " grins as " + benoitMF("he","she") + " finds your perky ears, outright laughs when " + benoitMF("he","she") + " reaches around and touches your fluffy tail.  \"<i>I always wondered why Pierre gets all excited when 'e sees you,</i>\" " + benoitMF("he laughs", "she giggles") + ".");
 			else outputText("\n\n" + benoitMF("His", "Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " grins as " + benoitMF("he","she") + " finds your perky ears and outright laughs when " + benoitMF("he","she") + " reaches around and touches your fluffy tails.  \"<i>You didn't do zis just to trick me, did you [name]?</i>\" " + benoitMF("he laughs", "she giggles") + ".");
 		}
 		else outputText("\n\n" + benoitMF("His","Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  \"<i>You 'umans are so squishy, fuzzy and 'ot,</i>\" " + benoitMF("he","she") + " says huskily. \"<i>'Ow can you stand it?</i>\"");
@@ -1328,7 +1330,7 @@ public function equipUnequipHairPin():void
 	clearOutput();
 	if (player.keyItemv1("Feathery hair-pin") > 0) {
 		// unequip it
-		if (player.hairLength > 0)
+		if (player.hair.length > 0)
 			outputText("You take the feathery hair-pin " + benoitMF("Benoit", "Benoite") + " gave to you out of your " + player.hairDescript() 
 			          +" and put it back into your inventory.");
 		else
@@ -1338,16 +1340,16 @@ public function equipUnequipHairPin():void
 		player.keyItems[keyItemNum].value2 = 0; // if its not equipped it won't trigger any TF, right? ^^
 	} else {
 		// equip it
-		if (player.hairType == HAIR_GOO)
+		if (player.hair.type == Hair.GOO)
 			outputText("You try to slide the hair pin into your " + player.hairDescript() + ", but their semi-liquid state isn't enough to hold it in"
 			          +" place. The pin falls to the ground with a wet splat the moment you let it go. With a sigh you clean it up and then you put"
 			          +" it back.");
-		else if (player.cor >= Math.max(80, (55 + player.corruptionTolerance())))
+		else if (player.cor >= 55)
 				outputText("You go to slide the hair-pin into your " + player.hairDescript() + ", but the moment it touches your scalp it heats up,"
 			              +" causing you to drop it in shock. Seems it doesn't want you dirty its purity... you pick it up and put it back into your"
 			              +" inventory for now.");
 		else {
-			if (player.hairLength > 0)
+			if (player.hair.length > 0)
 				outputText("You slide the hair-pin " + benoitMF("Benoit", "Benoite") + " gave you into your " + player.hairDescript()
 				          +", briefly admiring yourself in a nearby puddle before returning to your adventures.");
 			else
@@ -1434,7 +1436,7 @@ private function convertToBassyEyesPageTwo():void
 
 private function convertToBassyEyesFinal():void
 {
-	player.eyeType = EYES_BASILISK;
+	player.eyes.type = Eyes.BASILISK;
 	outputText("\n\n(<b>Your eyes are now basilisk eyes!</b>)");
 	flags[kFLAGS.BENOIT_BASIL_EYES_GRANTED]++
 	doNext(camp.returnToCampUseOneHour);
@@ -1704,7 +1706,7 @@ public function femoitNextDayEvent():void
 	
 	outputText("\n\nShe leans across the counter, her smile fading.  \"<i> Seriously, [name], you 'ave done my people a service I cannot repay.  I can lay eggs, zere can be more female basilisks, away from Lethice and 'er thugs.  All zis time I 'ave been trading potions, I could 'ave done it myself, and I never did.  Per'aps I sought I was too much a man or somesing.  Pah!  I was a coward, a cringing coward.  You forced me to decide, and because of zat, my people 'ave a chance.  Sank you. </i>\"");
 	
-	outputText("\n\nShe sounds slightly choked, and stops for a moment. \"<i> It is very, very little, but for you I buy and sell sings at zeir true value.  If zere is anysing I can do for you, ever, please just say. </i >\"  You are slightly embarrassed by her effusiveness and mumble something along the lines of it being all her doing.  Perhaps aware of this, Benoite sits back down, hatches her fingers and smiles at you primly.  \"<i> Now... is " + player.mf("sir", "madam") + " buying or selling? </i>\" ");
+	outputText("\n\nShe sounds slightly choked, and stops for a moment. \"<i> It is very, very little, but for you I buy and sell sings at zeir true value.  If zere is anysing I can do for you, ever, please just say. </i>\"  You are slightly embarrassed by her effusiveness and mumble something along the lines of it being all her doing.  Perhaps aware of this, Benoite sits back down, hatches her fingers and smiles at you primly.  \"<i> Now... is " + player.mf("sir", "madam") + " buying or selling? </i>\" ");
 
 	//[Benoite buys at same rate Oswald does and sells at a 33% discount]
 }
@@ -1737,15 +1739,15 @@ public function femoitFirstTimeYes():void
 	if (player.isTaur()) outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  \"<i>Good Gods,</i>\" she murmurs as her hands lead back onto your flanks.  \"<i>Good Gods!</i>\" she cries out as she follows you all the way back to your mighty, powerful rear.  \"<i>I knew you were a centaur because of all ze clopping,</i>\" she says, rubbing your side back and forth in wonder.  \"<i>But to know it and actually feel it, zey are very different.</i>\"  She sighs.  \"<i>Zis is going to be... awkward, but I guess you are probably used to zat by now, yes?</i>\"");
 	else if (player.isDrider()) outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  \"<i>Good Gods,</i>\" she murmurs as her hands lead back onto your abdomen. \"<i>Good Gods!</i>\" she cries out as she follows your bulging abdomen all the way back to your spinnerets. \"<i>I knew you were a spider because of all ze click clacking,</i>\" she says, her fingers feeling around one of your intricate, many-jointed legs in wonder . \"<i>But to know it and actually feel it, zey are very different.</i>\"");
 	else if (player.demonScore() > 4) outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  She touches your horns and pauses; she reaches around, finds and grips your tail, running her grasp up to the spaded point. \"<i>So,</i>\" she says quietly. \"<i>You are one of zem.</i>\" She is silent for a while before finding a warm smile. \"<i>But I am being zilly.  I know you are different inside.</i>\"")
-	else if (player.dogScore() >= 4 && player.earType == 2 && player.tailType == 2) outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  She grins as she finds your floppy ears and outright laughs when she reaches around and touches your tail.  \"<i>I like dogs but not ZAT much, \"<i>[name],</i>\" she giggles.  \"<i>No wonder Pierre 'as been acting jealous recently.</i>\"");
-	else if ((player.bunnyScore() >= 4 && player.earType == 7 && player.tailType == 10) || (player.catScore() >= 4 && player.earType == 5 && player.tailType == 8)) outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  She grins as she finds your ears, outright laughs when she reaches around and touches your soft tail.  \"<i>I always wondered why Pierre gets all excited when 'e sees you,</i>\" she giggles.");
-	else if (player.harpyScore() >= 4 && player.wingType != 0 && player.armType == 1) outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  She finds your wings and follows them up as far as she can reach; she carefully shifts her feet forward to touch at your own clawed toes.  \"<i>So zis is what irony is,</i>\" she murmurs, a smile playing on her lips as she touches your shoulder.  \"<i>My saviour is an 'arpy, come to ravish me.</i>\"");
-	else if (player.beeScore() >= 4 && player.wingType != 0 && player.lowerBody == 7) outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  She finds your diaphanous wings and follows them up as far as she can reach, her grip on your sensitive membranes making you twitch a bit; then she sends her hands trailing down your carapace-armored limbs. \"<i>I always sought you just liked wearing big boots,</i>\" she murmurs. \"<i>But zis is actually a part of you?  'Ow... interesting.</i>\"");
+	else if (player.dogScore() >= 4 && player.ears.type == 2 && player.tail.type == 2) outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  She grins as she finds your floppy ears and outright laughs when she reaches around and touches your tail.  \"<i>I like dogs but not ZAT much, [name],</i>\" she giggles.  \"<i>No wonder Pierre 'as been acting jealous recently.</i>\"");
+	else if ((player.bunnyScore() >= 4 && player.ears.type == 7 && player.tail.type == 10) || (player.catScore() >= 4 && player.ears.type == 5 && player.tail.type == 8)) outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  She grins as she finds your ears, outright laughs when she reaches around and touches your soft tail.  \"<i>I always wondered why Pierre gets all excited when 'e sees you,</i>\" she giggles.");
+	else if (player.harpyScore() >= 4 && player.wings.type != 0 && player.arms.type == 1) outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  She finds your wings and follows them up as far as she can reach; she carefully shifts her feet forward to touch at your own clawed toes.  \"<i>So zis is what irony is,</i>\" she murmurs, a smile playing on her lips as she touches your shoulder.  \"<i>My saviour is an 'arpy, come to ravish me.</i>\"");
+	else if (player.beeScore() >= 4 && player.wings.type != 0 && player.lowerBody.type == 7) outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  She finds your diaphanous wings and follows them up as far as she can reach, her grip on your sensitive membranes making you twitch a bit; then she sends her hands trailing down your carapace-armored limbs. \"<i>I always sought you just liked wearing big boots,</i>\" she murmurs. \"<i>But zis is actually a part of you?  'Ow... interesting.</i>\"");
 	else if (player.gooScore() >= 4 && player.hasGooSkin()) outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  \"<i>I knew you were different from ze squishy sounds you made,</i>\" she murmurs as her hands sink into your soft, amorphous mass.  \"<i>But zis is... good Gods, zis is strange.  And zis doesn't 'urt you at all?</i>\" she asks incredulously as she gently pokes a finger into you.  You answer her question by laughing.  \"<i>Zat must come in very useful,</i>\" she says.  You push yourself slowly up her arms and tell her she has no idea.");
 	else if (player.hasScales()) outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  She starts slightly when she touches your scales, and then caresses the reptilian parts of your body with increasing interest.  \"<i>You didn't do zis just for me, did you [name]?</i>\" she murmurs.  \"<i>I 'ave to admit - it feels very good.</i>\"");
 	//[Fox:
-	else if ((player.foxScore() >= 4 || player.kitsuneScore() >= 4) && player.earType == EARS_FOX && player.tailType == TAIL_TYPE_FOX) {
-		if (player.tailVenom <= 1) outputText("\n\n" + benoitMF("His", "Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " grins as " + benoitMF("he","she") + " finds your perky ears, outright laughs when " + benoitMF("he","she") + " reaches around and touches your fluffy tail.  \"<i>I always wondered why Pierre gets all excited when 'e sees you,</i>\" " + benoitMF("he laughs", "she giggles") + ".");
+	else if ((player.foxScore() >= 4 || player.kitsuneScore() >= 4) && player.ears.type == Ears.FOX && player.tail.type == Tail.FOX) {
+		if (player.tail.venom <= 1) outputText("\n\n" + benoitMF("His", "Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " grins as " + benoitMF("he","she") + " finds your perky ears, outright laughs when " + benoitMF("he","she") + " reaches around and touches your fluffy tail.  \"<i>I always wondered why Pierre gets all excited when 'e sees you,</i>\" " + benoitMF("he laughs", "she giggles") + ".");
 		else outputText("\n\n" + benoitMF("His", "Her") + " warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  " + benoitMF("He","She") + " grins as " + benoitMF("he","she") + " finds your perky ears and outright laughs when " + benoitMF("he","she") + " reaches around and touches your fluffy tails.  \"<i>You didn't do zis just to trick me, did you [name]?</i>\" " + benoitMF("he laughs", "she giggles") + ".");
 	}
 	else outputText("\n\nHer warm fingers travel over your body, brushing over your face, your belly, your [hips]; you feel as though you're being read like a book.  \"<i>You 'umans are so squishy, fuzzy and 'ot,</i>\" she giggles huskily. \"<i>'Ow can you stand it?</i>\"");

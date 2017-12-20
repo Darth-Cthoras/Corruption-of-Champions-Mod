@@ -1,9 +1,11 @@
 ﻿package classes.Scenes.Places{
 	import classes.*;
+	import classes.BodyParts.*;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.GlobalFlags.kGAMECLASS;
 	import classes.Items.WeaponLib;
 	import classes.Scenes.Places.Owca.*;
+	import classes.display.SpriteDb;
 
 	public class Owca extends BaseContent{
 
@@ -185,6 +187,7 @@ private function acceptRebeccsPlea(firstTime:Boolean = false, sacrificed:Boolean
 }
 private function intoTheDemonPit(sacrifice:Boolean = true):void {
 	clearOutput();
+	spriteSelect(SpriteDb.s_vapula);
 	//N is the number of hours left before night
 	if (model.time.hours < 21) {
 		var passed:int = 21 - model.time.hours;
@@ -272,9 +275,9 @@ public function loseOrSubmitToVapula():void {
 	outputText("\n\nYou can't talk, muted as you are by a pair of fat red peckers stuffing your mouth and bumping against your throat as you unwillingly suck them off.  Your jaw hurts, your itching insides are driving you mad; your whole body is being bruised from the cock-slaps, your palms are forced to rub four shafts at the same time, and even as you pump, your fingers are occasionally grabbed and stuffed into wet fuck-holes, making a few succubi moan.  A tentacle dick brushes against you, then wraps around your limbs, slithering against your skin and leaving behind a trail of pre-cum on your torso and belly.");
 	if (player.hasCock()) outputText("  It wraps around [eachCock] for a while, jerking it for a bit and rubbing its tip against yours.");
 	//[if antennae]
-	if (player.antennae > ANTENNAE_NONE) outputText("  Your antennae are being harshly pulled and twisted; some imps, in a crazy show of libertinism, start inserting your sensitive peduncles down their bloated urethrae. The intimate friction and the sudden jolts when the internal walls slather your appendages in slick, hot pre-cum are driving you mad with irregular shots of unbearable pleasure.");
+	if (player.antennae.type > Antennae.NONE) outputText("  Your antennae are being harshly pulled and twisted; some imps, in a crazy show of libertinism, start inserting your sensitive peduncles down their bloated urethrae. The intimate friction and the sudden jolts when the internal walls slather your appendages in slick, hot pre-cum are driving you mad with irregular shots of unbearable pleasure.");
 	//[if horns]
-	if (player.horns > 0) outputText("  You feel your horns being used as leverage to slap your head with even more rock-hard dick.  The impacts stun you until your whole forehead feels numb and coated with a mixture of ballsweat and pre-cum.");
+	if (player.horns.value > 0) outputText("  You feel your horns being used as leverage to slap your head with even more rock-hard dick.  The impacts stun you until your whole forehead feels numb and coated with a mixture of ballsweat and pre-cum.");
 	//[if vagina
 	if (player.hasVagina()) {
 		outputText("\n\nYou suddenly feel a sharp sensation: your womanhood is finally being penetrated.");
@@ -376,7 +379,7 @@ public function defeetVapulasHorde():void {
 		else outputText("You grin wickedly as the demons give up the fight, too turned on to care about you.  One even has hopeful desperation glinting in her eyes as she attempts to entice you with her long, thick nipples and enormous, dripping gash.");
 	}
 	//[(requires genitals and and corr >60)
-	if ((player.cor > (60 - player.corruptionTolerance()) || flags[kFLAGS.MEANINGLESS_CORRUPTION] >= 1) && player.gender > 0) {
+	if (player.isCorruptEnough(60) && player.gender > 0) {
 		outputText("\n\nDo you take advantage of them?");
 		doYesNo(rapeZeVapula,noVapulaSex);
 	}
@@ -615,18 +618,18 @@ public function leaveOwcaGrimdark():void {
 public function owcaTavern():void {
 	clearOutput();
 	outputText(images.showImage("location-owca-tavern"));
-	outputText("The tavern is nice and cozy; there are a few tables and chairs scattered around in no ordered pattern, and most clients here appear to belong to the same species.  By the crude wooden bar, you see a list of all the current drinks on sale:\n<i>");
+	menu();
+	outputText("The tavern is nice and cozy; there are a few tables and chairs scattered around in no ordered pattern, and most clients here appear to belong to the same species.  By the crude wooden bar, you see a list of all the current drinks on sale:\n");
 	//SheepMk
 	
-	menu();
-	outputText("\nSheep Milk Bottle: " + (180 - flags[kFLAGS.OWCAS_ATTITUDE]) + " gems");
+	outputText("\n<i>Sheep Milk Bottle: " + (180 - flags[kFLAGS.OWCAS_ATTITUDE]) + " gems</i>");
 	if ((180 - flags[kFLAGS.OWCAS_ATTITUDE]) > player.gems) {
 		addDisabledButton(0, "Sheep Milk");
 	} else {
 		addButton(0, "Sheep Milk", owcaBuySetup, consumables.SHEEPMK);
 	}
 	
-	outputText("\nGoblin Ale: " + (60 - Math.round(flags[kFLAGS.OWCAS_ATTITUDE]/2)) + " gems");
+	outputText("\n<i>Goblin Ale: " + (60 - Math.round(flags[kFLAGS.OWCAS_ATTITUDE]/2)) + " gems</i>");
 	if ((60 - Math.round(flags[kFLAGS.OWCAS_ATTITUDE] / 2)) > player.gems) {
 		addDisabledButton(1, "Goblin Ale");
 	} else {
@@ -634,7 +637,7 @@ public function owcaTavern():void {
 	}
 	
 	if (rand(100) > flags[kFLAGS.OWCAS_ATTITUDE]) {
-		outputText("\nBro Brew: 2000 gems");
+		outputText("\n<i>Bro Brew: 2000 gems</i>");
 		if ((2000) > player.gems) {
 			addDisabledButton(2, "Bro Brew");
 		} else {
@@ -642,21 +645,19 @@ public function owcaTavern():void {
 		}
 	}
 	
-	outputText("\nMinotaur Cum: " + (300 - flags[kFLAGS.OWCAS_ATTITUDE]) + " gems");
+	outputText("\n<i>Minotaur Cum: " + (300 - flags[kFLAGS.OWCAS_ATTITUDE]) + " gems</i>");
 	if ((300 - flags[kFLAGS.OWCAS_ATTITUDE]) > player.gems) {
 		addDisabledButton(3, "MinotaurCum");
 	} else {
 		addButton(3, "MinotaurCum", owcaBuySetup, consumables.MINOCUM);
 	}
 	
-	outputText("\nClovis: " + (80 - (flags[kFLAGS.OWCAS_ATTITUDE]/2)) + " gems");
+	outputText("\n<i>Clovis: " + (80 - (flags[kFLAGS.OWCAS_ATTITUDE]/2)) + " gems</i>");
 	if ((80 - (flags[kFLAGS.OWCAS_ATTITUDE]/2)) > player.gems) {
 		addDisabledButton(4, "Clovis");
 	} else {
 		addButton(4, "Clovis", owcaBuySetup, consumables.CLOVERS);
 	}
-	
-	outputText("</i>");
 	
 	addButton(14, "Back", gangbangVillageStuff);
 }
@@ -715,7 +716,7 @@ private function rebeccMenu():void {
 	menu();
 	addButton(0, "Appearance", rebeccAppearance);
 	addButton(1, "Bath", rebeccBathScene);
-	if (player.cor >= (66 - player.corruptionTolerance()) || player.findPerk(PerkLib.Sadist)) {
+	if (player.isCorruptEnough(66) || player.findPerk(PerkLib.Sadist)) {
 		outputText("\n\nYou could try and force yourself on her, but you might not be welcome in town after...");
 		addButton(3, "Surprise Sex", rapeRebecc, false);
 	} else {
@@ -853,7 +854,7 @@ public function beatUpOwca():void {
 	outputText("The last of the villagers drops his improvised weapon.  They are all lying defenseless before you.  At last, you notice Rebecc, the only one still conscious, curled up as she weeps uncontrollably.  She is clearly oblivious of her surroundings, undoubtedly shocked by the violent fight.  Even if she calls herself your friend, you don't think you'd be able to reason with her after pummeling her kin.  What do you do?");
 	//Rape Rebbecc/Torch Village (needs Akbal's fire or Whitefire)/Leave
 	menu();
-	if (!player.isGenderless() && player.lust >= 33 && (player.cor >= (60 - player.corruptionTolerance()) || player.findPerk(PerkLib.Sadist) >= 0)) {
+	if (!player.isGenderless() && player.lust >= 33 && (player.isCorruptEnough(60) || player.findPerk(PerkLib.Sadist) >= 0)) {
 		addButton(0, "Rape Rebecc", rapeRebecc, true);
 	} else {
 		addDisabledButton(0, "Rape Rebecc");
@@ -881,7 +882,7 @@ private function torchOwcaMotherFuckers():void {
 	flags[kFLAGS.OWCA_UNLOCKED] = -1;
 	dynStats("cor", 15);
 	menu();
-	if (!player.isGenderless() && player.lust >= 33 && (player.cor >= (60 - player.corruptionTolerance()) || player.findPerk(PerkLib.Sadist) >= 0)) {
+	if (!player.isGenderless() && player.lust >= 33 && (player.isCorruptEnough(60) || player.findPerk(PerkLib.Sadist) >= 0)) {
 		addButton(0, "Abuse Her", rapeRebecc, true);
 	} else {
 		addDisabledButton(0, "Abuse Her");
@@ -1023,7 +1024,7 @@ private function subdueVapula():void {
 	//choices: [Disband the horde]/[Enslave Vapula(requires cock or non-centaur vagina, D2 completion, libido >= 60, and corr >= 70)]
 	menu();
 	addButton(0, "Disband", disbandHorde);
-	if (!player.isGenderless() && (player.cor >= (66 - player.corruptionTolerance()))) {
+	if (!player.isGenderless() && (player.isCorruptEnough(66))) {
 		addButton(1, "EnslaveVapula", enslaveVapulaWithYourWang);
 	} else {
 		addDisabledButton(1, "EnslaveVapula", "This scene requires you to have genitals and high enough corruption.");

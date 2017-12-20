@@ -130,7 +130,7 @@ internal function oasisSexing():void {
 		//Girlies only!
 		else outputText("The demons quickly find your " + player.vaginaDescript(0) + " and tussle eagerly for position at your entrance, first with hands and then with a wide range of demonic dicks.  ");
 		//gaping cunners!
-		if (player.vaginas[0].vaginalLooseness >= VAGINA_LOOSENESS_LEVEL_CLOWN_CAR) outputText("However all of this fighting for place is in vain, as the leader with the huge cock has already marked you for his own. The broad demon shoves the smaller ones roughly to the side at the sight of your freakishly large pussy and carefully lowers his gigantic dick to the entrance of your gargantuan fuck hole. Without pause or ceremony the leader plunges his enormous phallus into you and although it takes all the muscles in his body he begins to drive it back and forth, filling every possible inch of your " + player.vaginaDescript(0) + ". You feel a curious pain that you've not felt in a long time and realize that your " + player.vaginaDescript(0) + " is stretching around his frankly frightening tool. As he withdraws the walls spring back with a curious elasticity, and it occurs to you that it may not actually be possible to stretch further with any permanence. Before long the huge demon begins to shudder and shake and he cums. His trio of heavy balls pump load after load into your waiting cunt until your belly bulges and spunk begins to spurt back out of your pussy from the sheer amount of cum being loaded into you.");
+		if (player.vaginas[0].vaginalLooseness >= VaginaClass.LOOSENESS_LEVEL_CLOWN_CAR) outputText("However all of this fighting for place is in vain, as the leader with the huge cock has already marked you for his own. The broad demon shoves the smaller ones roughly to the side at the sight of your freakishly large pussy and carefully lowers his gigantic dick to the entrance of your gargantuan fuck hole. Without pause or ceremony the leader plunges his enormous phallus into you and although it takes all the muscles in his body he begins to drive it back and forth, filling every possible inch of your " + player.vaginaDescript(0) + ". You feel a curious pain that you've not felt in a long time and realize that your " + player.vaginaDescript(0) + " is stretching around his frankly frightening tool. As he withdraws the walls spring back with a curious elasticity, and it occurs to you that it may not actually be possible to stretch further with any permanence. Before long the huge demon begins to shudder and shake and he cums. His trio of heavy balls pump load after load into your waiting cunt until your belly bulges and spunk begins to spurt back out of your pussy from the sheer amount of cum being loaded into you.");
 		//Not gaping!
 		else {
 			outputText("Eventually one of the demons wins out and sets the tip of his hefty dog-cock at the entrance to your pussy. He rams his member into your " + player.vaginaDescript(0) + " with one swift thrust and begins to pump himself in and out of your cunt. However, the other demons will not be denied. You feel a pressure at your lips and without warning a second slightly smaller dick shoves itself into your already-stuffed " + player.vaginaDescript(0) + ".  ");
@@ -145,6 +145,9 @@ internal function oasisSexing():void {
 		//Preggers chance!
 		player.knockUp(PregnancyStore.PREGNANCY_IMP, PregnancyStore.INCUBATION_IMP, 90);
 	}
+	if (player.gender == 3) outputText(images.showImage("demonmob-surround-herm"));
+	else if (player.gender == 2) outputText(images.showImage("demonmob-surround-female"));
+	else outputText(images.showImage("demonmob-surround-male"));
 	//Buttbutt buuuuuttt
 	if (player.gender > 0) outputText("However, the demons are interested in every part of you, not just your crotch.  ");
 	outputText("Soon you feel hands and dicks grabbing and jabbing at your " + player.buttDescript() + ", edging inwards bit by bit and jostling for position as a slippery cock positions itself at the opening of your " + player.assholeDescript() + ". It pauses for a second and then dives straight into your waiting asshole.  ");
@@ -207,6 +210,7 @@ private function oasisBadEnd():void {
 	spriteSelect(SpriteDb.s_oasis_demons);
 	//You get this ending if you are a fully corrupt female/herm/centaur with low intelligence and had over 5-10 'Feast' encounters with the Desert Tribe, once the leader starts laying a claim on you because of your large clit
 	clearOutput();
+	outputText(images.showImage("demonmob-end"));
 	outputText("You fuck for hours, 'feasting' with the demons. Pain, pleasure and exhaustion intermingle; no matter how hard you try to cling to consciousness, you are in no state to concentrate enough to succeed. You dangle over the edge for what seems like eternity before an orgasm stronger than any other hits you like a solid wall. You black out...\n\n");
 	//[If female/herm] 
 	
@@ -234,6 +238,7 @@ private function oasisBadEnd():void {
 private function oasisBadEndEpilogue():void {
 	spriteSelect(SpriteDb.s_oasis_demons);
 	clearOutput();
+	outputText(images.showImage("badend-demonmob"));
 	outputText("After one year");
 	if (player.gender <= 1) outputText(" and a few doses of fermented succubi milk");
 	outputText("...\n\n");

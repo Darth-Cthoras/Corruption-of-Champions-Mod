@@ -4,6 +4,7 @@
 package classes.Scenes.NPCs
 {
 	import classes.*;
+	import classes.BodyParts.*;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.GlobalFlags.kGAMECLASS;
 	import classes.Items.Armors.LustyMaidensArmor;
@@ -355,7 +356,7 @@ package classes.Scenes.NPCs
 			//[(breastrow0>C-cup)
 			if (player.biggestTitSize() > 2) outputText("  You give special attention to the presentation of your " + player.breastDescript(0) + ", removing your top with tantalizing slowness, letting each breast slip out and hang between you like fruit ripe to be taken, then making sure to rub them seductively to arouse the both of you further.");
 			//(hipsize=girly or better)
-			if (player.hipRating > 6) outputText("  You make good use of your " + player.hipDescript() + ", too, giving a little shimmy to show off your pronounced curves.");
+			if (player.hips.rating > 6) outputText("  You make good use of your " + player.hipDescript() + ", too, giving a little shimmy to show off your pronounced curves.");
 			outputText("  By the time you're finished, the anemone's crotch glistens with fluid from both her sexes; it's probably as wet as it was when she was underwater.  You lean into the anemone and give her a deep kiss, ");
 			//[(breast0>C)
 			if (player.biggestTitSize() > 2) outputText("making sure to let your " + player.allBreastsDescript() + " rub up against hers, ");
@@ -389,7 +390,7 @@ package classes.Scenes.NPCs
 
 			outputText("The overwhelming sensations drive you over the edge and your " + player.vaginaDescript(0) + " contracts hungrily around the heat radiating from the anemone's cock.  As your orgasming pussy ");
 			//(squirter)
-			if (player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_DROOLING) outputText("soaks her crotch with juice and ");
+			if (player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_DROOLING) outputText("soaks her crotch with juice and ");
 			outputText("wrings her penis, the blue shaft responds enthusiastically; she pushes deeply into you as it begins spasming and squirting its load.  Your partner's mouth hangs open as you squeeze the cum out of her; with all her muscle control taken away, her head hangs limply");
 			if (player.isTaur()) outputText(" on your back");
 			//[(notits)
@@ -935,7 +936,7 @@ package classes.Scenes.NPCs
 			if (monster.HP < 1) outputText("reclining");
 			else outputText("vigorously masturbating");
 			outputText(" girl's pussy call to you.  Your insectile abdomen pulses as eggs shift, lining up for deposition, and your long, black ovipositor slides out, pulsing in time with your heartbeat.  The idea of having those feelers stroke your strange organ while you unload your pent-up eggs sounds so good that a drop of honey oozes out, filling the air with a sweet scent that makes your");
-			if (player.antennae > ANTENNAE_NONE) outputText(" antennae");
+			if (player.antennae.type > Antennae.NONE) outputText(" antennae");
 			else outputText("nose");
 			outputText(" tingle.  The anemone's eyes light up as your black shaft drools, and she leans forward, catching the nectar on a finger and raising it to her lips.");
 
@@ -1354,7 +1355,7 @@ package classes.Scenes.NPCs
 				outputText(" enough to keep you from thinking dirty thoughts about grabbing her naughty, teasing face and mashing it into your crotch.");
 				//(HP - 5, lust +5 if lib>=50, KidXP + 2)
 				HPChange(-5, false);
-				if (player.lib >= 50) dynStats("lus", 5, "resisted", false);
+				if (player.lib >= 50) dynStats("lus", 5, "scale", false);
 				kidAXP(6);
 			}
 			//[Lust Dagger]
@@ -1362,7 +1363,7 @@ package classes.Scenes.NPCs
 				outputText("\n\nThe enchanted dagger is light enough for the anemone to use one-handed, and she makes a good practice of turning aside your mock blows with it while reaching in to stimulate you with her other hand.  For good measure, she nicks you with the blade itself whenever her caress elicits a distracted flush.");
 				//(HP -5, lust +10, KidXP + 3)
 				HPChange(-5, false);
-				dynStats("lus", 10, "resisted", false);
+				dynStats("lus", 10, "scale", false);
 				kidAXP(5);
 			}
 			//[Dagger]
@@ -1370,7 +1371,7 @@ package classes.Scenes.NPCs
 				outputText("\n\nThe dagger is light enough for the anemone to use one-handed, and she makes a good practice of turning aside your mock blows with it while reaching in to stimulate you with her other hand.  For good measure, she nicks you with the blade itself whenever her caress elicits a distracted flush.");
 				//(HP -5, lust +5, KidXP + 3)
 				HPChange(-5, false);
-				dynStats("lus", 5, "resisted", false);
+				dynStats("lus", 5, "scale", false);
 				kidAXP(5);
 			}
 			//[Beautiful Sword]
@@ -1421,8 +1422,8 @@ package classes.Scenes.NPCs
 				if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.SUCWHIP.id) outputText("  The demonic enchantment chooses then to activate, and her color deepens as her lust peaks, as does your own.");
 				outputText("  You feel a point digging into your groin as her prick hardens and her struggles cease; she begins to moan openly in arousal.  As she relaxes, the coils of the whip finally loosen enough for you to extricate yourself.");
 				//(HP -0, lust +10 if normal whip or +20 if succubus, KidXP + 3)
-				dynStats("lus", 10, "resisted", false);
-				if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.SUCWHIP.id) dynStats("lus", 10, "resisted", false);
+				dynStats("lus", 10, "scale", false);
+				if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.SUCWHIP.id) dynStats("lus", 10, "scale", false);
 				kidAXP(6);
 			}
 			//[Spiked Gauntlets] or [Hooked Gauntlets]
@@ -1445,7 +1446,7 @@ package classes.Scenes.NPCs
 				//(lust + 5, temp str/spd down, KidXP + 5)
 				//str/spd loss reverts after clicking Next button
 				kidAXP(5);
-				dynStats("lus", 10, "resisted", false);
+				dynStats("lus", 10, "scale", false);
 			}
 			//[White Book]
 			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == consumables.W__BOOK.id) {
@@ -1694,7 +1695,7 @@ package classes.Scenes.NPCs
 
 				outputText("\n\nLaughable as her reaction is, the venom now coursing through your " + player.vaginaDescript(0) + " ensures not a giggle escapes you; your hips begin writhing in her lap, trying to find purchase on the blue girl to better pump her shaft for its seed.");
 				//[(if pc is loose)
-				if (player.vaginas[0].vaginalLooseness >= VAGINA_LOOSENESS_GAPING) outputText("  You can barely feel her little shaft in your stretched cunt, but the chemical stimulation from the tentacles stroking your insides goes a long way toward making up for that.");
+				if (player.vaginas[0].vaginalLooseness >= VaginaClass.LOOSENESS_GAPING) outputText("  You can barely feel her little shaft in your stretched cunt, but the chemical stimulation from the tentacles stroking your insides goes a long way toward making up for that.");
 				outputText("  Emboldened, she picks up your legs haltingly, then begins to work herself in and out of your depths.");
 
 				outputText("\n\nWith all the grace of a first-timer, the girl clumsily leans down to kiss you, but falls short and can only plant a smooch on your still-clad [chest].  Still, she continues pumping enthusiastically, worry and shame evaporating from her brow as you moan lustily instead of rebuking her temerity.  Pausing to support you with one hand as she spreads your lips wider with her fingers, she exposes your " + player.clitDescript() + " to the air.");
@@ -1782,7 +1783,7 @@ package classes.Scenes.NPCs
 				else outputText(" and neither of you says a word as she backs away slowly on her knees.");
 				outputText("  Sighing, you turn over and attempt to return to sleep despite the pervading smell of semen.");
 			}
-			dynStats("lus", 50 + player.sens / 2, "resisted", false);
+			dynStats("lus", 50 + player.sens / 2, "scale", false);
 			doNext(playerMenu);
 		}
 

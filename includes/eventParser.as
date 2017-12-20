@@ -1,4 +1,4 @@
-import classes.GlobalFlags.kFLAGS;
+﻿import classes.GlobalFlags.kFLAGS;
 import classes.GlobalFlags.kGAMECLASS;
 import classes.Player;
 import classes.Items.Consumable;
@@ -16,6 +16,7 @@ import coc.view.MainView;
 //const PHYLLA_GEMS_HUNTED_TODAY:int = 893;
 
 public function playerMenu():void {
+	mainViewManager.hidePlayerDoll();
 	if (!inCombat) spriteSelect(null);
 	mainView.setMenuButton(MainView.MENU_NEW_MAIN, "New Game", charCreation.newGameGo);
 	mainView.nameBox.visible = false;
@@ -72,9 +73,9 @@ public function gameOver(clear:Boolean = false):void { //Leaves text on screen u
 	flags[kFLAGS.TIMES_BAD_ENDED]++;
 	awardAchievement("Game Over!", kACHIEVEMENTS.GENERAL_GAME_OVER, true, true);
 	menu();
-	addButton(0, "Game Over", gameOverMenuOverride, null, null, null, "Your game has ended. Please load a saved file or start a new game.");
-	if (flags[kFLAGS.HARDCORE_MODE] <= 0) addButton(1, "Nightmare", camp.wakeFromBadEnd, null, null, null, "It's all just a dream. Wake up.");
-	//addButton(3, "NewGamePlus", charCreation.newGamePlus, null, null, null, "Start a new game with your equipment, experience, and gems carried over.");
+	addButton(0, "Game Over", gameOverMenuOverride).hint("Your game has ended. Please load a saved file or start a new game.");
+	if (flags[kFLAGS.HARDCORE_MODE] <= 0) addButton(1, "Nightmare", camp.wakeFromBadEnd).hint("It's all just a dream. Wake up.");
+	//addButton(3, "NewGamePlus", charCreation.newGamePlus).hint("Start a new game with your equipment, experience, and gems carried over.");
 	//if (flags[kFLAGS.EASY_MODE_ENABLE_FLAG] == 1 || debug) addButton(4, "Debug Cheat", playerMenu);
 	gameOverMenuOverride();
 	inCombat = false;
@@ -342,7 +343,7 @@ private function goNextWrapped(time:Number, needNext:Boolean):Boolean  {
 		}
 		//Egg loot!
 		if (player.hasStatusEffect(StatusEffects.LootEgg)) {
-			trace("EGG LOOT HAS");
+			//trace("EGG LOOT HAS");
 			if (!player.hasStatusEffect(StatusEffects.Eggs)) { //Handling of errors.
 				outputText("Oops, looks like something went wrong with the coding regarding gathering eggs after pregnancy. Hopefully this should never happen again. If you encounter this again, please let Kitteh6660 know so he can fix it.");
 				player.removeStatusEffect(StatusEffects.LootEgg);
@@ -358,7 +359,7 @@ private function goNextWrapped(time:Number, needNext:Boolean):Boolean  {
 							consumables.BROWNEG;
 			player.removeStatusEffect(StatusEffects.LootEgg);
 			player.removeStatusEffect(StatusEffects.Eggs);
-			trace("TAKEY NAU");
+			//trace("TAKEY NAU");
 			inventory.takeItem(itype, playerMenu);
 			return true;
 		}
@@ -368,17 +369,7 @@ private function goNextWrapped(time:Number, needNext:Boolean):Boolean  {
 	
 	// Hanging the Uma massage update here, I think it should work...
 	telAdre.umasShop.updateBonusDuration(time);
-	if (player.hasStatusEffect(StatusEffects.UmasMassage))
-	{
-		trace("Uma's massage bonus time remaining: " + player.statusEffectv3(StatusEffects.UmasMassage));
-	}
-	
 	highMountains.izumiScenes.updateSmokeDuration(time);
-	if (player.hasStatusEffect(StatusEffects.IzumisPipeSmoke))
-	{
-		trace("Izumis pipe smoke time remaining: " + player.statusEffectv1(StatusEffects.IzumisPipeSmoke));
-	}
-	
 	//Drop axe if too short!
 	if ((player.tallness < 78 && player.str < 90) && player.weapon == weapons.L__AXE) {
 		outputText("<b>\nThis axe is too large for someone of your stature to use, though you can keep it in your inventory until you are big enough.</b>\n");
@@ -401,29 +392,29 @@ private function goNextWrapped(time:Number, needNext:Boolean):Boolean  {
 		return true;
 	}
 	//Drop beautiful sword if corrupted!
-	if (player.weaponPerk == "holySword" && player.cor >= (35 + player.corruptionTolerance())) {
+	if (player.weaponPerk == "holySword" && !player.isPureEnough(35)) {
 		outputText("<b>\nThe <u>" + player.weaponName + "</u> grows hot in your hand, until you are forced to drop it.  Whatever power inhabits this blade appears to be unhappy with you.  Touching it gingerly, you realize it is no longer hot, but as soon as you go to grab the hilt, it nearly burns you.\n\nYou realize you won't be able to use it right now, but you could probably keep it in your inventory.</b>\n\n");
 		inventory.takeItem(player.setWeapon(WeaponLib.FISTS), playerMenu);
 		return true;
 	}
 	//Drop ugly sword if uncorrupt
-	if (player.weaponPerk == "uglySword" && player.cor < (70 - player.corruptionTolerance())) {
+	if (player.weaponPerk == "uglySword" && !player.isCorruptEnough(70)) {
 		outputText("<b>\nThe <u>" + player.weaponName + "</u> grows hot in your hand, until you are forced to drop it. Whatever power inhabits this blade appears to be disgusted with your purity. Touching it gingerly, you realize it is no longer hot, but as soon as you go to grab the hilt, it nearly burns you.\n\nYou realize you won't be able to use it right now, but you could probably keep it in your inventory.</b>\n\n");
 		inventory.takeItem(player.setWeapon(WeaponLib.FISTS), playerMenu);
 		return true;
 	}
 	//Drop midnight rapier if uncorrupt
-	if (player.weaponPerk == "midnightRapier" && player.cor < (90 - player.corruptionTolerance())) {
+	if (player.weaponPerk == "midnightRapier" && !player.isCorruptEnough(90)) {
 		outputText("<b>\nThe <u>" + player.weaponName + "</u> grows hot in your hand, until you are forced to drop it. Whatever power inhabits this blade appears to be disgusted with your purity. Touching it gingerly, you realize it is no longer hot, but as soon as you go to grab the hilt, it nearly burns you.\n\nYou realize you won't be able to use it right now, but you could probably keep it in your inventory.</b>\n\n");
 		inventory.takeItem(player.setWeapon(WeaponLib.FISTS), playerMenu);
 		return true;
 	}
 	//Drop scarred blade if not corrupted enough!
-	if (player.weapon == weapons.SCARBLD && player.cor < (70 - player.corruptionTolerance()) && flags[kFLAGS.MEANINGLESS_CORRUPTION] <= 0) {
+	if (player.weapon == weapons.SCARBLD && !player.isCorruptEnough(70)) {
 		kGAMECLASS.sheilaScene.rebellingScarredBlade();
 		return true;
 	}
-	if (flags[kFLAGS.SCARRED_BLADE_STATUS] == 1 && player.cor >= 70) {
+	if (flags[kFLAGS.SCARRED_BLADE_STATUS] == 1 && player.isCorruptEnough(70)) {
 		kGAMECLASS.sheilaScene.findScarredBlade();
 		return true;
 	}

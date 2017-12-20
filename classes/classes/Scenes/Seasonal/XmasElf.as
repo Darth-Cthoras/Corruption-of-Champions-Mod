@@ -48,7 +48,7 @@ package classes.Scenes.Seasonal {
 			addDisabledButton(1, "Unwrap Elf");
 			addButton(4, "Decline", declineXmasPresent);
 			
-			if (player.cor >= (90 + player.corruptionTolerance()) || flags[kFLAGS.JOJO_STATUS] >= 5 || player.hasStatusEffect(StatusEffects.Exgartuan) || getGame().amilyScene.amilyCorrupt() || flags[kFLAGS.SOPHIE_DISABLED_FOREVER] > 0 || flags[kFLAGS.SOPHIE_BIMBO] > 0 || flags[kFLAGS.NIAMH_STATUS] > 0)
+			if (!player.isPureEnough(90) || flags[kFLAGS.JOJO_STATUS] >= 5 || player.hasStatusEffect(StatusEffects.Exgartuan) || getGame().amilyScene.amilyCorrupt() || flags[kFLAGS.SOPHIE_DISABLED_FOREVER] > 0 || flags[kFLAGS.SOPHIE_BIMBO] > 0 || flags[kFLAGS.NIAMH_STATUS] > 0)
 			{
 				outputText("She nods, bouncing up and down in excitement and flushing slightly, \"<i>Yup, just tear the lid off and get your gift!</i>\"\n\n");
 				if (flags[kFLAGS.PC_ENCOUNTERED_CHRISTMAS_ELF_BEFORE] > 0) outputText("Here we go again...\n\n");
@@ -83,7 +83,7 @@ package classes.Scenes.Seasonal {
 			spriteSelect(SpriteDb.s_christmas_elf);
 			clearOutput();
 			outputText("You easily rip through the ribbons holding the box together and pull off the top.   You gasp in ");
-			if (player.cor >= (90 + player.corruptionTolerance()) || flags[kFLAGS.JOJO_STATUS] >= 5 || player.hasStatusEffect(StatusEffects.Exgartuan) || getGame().amilyScene.amilyCorrupt() || flags[kFLAGS.SOPHIE_DISABLED_FOREVER] > 0 || flags[kFLAGS.SOPHIE_BIMBO] > 0 || flags[kFLAGS.NIAMH_STATUS] > 0) {
+			if (!player.isPureEnough(90) || flags[kFLAGS.JOJO_STATUS] >= 5 || player.hasStatusEffect(StatusEffects.Exgartuan) || getGame().amilyScene.amilyCorrupt() || flags[kFLAGS.SOPHIE_DISABLED_FOREVER] > 0 || flags[kFLAGS.SOPHIE_BIMBO] > 0 || flags[kFLAGS.NIAMH_STATUS] > 0) {
 				//[Bad Present]
 				outputText("shock at the box's contents – a nine inch cock with damn near a dozen buzzing, elliptical devices taped to it.  A pair of coal lumps rattles around underneath it, positioned as if they were the dick's testicles.\n\n");
 				
@@ -223,8 +223,8 @@ package classes.Scenes.Seasonal {
 			outputText("Determined to get off, you wiggle against her, mashing your " + player.clitDescript() + " into her own.  She squirms and cries out, actually getting off before you!  You muse that elves must have extraordinarily sensitive clitorises, but before you can act on it, you feel a sudden stirring in your loins.   The dildo is starting to spin!  You prop yourself up and watch, unbelieving as the elf's orgasmic contractions visibly contort her belly, moving more and more quickly as the spinning speeds up.  In seconds the twirling assault has placed you back on the edge of orgasm, and you're groaning and rubbing against your insensate lover for more.\n\n");
 
 			outputText("You cum, ");
-			if (player.vaginas[0].vaginalWetness == VAGINA_WETNESS_SLAVERING) outputText("gushing fluids");
-			else if (player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_SLICK) outputText("dripping fluids");
+			if (player.vaginas[0].vaginalWetness == VaginaClass.WETNESS_SLAVERING) outputText("gushing fluids");
+			else if (player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_SLICK) outputText("dripping fluids");
 			else outputText("squishing wetly");
 			outputText(" as your " + player.vaginaDescript(0) + " is drilled by the elf's double-ended dong.   It feels beyond good, like having a cock inside you that rubs against each part of your pussy over and over and over without the barest hint of mercy.  Your gasp and pant, glancing back up at the elf.  She's already recovered from her orgasm, though she has an intense look of concentration on her face while she focuses on twisting the dildo inside you.\n\n");
 

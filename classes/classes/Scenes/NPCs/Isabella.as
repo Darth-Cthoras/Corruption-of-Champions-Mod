@@ -1,6 +1,8 @@
 package classes.Scenes.NPCs
 {
 	import classes.*;
+	import classes.BodyParts.*;
+	import classes.BodyParts.Butt;
 
 	public class Isabella extends Monster
 	{
@@ -139,7 +141,7 @@ package classes.Scenes.NPCs
 			outputText("Isabella pulls one of her breasts out of her low-cut shirt and begins to suckle at one of the many-tipped nipples. Her cheeks fill and hollow a few times while you watch with spellbound intensity.  She finishes and tucks the weighty orb away, blushing furiously.  The quick drink seems to have reinvigorated her, and watching it has definitely aroused you.");
 			HP += 100;
 			lust += 5;
-			game.dynStats("lus", (10+player.lib/20));
+			player.takeLustDamage((10+player.lib/20), true);
 			combatRoundOver();
 		}
 
@@ -180,18 +182,18 @@ package classes.Scenes.NPCs
 			this.imageName = "isabella";
 			this.long = "Isabella is a seven foot tall, red-headed tower of angry cow-girl.  She's snarling at you from behind her massive shield, stamping her hooves in irritation as she prepares to lay into you.  Her skin is dusky, nearly chocolate except for a few white spots spattered over her body.  She wears a tight silk shirt and a corset that barely supports her bountiful breasts, but it's hard to get a good look at them behind her giant shield.";
 			// this.plural = false;
-			this.createVagina(false, VAGINA_WETNESS_DROOLING, VAGINA_LOOSENESS_GAPING);
+			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_GAPING);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 45, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("EE+"));
-			this.ass.analLooseness = ANAL_LOOSENESS_VIRGIN;
-			this.ass.analWetness = ANAL_WETNESS_DRY;
+			this.ass.analLooseness = AssClass.LOOSENESS_VIRGIN;
+			this.ass.analWetness = AssClass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,38,0,0,0);
 			this.tallness = 7*12+6;
-			this.hipRating = HIP_RATING_CURVY+2;
-			this.buttRating = BUTT_RATING_LARGE+1;
-			this.skinTone = "dusky";
-			this.hairColor = "red";
-			this.hairLength = 13;
+			this.hips.rating = Hips.RATING_CURVY+2;
+			this.butt.rating = Butt.RATING_LARGE+1;
+			this.skin.tone = "dusky";
+			this.hair.color = "red";
+			this.hair.length = 13;
 			initStrTouSpeInte(70, 98, 75, 65);
 			initLibSensCor(65, 25, 40);
 			this.weaponName = "giant shield";
@@ -207,8 +209,8 @@ package classes.Scenes.NPCs
 			this.temperment = TEMPERMENT_RANDOM_GRAPPLES;
 			this.level = 15;
 			this.gems = rand(5) + 20;
-			this.tailType = TAIL_TYPE_COW;
-			this.tailRecharge = 0;
+			this.tail.type = Tail.COW;
+			this.tail.recharge = 0;
 			this.drop = NO_DROP;
 			checkMonster();
 		}

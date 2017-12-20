@@ -1,6 +1,9 @@
 package classes.Scenes.Areas.HighMountains
 {
 	import classes.*;
+	import classes.BodyParts.*;
+	import classes.BodyParts.Butt;
+	import classes.BodyParts.Hips;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.display.SpriteDb;
 	import classes.internals.*;
@@ -152,7 +155,7 @@ package classes.Scenes.Areas.HighMountains
 				this.short = "minotaur gang";
 			else
 				this.short = "minotaur tribe";
-			this.imageName = "minotaurmob";
+			this.imageName = "minomob";
 			this.long = Num2Text(game.flags[kFLAGS.ADULT_MINOTAUR_OFFSPRINGS]) + " shaggy beastmen stand around you in a loose circle.  Their postures aren't exactly threatening.  If anything, they seem to be standing protectively around you, as if their presence would somehow shelter you from the rest of the mountain.  All of their features share a brotherly similarity, though there's still a fair bit of differences between your minotaur sons.  One of them is a head above the rest, a massive hulk of muscle so big he seems to dwarf the rest.  In stark contrast, a feminine minitaur keeps his distance in the rear."+(game.flags[kFLAGS.ADULT_MINOTAUR_OFFSPRINGS] >= 20?"  The tribe constantly makes hoots and cat-calls, fully expecting to be fucking you soon.":"");
 			this.plural = true;
 			this.pronoun1 = "they";
@@ -164,19 +167,19 @@ package classes.Scenes.Areas.HighMountains
 			this.cumMultiplier = 1.5;
 			this.hoursSinceCum = ballSize * 10;
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_STRETCHED;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.createStatusEffect(StatusEffects.BonusACapacity,30,0,0,0);
 			this.tallness = rand(37) + 84;
-			this.hipRating = HIP_RATING_AVERAGE;
-			this.buttRating = BUTT_RATING_AVERAGE+1;
-			this.lowerBody = LOWER_BODY_TYPE_HOOFED;
-			this.skinTone = "red";
-			this.skinType = SKIN_TYPE_FUR;
-			this.skinDesc = "shaggy fur";
-			this.hairColor = randomChoice("black","brown");
-			this.hairLength = 3;
-			this.faceType = FACE_COW_MINOTAUR;
+			this.hips.rating = Hips.RATING_AVERAGE;
+			this.butt.rating = Butt.RATING_AVERAGE+1;
+			this.lowerBody.type = LowerBody.HOOFED;
+			this.skin.tone = "red";
+			this.theSkinType = Skin.FUR;
+			this.skin.desc = "shaggy fur";
+			this.hair.color = randomChoice("black","brown");
+			this.hair.length = 3;
+			this.face.type = Face.COW_MINOTAUR;
 			initStrTouSpeInte(65, 60, 30, 20);
 			initLibSensCor(40, 15, 35);
 			this.weaponName = "fists";
@@ -194,7 +197,7 @@ package classes.Scenes.Areas.HighMountains
 			if (level > 14) level = 14;
 			this.level = level;
 			this.gems = rand(15) + 45;
-			this.tailType = TAIL_TYPE_COW;
+			this.tail.type = Tail.COW;
 			this.special1 = game.mountain.minotaurScene.minoPheromones;
 			this.drop = NO_DROP;
 			checkMonster();

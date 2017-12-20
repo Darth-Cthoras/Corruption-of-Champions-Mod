@@ -5,12 +5,12 @@ package classes.Items.Armors
 {
 	import classes.GlobalFlags.kFLAGS;
 	import classes.Items.Armor;
-	import classes.CoC;
 	import classes.Monster;
 	import classes.PerkLib;
 	import classes.Player;
 	import classes.Scenes.Areas.HighMountains.MinotaurMob;
 	import classes.Scenes.Areas.Mountain.Minotaur;
+	import classes.lists.BreastCup;
 
 	public final class LustyMaidensArmor extends Armor {
 		
@@ -27,18 +27,18 @@ package classes.Items.Armors
 			if (!super.canUse()) {
 				return false;
 			}
-			if (game.player.biggestTitSize() < CoC.BREAST_CUP_A) { //{No titties}
+			if (game.player.biggestTitSize() < BreastCup.A) { //{No titties}
 				outputText("You slide the bikini top over your chest and buckle it into place, but the material hangs almost comically across your flat chest.  The cold chain dangles away from you, swaying around ridiculously before smacking, cold and hard into your [nipples].  This simply won't do - it doesn't fit you, and you switch back to your old armor.\n\n");
 				return false;
 			}
-			if (game.player.biggestTitSize() < CoC.BREAST_CUP_D) { //{Too small titties}
+			if (game.player.biggestTitSize() < BreastCup.D) { //{Too small titties}
 				outputText("You slide the bikini top over your chest, shivering when the cold chains catch on your nipples, stiffening them nicely. The material nicely accentuates your chest, but there's a definite problem.  Your [chest] aren't big enough!  Sure, they look nice done up in glittering silver and gold trim.  If only the metal wasn't hanging loosely around your underbust, flopping around whenever you move.  It doesn't even look that sexy on you!  You'll need a bigger chest to truly make use of this armor.  For now, you switch back to your old equipment.\n\n");
 				return false;
 			}
 			outputText("You slide the bikini top over your more than ample chest, shivering at the touch of the cold metal on your sensitive nipples.  It stretches taut around each of your globes, and by the time you're snapping the narrow leather strap behind your back, the exotic metal bra has grown warm enough to make your chest tingle pleasantly.  Your hands find their way to your jiggling, gilded mounds and grab hold, fingers sinking into the shimmering flesh without meaning to.  Your nipples scrape along a diaphanous inner lining so pleasantly that a moan slips out of your mouth as you admire how your cleavage bulges out above the glittery cups.  A narrow band of steel with a shiny black leather thong underneath connects the two halfs of the top, padded for comfort but pulled away from you by the sheer size of your straining bosoms.");
 			outputText("\n\nAs you examine the material, you realize that leather band isn't just padding.  It's as slippery as butter on grease and has a subtle indentation, one that would let it perfectly cushion something round, thick... and throbbing.  Your cheeks color when you catch yourself thinking of titfucking some beast while dressed in this outfit, taking a thick load of monster or dick-girl seed right over your cleavage, face, and hair.  You could even line it up with your mouth and drink down a few swallows if you wanted to.");
 			outputText("\n\nYou shake your head and smile ruefully - maybe once you finish getting dressed!  There's still a bottom to put on, after all.  Regardless, one of your hands keeps coming to rest on your boob, idly groping and fondling your heavy tit whenever you have a free moment.  This sure is some fun armor!");
-			game.dynStats("lus", 25, "resisted", false);
+			game.dynStats("lus", 25, "scale", false);
 			outputText("\n\nNow, the bottom is a leather thong and skirt combination.  The thong itself is leather dyed radiant white, with intricate gold filigree covering the front triangle.  On the back triangle, there's a similar pattern, though you could swear that from a distance the pattern looks a bit like arrows pointing towards where your [asshole] will be with golden sperm surrounding them. No, that has to be your imagination.  All this time in this strange land must really be getting to you!  Both pieces are molded to accentuate the female form, with a crease in the gusset that will rest over your vagina, ensuring ");
 			if ((game.player.hasCock() && !game.player.hasSheath()) || game.player.balls > 0) {
 				outputText("that it won't fit you ");

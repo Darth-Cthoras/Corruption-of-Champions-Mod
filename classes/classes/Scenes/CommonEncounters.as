@@ -14,6 +14,7 @@ import classes.Scenes.Monsters.Goblin;
 import classes.Scenes.Monsters.Imp;
 import classes.display.SpriteDb;
 import classes.internals.*;
+import classes.VaginaClass;
 
 public class CommonEncounters extends BaseContent implements Encounter {
 
@@ -239,7 +240,7 @@ public class CommonEncounters extends BaseContent implements Encounter {
 			}
 			//IF CHARACTER HAS A BALLS ADD SENTENCE
 			if (player.balls > 0) {
-				outputText("  Your " + player.skinTone + " " + player.sackDescript() + " rests beneath your raised " + player.buttDescript() + ".  Your " + player.ballsDescriptLight() + " pulse with the need to release their sperm through your " + player.multiCockDescriptLight() + " and ");
+				outputText("  Your " + player.skin.tone + " " + player.sackDescript() + " rests beneath your raised " + player.buttDescript() + ".  Your " + player.ballsDescriptLight() + " pulse with the need to release their sperm through your " + player.multiCockDescriptLight() + " and ");
 				if (lake) outputText("into the waters of the nearby lake.");
 				else outputText("onto the fertile soil of the forest.");
 			}
@@ -247,7 +248,7 @@ public class CommonEncounters extends BaseContent implements Encounter {
 			if (player.vaginas.length >= 1) {
 				outputText("  Your " + player.vaginaDescript() + " and " + player.clitDescript() + " are thoroughly squashed between the bulky flesh where your male genitals protrude from between your hips and the " + player.buttDescript() + " above.");
 				//IF CHARACTER HAS A DROOLING PUSSY ADD SENTENCE
-				if (player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_DROOLING) {
+				if (player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_DROOLING) {
 					outputText("  Juices stream from your womanhood and begin pooling on the dirt and twigs beneath you.  ");
 					if (lake) outputText("The drooling fem-spunk only makes the ground more muddy.");
 					else outputText("The sticky fem-spunk immediately soaks down into the rich soil.");
@@ -264,7 +265,7 @@ public class CommonEncounters extends BaseContent implements Encounter {
 			}
 			//IF CHARACTER HAS A BALLS ADD SENTENCE
 			if (player.balls > 0) {
-				outputText("  Your " + player.skinTone + player.sackDescript() + " rests beneath your raised " + player.buttDescript() + ".  Your " + player.ballsDescriptLight() + " pulse with the need to release their sperm through your " + player.multiCockDescriptLight() + " and ");
+				outputText("  Your " + player.skin.tone + player.sackDescript() + " rests beneath your raised " + player.buttDescript() + ".  Your " + player.ballsDescriptLight() + " pulse with the need to release their sperm through your " + player.multiCockDescriptLight() + " and ");
 				if (lake) outputText("into the waters of the nearby lake.");
 				else outputText("onto the fertile soil of the forest floor.");
 			}
@@ -272,7 +273,7 @@ public class CommonEncounters extends BaseContent implements Encounter {
 			if (player.vaginas.length >= 1) {
 				outputText("  Your " + player.vaginaDescript() + " and " + player.clitDescript() + " are thoroughly squashed between the bulky flesh where your male genitals protrude from between your hips and the " + player.buttDescript() + " above.");
 				//IF CHARACTER HAS A DROOLING PUSSY ADD SENTENCE
-				if (player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_DROOLING) {
+				if (player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_DROOLING) {
 					if (lake) outputText("  A leaf falls from a tree and lands on the wet lips of your cunt, its light touch teasing your sensitive skin.  Like a mare or cow in heat, your juices stream from your womanhood and pool in the mud beneath you.  The sloppy fem-spunk only makes the ground more muddy.");
 					else outputText("  A leaf falls from a tree and lands on the wet lips of your cunt, its light touch teasing your sensitive skin.  Like a mare or cow in heat, your juices stream from your womanhood and pool in the dirt and twigs beneath you.");
 				}
@@ -303,7 +304,7 @@ public class CommonEncounters extends BaseContent implements Encounter {
 			//SCENE END = FOR ALL OTHER CHARACTERS
 			else outputText("  You struggle and push with your " + player.legs() + " as hard as you can, but it's no use.  You do the only thing you can and begin stroking your " + player.multiCockDescriptLight() + " with as much vigor as you can muster.  Eventually, your body tenses and a light load of jizz erupts from your loins, but the orgasm is truly mild compared to what you need.  You're far too weary from struggling to give yourself the masturbation you truly need, but you continue to try.  Nearly an hour later, " + player.sMultiCockDesc() + " has softened enough to allow you to stand again, and you make your way back to camp, still dragging your genitals across the forest floor.");
 		}
-		dynStats("lus", 25 + rand(player.cor / 5), "resisted", false);
+		dynStats("lus", 25 + rand(player.cor / 5), "scale", false);
 		player.changeFatigue(5);
 		doNext(camp.returnToCampUseOneHour);
 	}
@@ -331,12 +332,12 @@ public class CommonEncounters extends BaseContent implements Encounter {
 			//IF CHARACTER HAS GIANT BREASTS ADD SENTENCE
 			if (player.biggestTitSize() >= 35) outputText("  Your " + player.allBreastsDescript() + " hang lewdly off your torso to rest on the desert sands, seeming to bury the dunes on either side of you.  Their immense weight anchors your body, further preventing your torso from lifting itself up.  The burning heat of the desert teases your " + player.nippleDescript(0) + "s mercilessly as they grind in the sand.");
 			//IF CHARACTER HAS A BALLS ADD SENTENCE
-			if (player.balls > 0) outputText("  Your " + player.skinTone + player.sackDescript() + " rests beneath your raised " + player.buttDescript() + ".  The fiery warmth of the desert caresses it, causing your " + player.ballsDescriptLight() + " to pulse with the need to release their sperm through your " + player.multiCockDescriptLight() + ".");
+			if (player.balls > 0) outputText("  Your " + player.skin.tone + player.sackDescript() + " rests beneath your raised " + player.buttDescript() + ".  The fiery warmth of the desert caresses it, causing your " + player.ballsDescriptLight() + " to pulse with the need to release their sperm through your " + player.multiCockDescriptLight() + ".");
 			//IF CHARACTER HAS A VAGINA ADD SENTENCE
 			if (player.vaginas.length >= 1) {
 				outputText("  Your " + player.vaginaDescript() + " and " + player.clitDescript() + " are thoroughly squashed between the bulky flesh where your male genitals protrude from between your hips and the " + player.buttDescript() + " above.");
 				//IF CHARACTER HAS A DROOLING PUSSY ADD SENTENCE
-				if (player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_DROOLING) outputText("  Juices stream from your womanhood and begin pooling on the hot sand beneath you.  Wisps of steam rise up into the air only to tease your genitals further.  ");
+				if (player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_DROOLING) outputText("  Juices stream from your womanhood and begin pooling on the hot sand beneath you.  Wisps of steam rise up into the air only to tease your genitals further.  ");
 			}
 		}
 		//FOR CENTAURS
@@ -345,12 +346,12 @@ public class CommonEncounters extends BaseContent implements Encounter {
 			//IF CHARACTER HAS GIANT BREASTS ADD SENTENCE
 			if (player.biggestTitSize() >= 35) outputText("  Your " + player.allBreastsDescript() + " pull your human torso forward until it also is forced to rest facedown, just like your horse half.  Your tits rest, pinned on the desert sand to either side of you.  Their immense weight anchors you, further preventing any part of your equine body from lifting itself up.  The burning heat of the desert teases your " + player.nippleDescript(0) + "s incessantly.");
 			//IF CHARACTER HAS A BALLS ADD SENTENCE
-			if (player.balls > 0) outputText("  Your " + player.skinTone + player.sackDescript() + " rests beneath your raised " + player.buttDescript() + ".  The airy warmth of the desert teases it, causing your " + player.ballsDescriptLight() + " pulse with the need to release their sperm through your " + player.multiCockDescriptLight() + ".");
+			if (player.balls > 0) outputText("  Your " + player.skin.tone + player.sackDescript() + " rests beneath your raised " + player.buttDescript() + ".  The airy warmth of the desert teases it, causing your " + player.ballsDescriptLight() + " pulse with the need to release their sperm through your " + player.multiCockDescriptLight() + ".");
 			//IF CHARACTER HAS A VAGINA ADD SENTENCE
 			if (player.vaginas.length >= 1) {
 				outputText("  Your " + player.vaginaDescript() + " and " + player.clitDescript() + " are thoroughly squashed between the bulky flesh where your male genitals protrude from between your hips and the " + player.buttDescript() + " above.");
 				//IF CHARACTER HAS A DROOLING PUSSY ADD SENTENCE
-				if (player.vaginas[0].vaginalWetness >= VAGINA_WETNESS_DROOLING) outputText("  The desert sun beats down on your body, its fiery heat inflaming the senses of your vaginal lips.  Juices stream from your womanhood and begin pooling on the hot sand beneath you.");
+				if (player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_DROOLING) outputText("  The desert sun beats down on your body, its fiery heat inflaming the senses of your vaginal lips.  Juices stream from your womanhood and begin pooling on the hot sand beneath you.");
 			}
 		}
 		outputText("\n\n");
@@ -367,7 +368,7 @@ public class CommonEncounters extends BaseContent implements Encounter {
 		else if (player.isTaur()) outputText("  You struggle and work your equine legs against the surface of the dune you are trapped on.  Your " + player.feet() + " have consistent trouble finding footing, the soft sand failing to provide enough leverage to lift your bulk.  You breath in deeply and lean from side to side, trying to find some easier vertical leverage.  Eventually, with a crude crawl, your legs manage to push the bulk of your body onto more solid ground.  With great difficulty, you spend the next hour shuffling your genitals across the sandscape and back to camp.");
 		//SCENE END = FOR ALL OTHER CHARACTERS
 		else outputText("  You struggle and push with your " + player.legs() + " as hard as you can, but it's no use.  You do the only thing you can and begin stroking your " + player.multiCockDescriptLight() + " with as much vigor as you can muster.  Eventually your body tenses and a light load of jizz erupts from your body, but the orgasm is truly mild compared to what you need.  You're simply too weary from struggling to give yourself the masturbation you truly need, but you continue to try.  Nearly an hour later " + player.sMultiCockDesc() + " softens enough to allow you to stand again, and you make your way back to camp, still dragging your genitals across the warm sand.");
-		dynStats("lus", 25 + rand(player.cor / 5), "resisted", false);
+		dynStats("lus", 25 + rand(player.cor / 5), "scale", false);
 		player.changeFatigue(5);
 		doNext(camp.returnToCampUseOneHour);
 	}

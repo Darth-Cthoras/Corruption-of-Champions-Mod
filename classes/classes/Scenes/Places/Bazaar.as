@@ -18,13 +18,15 @@ package classes.Scenes.Places{
 //Set Up With The Travelling, Tainted Bazaar
 public function Bazaar(){
 }
+		private var rng:IRandomNumber = new RandomNumber();
+
 		public var blackCock:BlackCock = new BlackCock();
 		public var benoit:Benoit = new Benoit();
 		public var cinnabar:Cinnabar = new Cinnabar();
 		public var fapArena:FapArena = new FapArena();
 		public var lilium:Lilium = new Lilium();
-		public var roxanne:Roxanne = new Roxanne();
 		public var chillySmith:ChillySmith = new ChillySmith();
+		public var roxanne:Roxanne = new Roxanne(rng);
 
 //[Find Travelling Bazaar]
 public function findBazaar():void {
@@ -50,17 +52,16 @@ public function findBazaar():void {
 //[FUCK YES I WILL PUT IT IN YOUR BIZARRE ANUS]
 private function approachBazaarGuard():void {
 	clearOutput();
-	outputText("You step from concealment and walk up to the strange man, calling out in greeting.  He folds his arms across his chest and looks you up and down, peering at you with intense, black eyes.  They aren't solid onyx, but his irises are just as dark as the seemingly bottomless depths of his pupils.  His appraising gaze watches you, unblinking as second after second ticks by.  Just when you start to wonder if he speaks your language, he interrupts you by saying, \"<i>");
-	if (player.cor < (33 - player.corruptionTolerance()) && flags[kFLAGS.MEANINGLESS_CORRUPTION] <= 0) outputText("Leave at once.  You are not yet ready for the wonders of the Bazaar.");
-	else outputText("Welcome to the Bizarre Bazaar.  Enter, but be mindful of your actions within.");
-	outputText("</i>\"");
-	menu();
-	if (player.cor < (33 - player.corruptionTolerance()) && flags[kFLAGS.MEANINGLESS_CORRUPTION] <= 0) {
+	outputText("You step from concealment and walk up to the strange man, calling out in greeting.  He folds his arms across his chest and looks you up and down, peering at you with intense, black eyes.  They aren't solid onyx, but his irises are just as dark as the seemingly bottomless depths of his pupils.  His appraising gaze watches you, unblinking as second after second ticks by.  Just when you start to wonder if he speaks your language, he interrupts you by saying, ");
+	if (!player.isCorruptEnough(33)) {
+		outputText("\"<i>Leave at once.  You are not yet ready for the wonders of the Bazaar.</i>\"");
+		menu();
 		addButton(0, "FIGHT!",initiateFightGuard);
 	} else {
+		outputText("\"<i>Welcome to the Bizarre Bazaar.  Enter, but be mindful of your actions within.</i>\"");
+		menu();
 		addButton(0, "Enter",enterTheBazaar);
 	}
-	
 	addButton(14, "Leave", camp.returnToCampUseOneHour);
 }
 
@@ -106,11 +107,11 @@ public function enterTheBazaarAndMenu(demons:Boolean = true):void {
 	menu();
 	addButton(0, "Shops", shopMenu);
 	addButton(1, (flags[kFLAGS.FAP_ARENA_RULES_EXPLAINED] > 0 ? "Fap Arena" : "Tent"), fapArena.fapArenaGOOOO);
-	addButton(2, "Food Tent", blackCock.enterTheBlackCock, null, null, null, "The incredible smell seems to come from that tent.", "The Black Cock");
+	addButton(2, "Food Tent", blackCock.enterTheBlackCock).hint("The incredible smell seems to come from that tent.", "The Black Cock");
 	if (flags[kFLAGS.PRISON_ENABLED] == true) {
-		addButton(4, "Back Alley", investigateBackAlley, null, null, null, "That back alley looks suspicious. Do you dare investigate?");
+		addButton(4, "Back Alley", investigateBackAlley).hint("That back alley looks suspicious. Do you dare investigate?");
 	} else {
-		addButton(4, "Back Alley", investigateBackAlleyNoPrison, null, null, null, "That back alley looks suspicious. Do you dare investigate?");
+		addButton(4, "Back Alley", investigateBackAlleyNoPrison).hint("That back alley looks suspicious. Do you dare investigate?");
 	}
 	//Cinnabar
 	if (model.time.hours >= 15 && model.time.hours <= 20) addButton(5, (flags[kFLAGS.CINNABAR_NUMBER_ENCOUNTERS] > 0 ? "Cinnabar" : "Rat"), cinnabar.cinnabarAppearance(false));
@@ -122,7 +123,7 @@ public function enterTheBazaarAndMenu(demons:Boolean = true):void {
 	if ((flags[kFLAGS.BAZAAR_DEMONS_LISTENED_IN] == 1 || flags[kFLAGS.BAZAAR_DEMONS_LISTENED_IN] == 2) && demons && rand(10) == 0) {
 		//[Repeat Variant]
 		outputText("\n\n<b>The familiar sounds of the two griping demons can be heard nearby.  Do you listen in again?</b>");
-		addButton(6, "GripingDemons", overHearDemonsAboutSyrena, null, null, null, "Overhear the conversation of the two griping demons.", "Griping Demons");
+		addButton(6, "GripingDemons", overHearDemonsAboutSyrena).hint("Overhear the conversation of the two griping demons.", "Griping Demons");
 	}
 	//Lilium
 	if (lilium.LiliumText(false) != null) {
@@ -266,7 +267,7 @@ private function joeyAndrogyny():void {
 	else outputText("you'll be able to be as cute as me or as masculine as you want!");
 	outputText("</i>\" explains the bunny-eared fem-boy.   You allow yourself to be lead into a small back room, where you're guided into a soft, padded chair.  Joey turns about in the cramped interior, his shapely ass mere inches from your face, tail tickling your nose.  You struggle not to sneeze or stare too deeply at the curvy fem-boy's butt-cheeks, but it's hard to focus with that delicious target waggling in front of you.\n\n");
 	
-	outputText("At last he turns back around, holding a cork-stoppered vial of pink-hued liquid in his manicured finger-tips.  \"<i>This is the stuff!  Now just close your eyes, we gotta get this worked into your skin and it stings worse than an angry wasp-girl if it gets in your eyes,</i>\" says Joey.  You blink your eyelids closed, as instructed, and you feel the soft skin of the feminine bunny rubbing over your " + player.face() + ", working something wet and tingly into your " + player.skinDesc + ".  The delicate facial massage takes roughly an hour, but you feel fresh and relaxed once it's finished.\n\n");
+	outputText("At last he turns back around, holding a cork-stoppered vial of pink-hued liquid in his manicured finger-tips.  \"<i>This is the stuff!  Now just close your eyes, we gotta get this worked into your skin and it stings worse than an angry wasp-girl if it gets in your eyes,</i>\" says Joey.  You blink your eyelids closed, as instructed, and you feel the soft skin of the feminine bunny rubbing over your " + player.faceDescript() + ", working something wet and tingly into your " + player.skin.desc + ".  The delicate facial massage takes roughly an hour, but you feel fresh and relaxed once it's finished.\n\n");
 	
 	outputText("You ask for a mirror, but Joey just titters with a knowing smile on his succulent lips as he replies, \"<i>Oh, you haven't changed at all " + player.mf("handsome","dear") + ".  This will let you change it to whatever extreme you like, but those kinds of facials aren't a service we currently offer.  I do hear that there's a goblin salon in the mountains that might be able to help you finish up your look though!</i>\"\n\n");
 	
@@ -279,7 +280,7 @@ private function joeyAndrogyny():void {
 private function joeyMassage():void {
 	clearOutput();
 	if (player.gems < 10) {
-		outputText("Joey frowns when you realize you don't have the 10 gems.  He apologizes, \"<i>I'm sorry, " + player.short + " but I can't give freebies - our special potions cost us plenty.");
+		outputText("Joey frowns when you realize you don't have the 10 gems.  He apologizes, \"<i>I'm sorry, " + player.short + " but I can't give freebies - our special potions cost us plenty.</i>\"");
 		doNext(enterTheBazaar);
 		return;
 	}
@@ -303,7 +304,7 @@ private function joeyMassage():void {
 private function joeysMassageWifNoExtraJizz():void {
 	clearOutput();
 	//(Continue as NoWang)
-	outputText("The rabbit-eared fem-boy climbs back onto the table and strokes himself a few times over your " + player.assDescript() + "; the first drops of his 'special oil' feel hot as they land on the curves of your butt cheeks.  He climbs over you, touching himself just enough to stay hard while his cum-drooling cock stops dripping and starts genuinely leaking.  A long trail of bunny-spunk is dripped onto your " + player.assDescript() + " until you're glazed with thick ropes of it.  You spot his discarded thong on the floor and giggle as you feel him flip around to put his cute bunny-butt on your shoulders.  His spunk immediately runs down your spine, even as his hands smear it all over your " + player.skinDesc + ".\n\n");
+	outputText("The rabbit-eared fem-boy climbs back onto the table and strokes himself a few times over your " + player.assDescript() + "; the first drops of his 'special oil' feel hot as they land on the curves of your butt cheeks.  He climbs over you, touching himself just enough to stay hard while his cum-drooling cock stops dripping and starts genuinely leaking.  A long trail of bunny-spunk is dripped onto your " + player.assDescript() + " until you're glazed with thick ropes of it.  You spot his discarded thong on the floor and giggle as you feel him flip around to put his cute bunny-butt on your shoulders.  His spunk immediately runs down your spine, even as his hands smear it all over your " + player.skin.desc + ".\n\n");
 	outputText("The massage heads back towards your " + player.buttDescript() + "; Joey's hands fill with your flesh as he fondles and strokes, spreading the jism into every nook and cranny, even your " + player.assholeDescript());
 	if (player.hasVagina()) outputText(" and " + player.vaginaDescript(0));
 	outputText(".  The strange, slippery feeling would've made you jump if you weren't so thoroughly relaxed, but the warmth of the room and sureness of your masseuse's touch only serve to stoke your lust as effectively as he had the oven's fire.  You mewl happily when he slides his cum-soaked fingers up your back, spreading the sloppy mess over you like icing on a cake.\n\n");
@@ -315,7 +316,7 @@ private function joeysMassageWifNoExtraJizz():void {
 	else outputText("sinks a finger deep inside");
 	outputText(" your " + player.nippleDescript(0) + ", and you raise your other to match it.  Joey smiles and pants, \"<i>Yes, we need to get out allll your tension, even that... uh... naughty... ah... sexual tension.  Mmmmm, now just lie your head back.  I'm almost done, and we always give our clients a facial treatment while we ease their worries.</i>\"\n\n");
 	
-	outputText("The bed cradles you as you close your eyes and lie back, noting the slight change in darkness beyond your eyelids from Joey's new position.  Spunk begins to rain over your " + player.face() + ", puddling seed around your eyes and forehead before it drips down your cheeks and bubbles on your lips.  You're quickly distracted from the salty, cummy facial when your personal leporid lotion-dispenser ");
+	outputText("The bed cradles you as you close your eyes and lie back, noting the slight change in darkness beyond your eyelids from Joey's new position.  Spunk begins to rain over your " + player.faceDescript() + ", puddling seed around your eyes and forehead before it drips down your cheeks and bubbles on your lips.  You're quickly distracted from the salty, cummy facial when your personal leporid lotion-dispenser ");
 	//(fork to male or genderless, no new PG)
 	//(MALE)
 	if (player.hasCock()) {
@@ -358,7 +359,7 @@ private function joeysMassageWifNoExtraJizz():void {
 		outputText("Globules of spooge squirt in time to your motions, feeding those ruby lips the treat them seem to ache for.  The rain of slick, syrupy cum on your face intensifies, spurting heavier ropes of bunny-cream each time you make the poof-tailed fem-boy swallow.  He gasps hard in between each semen-sucking gulp, all while giving you an impressive facial.  If you could see yourself, you would probably look like you're wearing enough boy-sludge to knock up an entire village.  The perverse mental image sets off a whole new set of contractions, releasing a few more waves of bliss and 'tension'.\n\n");
 		outputText("Joey climbs off once you've wound down and laps at the cum over your eyes, nose, and mouth, cleaning you enough to see properly.  The first thing you see is a girlish, cum-stained face.  He makes a show of cleaning the spunk from himself, but throws you a towel as he does so. You lick the last of his flavorful cum from your mouth, noting that while he's already put his thong back on, it's bulging obscenely and he's still squirting inside!");
 		if (player.cumQ() >= 700) {
-			outputText("  A smile widens your " + player.face() + " when you see the ");
+			outputText("  A smile widens your " + player.faceDescript() + " when you see the ");
 			if (player.cumQ() >= 2000) outputText("massive, jiggling belly you've given him.");
 			else outputText("little paunch on his belly jiggle.");
 			outputText("  He won't be hungry for some time.");
@@ -404,7 +405,7 @@ private function joeysMassageWithEXTRASpooge():void {
 	outputText("\n\n");
 	
 	outputText("The bunny-boy springs back atop you, landing hard just below your hips.  His dripping seed washes over " + player.sMultiCockDesc() + ", and the sudden onslaught of fresh, liquid warmth on your groin sets off a small explosion of jism that splatters into your chin, leaving a long trail of slime behind like a snail.  The long-eared girly-boy smiles and shifts to rub his small cock against your " + player.cockDescript(0) + ", frotting you aggressively while you both spray cum like faucets with the knobs torn off.  You don't mind that he seems to have forgotten the massage, and you run your hands up and down your " + player.chestDesc() + " to smear the heavy loads ");
-	if (!player.hasFur()) outputText("over your " + player.skinDesc);
+	if (!player.hasFur()) outputText("over your " + player.skin.desc);
 	else outputText("through your fur");
 	outputText(".\n\n");
 	
@@ -412,7 +413,7 @@ private function joeysMassageWithEXTRASpooge():void {
 	if (!player.hasFuckableNipples()) outputText("squeezing and tugging on them");
 	else outputText("sliding cum-coated fingers into their slippery depths");
 	outputText(" while he grinds and cums on your " + player.cockDescript(0) + ".  \"<i>Ungg... yes... gotta... squeeze... allofitooooouuuuut!</i>\" he pants.  He lets go of one tender nipple to reach underneath you, and before you can react, his cum-soaked finger is inside your " + player.assholeDescript() + ", pressing on your prostate.\n\n");
-	outputText("Your eyes cross and you black out, twitching weakly as a regular orgasm bursts on top of your already-protracted potion-gasm.  A pleasant, heavily sexualized dream is interrupted by a finger poking your lotion-lubricated cheek and the best you can manage is an utterly contented \"<i>mmmm.</i>\"  A warm, moist towel is rubbed over your " + player.face() + ", wiping away the spooge you blasted over it, and now that you can see him, Joey says, \"<i>You had me worried for a minute there!  Keep the towel, it's on the house, and if you need to clean up, there's a shower in the back!");
+	outputText("Your eyes cross and you black out, twitching weakly as a regular orgasm bursts on top of your already-protracted potion-gasm.  A pleasant, heavily sexualized dream is interrupted by a finger poking your lotion-lubricated cheek and the best you can manage is an utterly contented \"<i>mmmm.</i>\"  A warm, moist towel is rubbed over your " + player.faceDescript() + ", wiping away the spooge you blasted over it, and now that you can see him, Joey says, \"<i>You had me worried for a minute there!  Keep the towel, it's on the house, and if you need to clean up, there's a shower in the back!");
 	if (player.cumQ() >= 1500) outputText("  You really flooded the room though, so you'd best walk on your tip-toes until we can get a succubi or a goblin in here to clean up.");
 	outputText("  Come back ANY time, " + player.short + ".  I'd love to help you release again.</i>\"\n\n");
 	
@@ -480,7 +481,7 @@ private function suckOffJoeysGardenHose():void {
 	outputText("Your belly gurgles unhappily as if you've just eaten a huge meal, but you've got to press on!  Lick and swallow, suck and slurp - you fall into a practiced rhythm as you accommodate the bunny's chemically-induced virility.  Soon, your bulging midsection forces you to abandon swallowing and alternate between sucking at Joey's shaft and spitting out his ungodly eruptions of cum.  It runs down your " + player.allChestDesc() + ", makes a mess of your belly, glazes your " + player.legs() + ", and eventually comes to rest in the growing, three foot wide spunk-puddle on the floor.\n\n");
 	
 	outputText("Joey moans, \"<i>You're so good at this!  B-but I still feel so pent up... so full.  I don't think it's slowing down yet!</i>\"\n\n");
-	outputText("You pull back and gasp for air, ignoring the ropes of spooge splattering across your face and into your " + player.hairDescript() + ".  Determined not to lose your progress, you take his none-too-impressive cock in your hand and jack it, spurring his body to take over and propel even more eruptions of slick seed onto your " + player.face() + ".  It's so messy, so decadent, but it's ");
+	outputText("You pull back and gasp for air, ignoring the ropes of spooge splattering across your face and into your " + player.hairDescript() + ".  Determined not to lose your progress, you take his none-too-impressive cock in your hand and jack it, spurring his body to take over and propel even more eruptions of slick seed onto your " + player.faceDescript() + ".  It's so messy, so decadent, but it's ");
 	if (player.cor < 33) outputText("all for a good cause, right?");
 	else if (player.cor < 66) outputText("also kind of fun, in a naughty way.");
 	else outputText("exactly the kind of nasty stuff that gets your blood pumping.");
@@ -573,7 +574,7 @@ private function gretasGarments():void {
 		if (flags[kFLAGS.OWN_MAIDEN_BIKINI] == 0) outputText(", except maybe a super-skimpy chain bikini that's chased with white and gold highlights");
 	}
 	outputText(".");
-	dynStats("lus", 2, "resisted", false);
+	dynStats("lus", 2, "scale", false);
 	menu();
 	if (flags[kFLAGS.FOUND_SOCKS] == 0) addButton(4,"Low Stock",askGretaAboutInventory);
 	else {
@@ -1065,7 +1066,7 @@ private function assaultYoRapistYo():void {
 		//open options [Leave][Abuse ass(70 or more corruption)]
 		menu();
 		addButton(4,"Leave", assaultWinAndLeave);
-		if (player.cor >= (66 - player.corruptionTolerance()) || flags[kFLAGS.MEANINGLESS_CORRUPTION] > 0) addButton(0,"Abuse Ass",abuseHisAss);
+		if (player.isCorruptEnough(66)) addButton(0,"Abuse Ass",abuseHisAss);
 	}
 }
 

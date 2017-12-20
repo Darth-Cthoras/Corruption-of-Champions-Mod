@@ -11,9 +11,11 @@ Corruption-of-Champions.as3proj
 
 *.pyc
 /dist
+/generated
+.idea/shelf
 .idea/workspace.xml
 .idea/copyright/profiles_settings.xml
-*.sol
+/node_modules
 /out
 /tmp
 CoC-AIR-app.xml
@@ -24,3 +26,6 @@ target/
 
 # vagrant generated files
 .vagrant
+
+# Ant generated file for single test targets
+test/SingleRunner.mxml

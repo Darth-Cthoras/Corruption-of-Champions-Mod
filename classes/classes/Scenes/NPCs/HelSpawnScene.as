@@ -1,5 +1,6 @@
-package classes.Scenes.NPCs{
+﻿package classes.Scenes.NPCs{
 	import classes.*;
+	import classes.BodyParts.*;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.GlobalFlags.kGAMECLASS;
 
@@ -919,7 +920,7 @@ private function snipermanders():void {
 	if (flags[kFLAGS.HELSPAWN_DADDY] == 0) outputText("your");
 	else outputText("Hel's");
 	outputText(" eager daughter. " + flags[kFLAGS.HELSPAWN_NAME] + " takes them up with surprising reverence, holding them as gingerly as glass.  Grinning, you clasp her shoulder and tell her how to put the quiver on, and get her stance right for shooting.  It takes her a moment to get set up: her scaled, reptilian legs don't naturally stand in the shooting pose you've adopted");
-	if (player.lowerBody == LOWER_BODY_TYPE_LIZARD) outputText(", even with your own lizard legs");
+	if (player.lowerBody.type == LowerBody.LIZARD) outputText(", even with your own lizard legs");
 	outputText(", and you find yourself having to correct her grip on the haft several times.  But, finally, you get her ready to shoot.");
 	
 	outputText("\n\nYou slip behind " + flags[kFLAGS.HELSPAWN_NAME] + ", putting your arms on hers as you guide her through nocking an arrow, head resting on her fist, a lone finger outstretched toward the desiccated dummy.");
@@ -1195,7 +1196,7 @@ private function talkToHelspawn():void {
 		addButton(0,"Stop Fucking",dontFuckAlex);
 		addButton(1,"Her Boyfriend",helSpawnBoyfriend);
 		addButton(2,"Incest",incestWithHelspawn);
-		//if (silly() && flags[kFLAGS.HELSPAWN_PERSONALITY] >= 50) addButton(3, "Both", whyNotBoth, null, null, null, "Why don't we have both?")
+		//if (silly() && flags[kFLAGS.HELSPAWN_PERSONALITY] >= 50) addButton(3, "Both", whyNotBoth).hint("Why don't we have both?")
 	}
 	//Talk 2
 	//{Kiha must be at camp}
@@ -1305,7 +1306,7 @@ private function incestWithHelspawn():void {
 	outputText("\n\nYou grin as the beautiful salamander strokes your cheek, and says, \"<i>You're a hell of a lot better than any femmy spider boy, " + championRef() + ".  I'm a lucky girl to have someone like you to raise me... and to love me.</i>\"");
 	
 	outputText("\n\nYou kiss her again and send her on her way with a sharp swat on the ass.  She gives it a sexy wiggle as she walks, winking back at you as she saunters off.");
-	dynStats("lus", player.sens/10+5, "resisted", false);
+	dynStats("lus", player.sens/10+5, "scale", false);
 	flags[kFLAGS.HELSPAWN_INCEST] = 1;
 	doNext(camp.returnToCampUseOneHour);
 }
@@ -1357,7 +1358,7 @@ private function umYum():void {
 			player.takeDamage(player.maxHP() / 4);
 			player.damageHunger(rand(10) + 15);
 			dynStats("lib", -10);
-			dynStats("lust", -100, "resisted", false);
+			dynStats("lust", -100, "scale", false);
 		}
 		outputText("You set the finished bowl down and ")
 	}

@@ -1,7 +1,8 @@
-package classes 
+package classes
 {
 	import classes.GlobalFlags.*;
 	import coc.view.MainView;
+	import coc.view.StatsView;
 	import flash.display.StageQuality;
 	import flash.text.TextFormat;
 	/**
@@ -10,9 +11,9 @@ package classes
 	 */
 	public class GameSettings extends BaseContent
 	{
-		
+
 		public function GameSettings() {}
-		
+
 		public function settingsScreenMain():void
 		{
 			kGAMECLASS.saves.savePermObject(false);
@@ -44,12 +45,12 @@ package classes
 		public function settingsScreenGameSettings():void {
 			clearOutput();
 			displayHeader("Gameplay Settings");
-			
+
 			if (flags[kFLAGS.HARDCORE_MODE] > 0) outputText("<font color=\"#ff0000\">Hardcore mode is enabled. Cheats are disabled.</font>\n\n");
 
 			if (debug) outputText("Debug Mode: <font color=\"#008000\"><b>ON</b></font>\n Items will not be consumed by use, fleeing always succeeds, and bad-ends can be ignored.");
 			else outputText("Debug Mode: <font color=\"#800000\"><b>OFF</b></font>\n Items consumption will occur as normal.");
-			
+
 			outputText("\n\n");
 			switch(flags[kFLAGS.GAME_DIFFICULTY]) {
 				case 0:
@@ -72,22 +73,22 @@ package classes
 			else outputText("Easy Mode: <font color=\"#800000\"><b>OFF</b></font>\n Bad-ends can ruin your game and combat is challenging.");
 
 			outputText("\n\n");*/
-			
+
 			outputText("\n\n");
-			
+
 			if (flags[kFLAGS.SILLY_MODE_ENABLE_FLAG]) outputText("Silly Mode: <font color=\"#008000\"><b>ON</b></font>\n Crazy, nonsensical, and possibly hilarious things may occur.");
 			else outputText("Silly Mode: <font color=\"#800000\"><b>OFF</b></font>\n You're an incorrigible stick-in-the-mud with no sense of humor.");
 
 			outputText("\n\n");
-				
+
 			if (flags[kFLAGS.PRISON_ENABLED] == false) outputText("Prison: <font color=\"#008000\"><b>OFF</b></font>\nThe prison cannot be accessed.");
 			else outputText("Prison: <font color=\"#800000\"><b>ON</b></font>\nThe prison can be accessed. WARNING: The prison is very buggy and may break your game. Enter it at your own risk!");
-				
+
 			outputText("\n\n");
-			
+
 			outputText("<b>The following flags are not fully implemented yet (e.g. they don't apply in <i>all</i> cases where they could be relevant).</b>\n");
 			outputText("Additional note: You <b>must</b> be <i>in a game session</i> (e.g. load your save, hit \"Main Menu\", change the flag settings, and then hit \"Resume\") to change these flags. They're saved into the saveGame file, so if you load a save, it will clear them to the state in that save.");
-			
+
 			outputText("\n\n");
 
 			if (flags[kFLAGS.LOW_STANDARDS_FOR_ALL]) outputText("Low standards Mode: <font color=\"#008000\"><b>ON</b></font>\n NPCs ignore body type preferences. \n (Not gender preferences though. You still need the right hole.)");
@@ -97,41 +98,41 @@ package classes
 
 			if (flags[kFLAGS.HYPER_HAPPY]) outputText("Hyper Happy Mode: <font color=\"#008000\"><b>ON</b></font>\n Only reducto and humus shrink endowments. \n Incubus draft doesn't affect breasts, and succubi milk doesn't affect cocks.");
 			else outputText("Hyper Happy Mode: <font color=\"#800000\"><b>OFF</b></font>\n Male enhancement potions shrink female endowments, and vice versa.");
-				
-			outputText("\n\n");		
-				
+
+			outputText("\n\n");
+
 			if (flags[kFLAGS.SFW_MODE] >= 1) outputText("SFW Mode: <font color=\"#008000\"><b>ON</b></font>\n Sex scenes are disabled and adult materials are hidden.");
 			else outputText("SFW Mode: <font color=\"#800000\"><b>OFF</b></font>\n Sex scenes are enabled.");
-				
+
 			outputText("\n\n");
-				
+
 			if (flags[kFLAGS.WATERSPORTS_ENABLED] >= 1 && flags[kFLAGS.SFW_MODE] <= 0) outputText("Watersports: <font color=\"#008000\"><b>Enabled</b></font>\n Watersports scenes are enabled. (You kinky person)");
 			else outputText("Watersports: <font color=\"#800000\"><b>Disabled</b></font>\n Watersports scenes are disabled.");
-				
+
 			outputText("\n\n");
-			
+
 			if (flags[kFLAGS.AUTO_LEVEL] >= 1) outputText("Automatic Leveling: <font color=\"#008000\"><b>ON</b></font>\n Leveling up is done automatically once you accumulate enough experience.");
 			else outputText("Automatic Leveling: <font color=\"#800000\"><b>OFF</b></font>\n Leveling up is done manually.");
 
 			menu();
-			addButton(0, "Toggle Debug", toggleDebug, null, null, null, "Turn on debug mode. Debug mode is intended for testing purposes but can be thought of as a cheat mode.  Items are infinite and combat is easy to escape from.  Weirdness and bugs are to be expected.");
+			addButton(0, "Toggle Debug", toggleDebug).hint("Turn on debug mode. Debug mode is intended for testing purposes but can be thought of as a cheat mode.  Items are infinite and combat is easy to escape from.  Weirdness and bugs are to be expected.");
 			if (player.str > 0)
-				addButton(1, "Difficulty", difficultySelectionMenu, null, null, null, "Adjust the game difficulty to make it easier or harder.");
+				addButton(1, "Difficulty", difficultySelectionMenu).hint("Adjust the game difficulty to make it easier or harder.");
 			else
 				addButtonDisabled(1, "Difficulty", "Please start a game session before you can use this.");
-			addButton(2, "Silly Toggle", toggleSillyFlag, null, null, null, "Toggles silly mode. Funny, crazy and nonsensical scenes may occur if enabled.");
+			addButton(2, "Silly Toggle", toggleSillyFlag).hint("Toggles silly mode. Funny, crazy and nonsensical scenes may occur if enabled.");
 			addButton(3, "Low Standards", toggleStandards);
 			addButton(4, "Hyper Happy", toggleHyperHappy);
-			
-			addButton(5, "SFW Toggle", toggleSFW, null, null, null, "Toggles SFW Mode. If enabled, sex scenes are hidden and all adult materials are censored. \n\nCurrently under development, only disables most sex scenes. Soon, it'll disable rape scenes."); //Softcore Mode
-			addButton(6, "Auto level", toggleAutoLevel, null, null, null, "Toggles automatic leveling when you accumulate sufficient experience.");
+
+			addButton(5, "SFW Toggle", toggleSFW).hint("Toggles SFW Mode. If enabled, sex scenes are hidden and all adult materials are censored. \n\nCurrently under development, only disables most sex scenes. Soon, it'll disable rape scenes."); //Softcore Mode
+			addButton(6, "Auto level", toggleAutoLevel).hint("Toggles automatic leveling when you accumulate sufficient experience.");
 			if (flags[kFLAGS.PRISON_ENABLED] == true) {
-				addButton(7, "No Prison", togglePrison, null, null, null, "Turn off the prison.");
+				addButton(7, "No Prison", togglePrison).hint("Turn off the prison.");
 			} else {
-				addButton(7, "Yes Prison", togglePrison, null, null, null, "Turn on the prison.\n\n<font color=\"#080000\">WARNING: The prison is very buggy and may break your game. Enter it at your own risk!</font>"); }
-			if (player.str > 0) addButton(8, "Enable Surv", enableSurvivalPrompt, null, null, null, "Enable Survival mode. This will enable hunger. \n\n<font color=\"#080000\">Note: This is permanent and cannot be turned off!</font>", "Enable Survival Mode");	
-			if (player.str > 0) addButton(9, "Enable Real", enableRealisticPrompt, null, null, null, "Enable Realistic mode. This will make the game a bit realistic. \n\n<font color=\"#080000\">Note: This is permanent and cannot be turned off! Do not turn this on if you have hyper endowments.</font>", "Enable Realistic Mode");	
-			addButton(10, "Fetishes", fetishSubMenu, null, null, null, "Toggle some of the weird fetishes such as watersports and worms.");
+				addButton(7, "Yes Prison", togglePrison).hint("Turn on the prison.\n\n<font color=\"#080000\">WARNING: The prison is very buggy and may break your game. Enter it at your own risk!</font>"); }
+			if (player.str > 0) addButton(8, "Enable Surv", enableSurvivalPrompt).hint("Enable Survival mode. This will enable hunger. \n\n<font color=\"#080000\">Note: This is permanent and cannot be turned off!</font>", "Enable Survival Mode");
+			if (player.str > 0) addButton(9, "Enable Real", enableRealisticPrompt).hint("Enable Realistic mode. This will make the game a bit realistic. \n\n<font color=\"#080000\">Note: This is permanent and cannot be turned off! Do not turn this on if you have hyper endowments.</font>", "Enable Realistic Mode");
+			addButton(10, "Fetishes", fetishSubMenu).hint("Toggle some of the weird fetishes such as watersports and worms.");
 
 			if (flags[kFLAGS.HUNGER_ENABLED] >= 0.5)
 			{
@@ -168,7 +169,7 @@ package classes
 				debug = false;
 			else
 				debug = true;
-				
+
 			mainView.showMenuButton(MainView.MENU_DATA);
 			settingsScreenGameSettings();
 			return;
@@ -181,7 +182,7 @@ package classes
 				flags[kFLAGS.PRISON_ENABLED] = false;
 			else
 				flags[kFLAGS.PRISON_ENABLED] = true;
-				
+
 			mainView.showMenuButton(MainView.MENU_DATA);
 			settingsScreenGameSettings();
 			return;
@@ -279,14 +280,14 @@ package classes
 
 		public function toggleAutoLevel():void {
 			flags[kFLAGS.AUTO_LEVEL] ^= 1;
-			settingsScreenGameSettings();	
+			settingsScreenGameSettings();
 		}
 
 		public function fetishSubMenu():void {
 			menu();
-			addButton(0, "Watersports", toggleWatersports, null, null, null, "Toggles watersports scenes. (Scenes related to urine fetish)"); //Enables watersports.
-			//addButton(1, "Rimjob", toggleRimjob, null, null, null, "Toggles rimjob scenes."); //Enables rimjob.
-			if (player.hasStatusEffect(StatusEffects.WormsOn) || player.hasStatusEffect(StatusEffects.WormsOff)) addButton(2, "Worms", toggleWormsMenu, null, null, null, "Enable or disable worms. This will NOT cure infestation, if you have any.");
+			addButton(0, "Watersports", toggleWatersports).hint("Toggles watersports scenes. (Scenes related to urine fetish)"); //Enables watersports.
+			//addButton(1, "Rimjob", toggleRimjob).hint("Toggles rimjob scenes."); //Enables rimjob.
+			if (player.hasStatusEffect(StatusEffects.WormsOn) || player.hasStatusEffect(StatusEffects.WormsOff)) addButton(2, "Worms", toggleWormsMenu).hint("Enable or disable worms. This will NOT cure infestation, if you have any.");
 			else addButtonDisabled(2, "Worms", "Find the sign depicting the worms in the mountains to unlock this.");
 			addButton(4, "Back", settingsScreenGameSettings);
 		}
@@ -361,22 +362,22 @@ package classes
 		public function settingsScreenInterfaceSettings():void {
 			clearOutput();
 			displayHeader("Interface Settings");
-			
+
 			/*if (flags[kFLAGS.USE_OLD_INTERFACE] >= 1) outputText("Stats Pane Style: <b>Old</b>\n Old stats panel will be used.");
 			else  outputText("Stats Pane Style: <b>New</b>\n New stats panel will be used.");
-				
+
 			outputText("\n\n");*/
-			
+
 			if (flags[kFLAGS.USE_OLD_FONT] >= 1) outputText("Font: <b>Lucida Sans Typewriter</b>\n");
 			else outputText("Font: <b>Palatino Linotype</b>\n");
-				
+
 			outputText("\n\n");
-			
+
 			if (flags[kFLAGS.IMAGEPACK_OFF] == 0) outputText("Image Pack: <font color=\"#008000\"><b>ON</b></font>\n Image pack is enabled.");
 			else outputText("Image Pack: <font color=\"#800000\"><b>OFF</b></font>\n Image pack is disabled.");
-				
+
 			outputText("\n\n");
-			
+
 			if (flags[kFLAGS.SHOW_SPRITES_FLAG] == 0) {
 				outputText("Sprites: <font color=\"#008000\"><b>ON</b></font>\n You like to look at pretty pictures.");
 				outputText("\n\n");
@@ -389,14 +390,14 @@ package classes
 				outputText("Sprites: <font color=\"#800000\"><b>OFF</b></font>\n There are only words. Nothing else.");
 				outputText("\n\n\n");
 			}
-			
+
 			outputText("\n\n");
-			
+
 			if (flags[kFLAGS.USE_12_HOURS] > 0) outputText("Time Format: <b>12 hours</b>\n Time will display in 12 hours format (AM/PM)");
 			else outputText("Time Format: <b>24 hours</b>\n Time will display in 24 hours format.");
-				
+
 			outputText("\n\n");
-			
+
 			if (flags[kFLAGS.USE_METRICS] > 0) outputText("Measurement: <b>Metric</b>\n Height and cock size will be measured in metres and centimetres.");
 			else outputText("Measurement: <b>Imperial</b>\n Height and cock size will be measured in feet and inches.");
 
@@ -407,21 +408,21 @@ package classes
 
 			outputText("\n\n");
 
-			if (flags[kFLAGS.DISABLE_QUICKSAVE_CONFIRM] == 0) outputText("Confirm Quicksave: <font color=\"#008000\"><b>ON</b></font> (Quicksave confirmation dialog is enabled).");
-			else outputText("Confirm Quicksave: <font color=\"#800000\"><b>OFF</b></font> (Quicksave confirmation dialog is disabled).");
+			if (flags[kFLAGS.DISABLE_QUICKSAVE_CONFIRM] == 0) outputText("Confirm Quicksave: <font color=\"#008000\"><b>ON</b></font>\n Quicksave confirmation dialog is enabled.");
+			else outputText("Confirm Quicksave: <font color=\"#800000\"><b>OFF</b></font>\n Quicksave confirmation dialog is disabled.");
 
 			menu();
-			addButton(0, "Side Bar Font", toggleFont, null, null, null, "Toggle between old and new font for side bar.");
-			addButton(1, "Main BG", menuMainBackground, null, null, null, "Choose a background for main game interface.");
-			addButton(2, "Text BG", menuTextBackground, null, null, null, "Choose a background for text.");
-			addButton(3, "Sprites", menuSpriteSelect, null, null, null, "Turn sprites on/off and change sprite style preference.");
+			addButton(0, "Side Bar Font", toggleFont).hint("Toggle between old and new font for side bar.");
+			addButton(1, "Main BG", menuMainBackground).hint("Choose a background for main game interface.");
+			addButton(2, "Text BG", menuTextBackground).hint("Choose a background for text.");
+			addButton(3, "Sprites", menuSpriteSelect).hint("Turn sprites on/off and change sprite style preference.");
 
-			addButton(5, "Toggle Images", toggleImages, null, null, null, "Enable or disable image pack.");
-			addButton(6, "Time Format", toggleTimeFormat, null, null, null, "Toggles between 12-hour and 24-hour format.");
-			addButton(7, "Measurements", toggleMeasurements, null, null, null, "Switch between imperial and metric measurements.  \n\nNOTE: Only applies to your appearance screen.");
+			addButton(5, "Toggle Images", toggleImages).hint("Enable or disable image pack.");
+			addButton(6, "Time Format", toggleTimeFormat).hint("Toggles between 12-hour and 24-hour format.");
+			addButton(7, "Measurements", toggleMeasurements).hint("Switch between imperial and metric measurements.  \n\nNOTE: Only applies to your appearance screen.");
 
-			addButton(10, "Confirm Load", toggleQuickLoadConfirm, null, null, null, "Toggles the confirmation dialog for Quickload.", "Confirm Quickload");
-			addButton(11, "Confirm Save", toggleQuickSaveConfirm, null, null, null, "Toggles the confirmation dialog for Quicksave.", "Confirm Quicksave");
+			addButton(10, "Confirm Load", toggleQuickLoadConfirm).hint("Toggles the confirmation dialog for Quickload.", "Confirm Quickload");
+			addButton(11, "Confirm Save", toggleQuickSaveConfirm).hint("Toggles the confirmation dialog for Quicksave.", "Confirm Quicksave");
 			addButton(14, "Back", settingsScreenMain);
 		}
 
@@ -442,7 +443,7 @@ package classes
 			addButton(0, "Normal", setTextBackground, 0);
 			addButton(1, "White", setTextBackground, 1);
 			addButton(2, "Tan", setTextBackground, 2);
-			
+
 			addButton(14, "Back", settingsScreenInterfaceSettings);
 		}
 
@@ -451,7 +452,7 @@ package classes
 			addButton(0, "Off", toggleSpritesFlag, true, 0, null, "Turn off the sprites completely");
 			addButton(1, "Old", toggleSpritesFlag, false, 1, null, "Use the 8-bit sprites from older versions of CoC.");
 			addButton(2, "New", toggleSpritesFlag, false, 0, null, "Use the 16-bit sprites in current versions of CoC.");
-			
+
 			addButton(14, "Back", settingsScreenInterfaceSettings);
 		}
 
@@ -466,9 +467,9 @@ package classes
 		}
 
 		public function setMainBackground(type:int):void {
-			flags[kFLAGS.BACKGROUND_STYLE] = type;
-			mainView.background.gotoAndStop(flags[kFLAGS.BACKGROUND_STYLE] + 1);
-			mainView.sideBarBG.gotoAndStop(flags[kFLAGS.BACKGROUND_STYLE] + 1);
+			flags[kFLAGS.BACKGROUND_STYLE]           = type;
+			mainView.background.bitmapClass          = MainView.Backgrounds[flags[kFLAGS.BACKGROUND_STYLE]];
+			mainView.statsView.setBackground(StatsView.SidebarBackgrounds[flags[kFLAGS.BACKGROUND_STYLE]]);
 			settingsScreenInterfaceSettings();
 		}
 
@@ -502,7 +503,7 @@ package classes
 			{
 				mainView.textBGWhite.visible = false;
 				mainView.textBGTan.visible = false;
-			}		
+			}
 		}
 
 		public function cycleQuality():void {
@@ -541,38 +542,21 @@ package classes
 		//------------
 		public function fontSettingsMenu():void {
 			menu();
-			addButton(0, "Smaller Font", decFontSize);
-			addButton(1, "Larger Font", incFontSize);
+			addButton(0, "Smaller Font", adjustFontSize, -1);
+			addButton(1, "Larger Font", adjustFontSize, 1);
 			addButton(2, "Reset Size", resetFontSize);
 			addButton(4, "Back", settingsScreenMain);
 		}
 
-		public function incFontSize():void
-		{
+		public function adjustFontSize(change:int):void {
 			var fmt:TextFormat = mainView.mainText.getTextFormat();
-			
-			if (fmt.size == null) fmt.size = 20;
-			
-			fmt.size = (fmt.size as Number) + 1;
-			
-			if ((fmt.size as Number) > 32) fmt.size = 32;
-			
-			trace("Font size set to: " + (fmt.size as Number));
-			mainView.mainText.setTextFormat(fmt);
-			flags[kFLAGS.CUSTOM_FONT_SIZE] = fmt.size;
-		}
 
-		public function decFontSize():void
-		{
-			var fmt:TextFormat = mainView.mainText.getTextFormat();
-			
 			if (fmt.size == null) fmt.size = 20;
-			
-			fmt.size = (fmt.size as Number) - 1;
-			
+
+			fmt.size = (fmt.size as Number) + change;
+
 			if ((fmt.size as Number) < 14) fmt.size = 14;
-			
-			trace("Font size set to: " + (fmt.size as Number));
+			if ((fmt.size as Number) > 32) fmt.size = 32;
 			mainView.mainText.setTextFormat(fmt);
 			flags[kFLAGS.CUSTOM_FONT_SIZE] = fmt.size;
 		}
@@ -584,7 +568,7 @@ package classes
 			mainView.mainText.setTextFormat(fmt);
 			flags[kFLAGS.CUSTOM_FONT_SIZE] = 0;
 		}
-		
+
 	}
 
 }

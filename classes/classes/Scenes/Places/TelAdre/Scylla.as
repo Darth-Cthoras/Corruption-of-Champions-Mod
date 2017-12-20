@@ -1,4 +1,4 @@
-package classes.Scenes.Places.TelAdre{
+﻿package classes.Scenes.Places.TelAdre{
 	import classes.*;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.GlobalFlags.kGAMECLASS;
@@ -623,7 +623,7 @@ private function scyllaPtVLeave():void {
 	clearOutput();
 	//[Lust down]
 	dynStats("lus", -10);
-	if (player.cor > (30 + player.corruptionTolerance())) dynStats("cor", -1);
+	if (player.cor > 30) dynStats("cor", -1);
 	outputText("You just don't feel right about interrupting and opt to take the high road, leaving them to their counseling. Nearly-forgotten warmth fills your chest and you smile with pride, despite yourself. You came here as a Champion to purge corruption and- despite every temptation- you acted like a good friend ought to. You walk back downstairs, with your head held high, and order a drink.");
 	cheatTime(1);
 	doNext(telAdre.barTelAdre);
@@ -650,8 +650,8 @@ private function scyllaPtVTakeAdvantage():void {
 	outputText(images.showImage("scylla-help-round-five-take-advantage"));
 	//[Corruption up]
 	dynStats("cor", 1);
-	if (player.cor < (30 + player.corruptionTolerance())) dynStats("cor", 2);
-	if (player.cor < (60 + player.corruptionTolerance())) dynStats("cor", 1);
+	if (player.cor < 30) dynStats("cor", 2);
+	if (player.cor < 60) dynStats("cor", 1);
 
 	var x:Number = player.biggestCockIndex();
 
@@ -1554,7 +1554,7 @@ private function shareTentaclesWithScylla2():void {
 		outputText("\n\nYou shift the cock wrapping around her body, slowly encircling Pastie just below the fairy's breasts, looping down her torso so that the tip can snake under her legs.  A steady stream of pre dribbles from the stimulated shaft as you flex around her petite hips, her cascading lubrication swiftly soaking her lower body, thighs to ankles.  Pressing the tip of your cock against her teensy toes, you push forward, your fluid-soaked urethra swallowing Pastie's wriggling feet.  Her fey-cum mixes with your own, sending a tingling wave of pressurized bliss through your loins and you push harder, sucking the fairy into your cock up to the knees.  The suckling sensation of being gradually engulfed by the voracious heat of your flesh robs the girl of the last of her faculties.  Mind broken by the taut compression of your dick's ravenous mass, Pastie moans and squirms, wriggling deeper into the embrace of your tentacle, until its swollen peak dilates at her hips.  Loosening your grip around her waist, you position your other cock directly above her, blobs of pre-cum bubbling down upon her head.  She looks up, blankly, and instantly understands.  Obediently, she raises her arms and slides her cum-slick hands into your urethra, tensing in a mindless orgasm as her arms slip into the mouth of her new god.  The bloated lips of your cock consume her wrists, elbows, and even her shoulders as Pastie's head vanishes into the drooling maw of your manhood.");
 	}
 	//[Next]
-	dynStats("lib", .5, "lus=", 100, "cor", .25, "resisted", false);
+	dynStats("lib", .5, "lus=", 100, "cor", .25, "scale", false);
 	menu();
 	addButton(0,"Next",shareTentaclesWithScylla3);
 }
@@ -1910,7 +1910,7 @@ private function scyllaFurryFoursomePartDues():void
 	outputText("A strong hand slaps down on your chest, rousing you from slumber. <i>“Whaa...?”</i>");
 	outputText("\n\n<i>“Wake up, Champion,”</i> Winter commands with an authority that seems entirely out of place after seeing her moaning and begging. <i>“Scylla’s sleeping off her feeding, but she wanted us to get you up - something about having to guard a door or something.”</i>");
 	outputText("\n\nYou nod and stagger up, donning your armor as you do. Snow is around a corner, trying to get dressed over fur stiffened by dried cum. It’s not going well, and when she sees you looking, she blushes crimson enough to see through her white coat. <i>“Uhm... sorry about that.”</i> She clutches at her tail nervously. <i>“I get a little wild when I’m... uh... horny.”</i> Her blush deepens, and she spins around giving you a view of a tiny, three-inch dick between her legs as she does.");
-	outputText("\n\nYou accept her apology and thank Winter for the warning.{ On your way past Snow, you give the mouse-girl’s dick a squeeze beneath her skirt. She whimpers and nearly faints by the time you release her, the beginnings of a gigantic erection diverting nearly all of her blood southward}. <i>“Later girls!”</i>");
+	outputText("\n\nYou accept her apology and thank Winter for the warning. On your way past Snow, you give the mouse-girl’s dick a squeeze beneath her skirt. She whimpers and nearly faints by the time you release her, the beginnings of a gigantic erection diverting nearly all of her blood southward. <i>“Later girls!”</i>");
 	outputText("\n\nThe door clicks closed behind you, and your groin has a wonderful, tingling kind of warmth in it. Maybe you’ll catch them for another three-way feeding soon.");
 	if (player.cumMultiplier < 19990) player.cumMultiplier += 1 + rand(5);
 	if (player.balls > 0 && player.ballSize < 30) player.ballSize++;

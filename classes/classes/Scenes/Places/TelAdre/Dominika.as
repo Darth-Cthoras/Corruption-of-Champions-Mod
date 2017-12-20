@@ -1,5 +1,6 @@
 package classes.Scenes.Places.TelAdre {
 	import classes.*;
+	import classes.BodyParts.*;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.GlobalFlags.kGAMECLASS;
 	import classes.display.SpriteDb;
@@ -35,7 +36,7 @@ public function fellatrixBarApproach():void {
 		return;
 	}
 	//[First encounter, player is minotaur (If you lose minotaur characteristics and come back, Dominika will not recognize you and do a regular first encounter)]
-	if (player.minoScore() >= 3 && player.faceType == FACE_COW_MINOTAUR && player.gender == 1) {
+	if (player.minoScore() >= 3 && player.face.type == Face.COW_MINOTAUR && player.gender == 1) {
 		outputText("You approach the woman, delivering what you consider a polite greeting. Icily she turns to you, raises an eyebrow, and in a low husky voice snarls \"<i>Don't bother. I'm not interested in being your bimbo.</i>\" She turns away from you, and ignores any further attempts to start a conversation.\n\n");
 
 		outputText("A tavern maid with shaggy dreadlocks and a long tongue she can barely fit in her mouth waves you over. \"<i>Don't wowwy 'bout Dominika,</i>\" she says through her lisp, \"<i>The's a liddle wacist against, you know, your type. Thays you're only interethted in wape. Motht of uth aren't like dat.</i>\"\n\n");
@@ -137,12 +138,31 @@ private function acceptDominikasKnowledge():void {
 	}
 
 	//If no dominika cooldown up
+	var spellList:Array = [
+		{status:StatusEffects.KnowsArouse, name:"Arouse", color:"Black"},
+		{status:StatusEffects.KnowsHeal, name:"Heal", color:"Black"},
+		{status:StatusEffects.KnowsMight, name:"Might", color:"Black" },
+		{status:StatusEffects.KnowsBlackfire, name:"Blackfire", color:"Black"},
+		{status:StatusEffects.KnowsCharge, name:"Charge Weapon", color:"White"},
+		{status:StatusEffects.KnowsBlind, name:"Blind", color:"White"},
+		{status:StatusEffects.KnowsWhitefire, name:"Whitefire", color:"White"},
+	];
+	var knowsallDominikaSpells:Boolean = true;
+	var knowssomeDominikaSpells:Boolean = false;
+	var spell:Object;
+	for each(spell in spellList){
+		if (player.hasStatusEffect(spell.status)){
+			knowssomeDominikaSpells = true;
+		}else{
+			knowsallDominikaSpells = false;
+		}
+	}
 	if (flags[kFLAGS.DOMINIKA_LEARNING_COOLDOWN] == 0) {
 		flags[kFLAGS.DOMINIKA_LEARNING_COOLDOWN] = 7 + rand(3);
 		outputText("\"<i>Now then,</i>\" she says. Her hands glow with a brief sense of power, and many of the tattoos shine with equal illumination. She gestures with her hand and the lamps all acquire an unearthly light, as green glowing circles appear interlinked on the floor. \"<i>How much do you know about magic?</i>\"\n\n");
 
 		//[If player knows all spells]
-		if (player.spellCount() == 6) {
+		if (knowsallDominikaSpells) {
 			if (flags[kFLAGS.DOMINIKA_EMBARRASSED_ABOUT_MAGIC] == 0) {
 				flags[kFLAGS.DOMINIKA_EMBARRASSED_ABOUT_MAGIC]++;
 				outputText("You blink, then casually mention that you actually know quite a bit about magic. Dominika listens to you explain your skill in white and black magic, then coughs awkwardly and glances to the side. \"<i>O-oh,</i>\" she says, \"<i>Well. Uhm. I guess we can talk about magical theory, maybe?</i>\"\n\n");
@@ -153,37 +173,18 @@ private function acceptDominikasKnowledge():void {
 			dynStats("int", 1+rand(4));
 		}
 		//[If player knows some spells]
-		else if (player.spellCount() > 0) {
+		else if (knowssomeDominikaSpells){
 			outputText("You take a step backwards in surprise, but your experience with magic makes you realize that she's not doing anything dangerous. You explain that you've learned a bit of sorcery from books, and she nods thoughtfully. \"<i>I see,</i>\" she muses, stroking her chin. \"<i>I think I may be able to show you a thing or two. Let's see here...</i>\"\n\n");
-
 			outputText("Dominika seems to be quite good at magic, and you find yourself picking up the spell she demonstrates fairly quickly.");
 			//(Player receives random unlearned spell.)
-			if (!player.hasStatusEffect(StatusEffects.KnowsMight)) {
-				player.createStatusEffect(StatusEffects.KnowsMight,0,0,0,0);
-				outputText("\n\n<b>New Black Magic Spell Learned: Might</b>");
+			for each(spell in spellList){
+				if (!player.hasStatusEffect(spell.status)){
+					player.createStatusEffect(spell.status, 0, 0, 0, 0);
+					outputText("\n\n<b>New " + spell.color + " Magic Spell Learned: " + spell.name + "</b>");
+					dynStats("int", 2);
+					break;
+				}
 			}
-			else if (!player.hasStatusEffect(StatusEffects.KnowsHeal)) {
-				player.createStatusEffect(StatusEffects.KnowsHeal,0,0,0,0);
-				outputText("\n\n<b>New Black Magic Spell Learned: Heal</b>");
-			}
-			else if (!player.hasStatusEffect(StatusEffects.KnowsArouse)) {
-				player.createStatusEffect(StatusEffects.KnowsArouse,0,0,0,0);
-				outputText("\n\n<b>New Black Magic Spell Learned: Arouse</b>");
-			}
-			else if (!player.hasStatusEffect(StatusEffects.KnowsCharge)) {
-				player.createStatusEffect(StatusEffects.KnowsCharge,0,0,0,0);
-				outputText("\n\n<b>New White Magic Spell Learned: Charge</b>");
-			}
-			else if (!player.hasStatusEffect(StatusEffects.KnowsBlind)) {
-				player.createStatusEffect(StatusEffects.KnowsBlind,0,0,0,0);
-				outputText("\n\n<b>New White Magic Spell Learned: Blind</b>");
-			}
-			else if (!player.hasStatusEffect(StatusEffects.KnowsWhitefire)) {
-				player.createStatusEffect(StatusEffects.KnowsWhitefire,0,0,0,0);
-				outputText("\n\n<b>New White Magic Spell Learned: Whitefire</b>");
-			}
-			else outputText("==SOMETHING FUCKED UP.  TELL FEN VIA EMAIL (fenoxo@gmail.com) OR POST ON THE BUG FORUMS==");
-			dynStats("int", 2);
 		}
 		//[If player knows no spells]
 		else {
@@ -193,31 +194,38 @@ private function acceptDominikasKnowledge():void {
 
 			outputText("Even with your inexperience, you find Dominika to be a good teacher. She helps you focus and train your mind, and you quickly find your first spell to be easy to perform.");
 			//(Player receives random unlearned spell.)
-			if (!player.hasStatusEffect(StatusEffects.KnowsMight)) {
-				player.createStatusEffect(StatusEffects.KnowsMight,0,0,0,0);
-				outputText("\n\n<b>New Black Magic Spell Learned: Might</b>");
+			switch(rand(7)) {
+				case 0:
+					player.createStatusEffect(StatusEffects.KnowsMight,0,0,0,0);
+					outputText("\n\n<b>New Black Magic Spell Learned: Might</b>");
+					break;
+				case 1:
+					player.createStatusEffect(StatusEffects.KnowsHeal,0,0,0,0);
+					outputText("\n\n<b>New Black Magic Spell Learned: Heal</b>");
+					break;
+				case 2:
+					player.createStatusEffect(StatusEffects.KnowsArouse,0,0,0,0);
+					outputText("\n\n<b>New Black Magic Spell Learned: Arouse</b>");
+					break;
+				case 3:
+					player.createStatusEffect(StatusEffects.KnowsBlackfire,0,0,0,0);
+					outputText("\n\n<b>New Black Magic Spell Learned: Blackfire</b>");
+					break;
+				case 4:
+					player.createStatusEffect(StatusEffects.KnowsCharge,0,0,0,0);
+					outputText("\n\n<b>New White Magic Spell Learned: Charge</b>");
+					break;
+				case 5:
+					player.createStatusEffect(StatusEffects.KnowsBlind,0,0,0,0);
+					outputText("\n\n<b>New White Magic Spell Learned: Blind</b>");
+					break;
+				case 6:
+					player.createStatusEffect(StatusEffects.KnowsWhitefire,0,0,0,0);
+					outputText("\n\n<b>New White Magic Spell Learned: Whitefire</b>");
+					break;
+				default:
+					outputText("==SOMETHING FUCKED UP.  TELL FEN VIA EMAIL (fenoxo@gmail.com) OR POST ON THE BUG FORUMS==");
 			}
-			else if (!player.hasStatusEffect(StatusEffects.KnowsHeal)) {
-				player.createStatusEffect(StatusEffects.KnowsHeal,0,0,0,0);
-				outputText("\n\n<b>New Black Magic Spell Learned: Heal</b>");
-			}
-			else if (!player.hasStatusEffect(StatusEffects.KnowsArouse)) {
-				player.createStatusEffect(StatusEffects.KnowsArouse,0,0,0,0);
-				outputText("\n\n<b>New Black Magic Spell Learned: Arouse</b>");
-			}
-			else if (!player.hasStatusEffect(StatusEffects.KnowsCharge)) {
-				player.createStatusEffect(StatusEffects.KnowsCharge,0,0,0,0);
-				outputText("\n\n<b>New White Magic Spell Learned: Charge</b>");
-			}
-			else if (!player.hasStatusEffect(StatusEffects.KnowsBlind)) {
-				player.createStatusEffect(StatusEffects.KnowsBlind,0,0,0,0);
-				outputText("\n\n<b>New White Magic Spell Learned: Blind</b>");
-			}
-			else if (!player.hasStatusEffect(StatusEffects.KnowsWhitefire)) {
-				player.createStatusEffect(StatusEffects.KnowsWhitefire,0,0,0,0);
-				outputText("\n\n<b>New White Magic Spell Learned: Whitefire</b>");
-			}
-			else outputText("==SOMETHING FUCKED UP.  TELL FEN VIA EMAIL (fenoxo@gmail.com) OR POST ON THE BUG FORUMS==");
 			dynStats("int", 2);
 		}
 	}
@@ -897,7 +905,7 @@ private function dominikaBlowjobs2():void {
 public function dominikaSpellblade():void {
 	clearOutput();
 	//[Approach Dominika post-D2 in bar, on Dominika's \"<i>I'm a racist bitch</i>\" list]
-	if ((player.minoScore() >= 3 && player.faceType == FACE_COW_MINOTAUR && player.gender == 1) || !player.isBiped()) {
+	if ((player.minoScore() >= 3 && player.face.type == Face.COW_MINOTAUR && player.gender == 1) || !player.isBiped()) {
 		outputText("You greet Dominika and make small talk, but as usual she seems distracted and the conversation is strained at best.  Drumming her fingers on the table and glancing outside her attention is constantly drawn away from you, and eventually she outright cuts the conversation off.  \"<i>I need to go, I'm afraid,</i>\" she says quickly, and half-heartedly adds, \"<i>It was nice talking to you.</i>\"\n\n");
 
 		outputText("She exits, leaving you at the table alone.  You shrug a little and finish your drink, before noticing that she left something behind.  It looks like a wrapped sword and, while you don't know why she'd have such a thing, you figure you might as well give it back to her.  Hell, maybe she'll actually be worth a goddamn conversation afterwards.\n\n");

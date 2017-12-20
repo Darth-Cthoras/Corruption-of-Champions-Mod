@@ -1,6 +1,8 @@
 package classes.Scenes.NPCs
 {
 	import classes.*;
+	import classes.BodyParts.*;
+	import classes.BodyParts.Butt;
 
 	public class Holli extends Monster
 	{
@@ -119,7 +121,7 @@ package classes.Scenes.NPCs
 				outputText(", forever...</i>\" ");
 				//lust damage, fatigue damage, light HP damage
 				player.changeFatigue(10);
-				game.dynStats("lus", 25);
+				player.takeLustDamage(25, true);
 				var damage:Number = 20 + rand(10);
 				damage = player.takeDamage(damage, true);
 			}
@@ -145,7 +147,7 @@ package classes.Scenes.NPCs
 				//sap rose shitposting
 				var damage:int = 10 + rand(5);
 				damage = player.takeDamage(damage, true);
-				game.dynStats("lus", 15);
+				player.takeLustDamage(15, true);
 				player.createStatusEffect(StatusEffects.HolliConstrict, 0, 0, 0, 0);
 			}
 			combatRoundOver();
@@ -158,7 +160,7 @@ package classes.Scenes.NPCs
 			player.addStatusValue(StatusEffects.HolliConstrict, 1, 9);
 			//Struggle Succeed
 			//if demon/dragon tongue, automatic success
-			if (player.tongueType > TONGUE_HUMAN) {
+			if (player.tongue.type > Tongue.HUMAN) {
 				outputText("You can't move an arm nor a [leg] to bat the flower away... but she's literally holding your mouth open.  Your long tongue rolls out, gripping and ripping out several of the petals on the end of her stalk!  Holli screams and her roots slacken, allowing you to batter your way out of them.");
 				player.removeStatusEffect(StatusEffects.HolliConstrict);
 			}
@@ -184,7 +186,7 @@ package classes.Scenes.NPCs
 			//lower monster lust by medium-lots and apply med sens-based lust damage
 			lust -= 20;
 			if (lust < 20) lust = 20;
-			game.dynStats("lus", 15 + player.sens / 5);
+			player.takeLustDamage(15 + player.sens / 5, true);
 			combatRoundOver();
 		}
 
@@ -240,17 +242,17 @@ package classes.Scenes.NPCs
 			this.ballSize = 0;
 			this.cumMultiplier = 3;
 			this.hoursSinceCum = 20;
-			this.createVagina(false, VAGINA_WETNESS_WET, VAGINA_LOOSENESS_LOOSE);
+			this.createVagina(false, VaginaClass.WETNESS_WET, VaginaClass.LOOSENESS_LOOSE);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 20, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("E"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = rand(12) + 55;
-			this.hipRating = HIP_RATING_CURVY;
-			this.buttRating = BUTT_RATING_LARGE;
-			this.skinTone = "black";
-			this.hairColor = "sandy-blonde";
-			this.hairLength = 15;
+			this.hips.rating = Hips.RATING_CURVY;
+			this.butt.rating = Butt.RATING_LARGE;
+			this.skin.tone = "black";
+			this.hair.color = "sandy-blonde";
+			this.hair.length = 15;
 			initStrTouSpeInte(150, 80, 80, 85);
 			initLibSensCor(75, 40, 80);
 			this.weaponName = "branches";

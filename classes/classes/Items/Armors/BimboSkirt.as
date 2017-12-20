@@ -65,12 +65,12 @@ package classes.Items.Armors
 			}
 			
 			if (!wornLower) {
-				if (game.player.buttRating < 8) {
+				if (game.player.butt.rating < 8) {
 					outputText("The sensation of tender fabric clinging to your [butt] arouses you immensely, as you smooth your skirt. ");
 				}
 				else {
 					outputText("You can feel how the fine fabric of your sluttish skirt doesn't quite cover your [ass]");
-					if (game.player.hipRating > 8) {
+					if (game.player.hips.rating > 8) {
 						outputText(", and how the smooth skirt is stretched by your [hips]. ");
 					}
 					else outputText(". ");
@@ -106,8 +106,7 @@ package classes.Items.Armors
 		}
 	
 		override public function get supportsUndergarment():Boolean {
-			if (game.player.cor >= (10 + game.player.corruptionTolerance())) return false;
-			return true; 
+			return game.player.isPureEnough(10);
 		}
 		
 		override public function canUse():Boolean {
@@ -115,7 +114,7 @@ package classes.Items.Armors
 			var wornUpper:Boolean = game.player.upperGarment != UndergarmentLib.NOTHING;
 			var wornLower:Boolean = game.player.lowerGarment != UndergarmentLib.NOTHING;
 			
-			if (game.player.cor >= (10 + game.player.corruptionTolerance())) {
+			if (!game.player.isPureEnough(10)) {
 				if (wornUpper || wornLower) {
 					var output:String = "";
 					output += "It would be awkward to put on " + longName + " when you're currently wearing ";

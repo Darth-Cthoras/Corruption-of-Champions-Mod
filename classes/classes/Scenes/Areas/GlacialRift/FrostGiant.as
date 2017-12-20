@@ -1,14 +1,18 @@
 package classes.Scenes.Areas.GlacialRift 
 {
 	import classes.*;
-	import classes.internals.WeightedDrop;
+	import classes.BodyParts.*;
+import classes.BodyParts.Butt;
+import classes.BodyParts.Hips;
+import classes.StatusEffects.Combat.GiantStrLossDebuff;
+import classes.internals.WeightedDrop;
 	import classes.GlobalFlags.kFLAGS;
 	
 	public class FrostGiant extends Monster
 	{
 		private function giantStrengthLoss(magnitude:int = 0):void {
-			game.dynStats("str", -magnitude);
-			player.addStatusValue(StatusEffects.GiantStrLoss, 2, magnitude);
+			var gsl:GiantStrLossDebuff = player.createOrFindStatusEffect(StatusEffects.GiantStrLoss) as GiantStrLossDebuff;
+			gsl.applyEffect(magnitude);
 		}
 		
 		public function giantAttackPunch():void {
@@ -20,7 +24,7 @@ package classes.Scenes.Areas.GlacialRift
 			else {
 				if (rand(player.spe + 40) < spe) {
 					outputText("You take the full force of his grand slam, sending you flying a good 40 feet, plunging through a snowdrift. As you right yourself, his laugh shakes the ground, \"<i>Puny! Haaaa!</i>\" ");
-					damage = ((str + 50) + rand(100))
+					damage = ((str + 50) + rand(100));
 					damage = player.reduceDamage(damage);
 					if (damage < 40) damage = 40;
 					player.takeDamage(damage, true);
@@ -51,7 +55,6 @@ package classes.Scenes.Areas.GlacialRift
 			else {
 				outputText("Your attempt to make way fails, and the giant grabs you in his very large, very cold, very strong hands. \"<i>Now, you die!</i>\"");
 				player.createStatusEffect(StatusEffects.GiantGrabbed, 2, 0, 0, 0);
-				if (!player.hasStatusEffect(StatusEffects.GiantStrLoss)) player.createStatusEffect(StatusEffects.GiantStrLoss, 0, 0, 0, 0);
 			}
 			combatRoundOver();
 		}
@@ -227,16 +230,16 @@ package classes.Scenes.Areas.GlacialRift
 			this.ballSize = 2;
 			this.cumMultiplier = 2;
 			createBreastRow(Appearance.breastCupInverse("flat"));
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = 20*12;
-			this.hipRating = HIP_RATING_BOYISH;
-			this.buttRating = BUTT_RATING_TIGHT;
-			this.skinTone = "deep blue";
-			this.skinType = SKIN_TYPE_FUR;
-			//this.skinDesc = Appearance.Appearance.DEFAULT_SKIN_DESCS[SKIN_TYPE_FUR];
-			this.hairColor = "white";
-			this.hairLength = 8;
+			this.hips.rating = Hips.RATING_BOYISH;
+			this.butt.rating = Butt.RATING_TIGHT;
+			this.skin.tone = "deep blue";
+			this.theSkinType = Skin.FUR;
+			//this.skin.desc = Appearance.Appearance.DEFAULT_SKIN_DESCS[Skin.FUR];
+			this.hair.color = "white";
+			this.hair.length = 8;
 			initStrTouSpeInte(120, 100, 60, 75);
 			initLibSensCor(20, 15, 35);
 			this.weaponName = "fists";

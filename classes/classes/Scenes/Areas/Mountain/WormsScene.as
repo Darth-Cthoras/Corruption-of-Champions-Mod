@@ -134,9 +134,8 @@ package classes.Scenes.Areas.Mountain
 				dynStats("cor", 1);
 				player.cor = 25;
 			}
-			trace("GET INFESTED HERE");
-			if (player.hasStatusEffect(StatusEffects.Infested)) {trace("BWUH?");}
-			else {
+			//trace("GET INFESTED HERE");
+			if (!player.hasStatusEffect(StatusEffects.Infested)) {
 				if (flags[kFLAGS.EVER_INFESTED] == 0) flags[kFLAGS.EVER_INFESTED] = 1;
 				player.createStatusEffect(StatusEffects.Infested,0,0,0,0);
 				dynStats("cor", 0);
@@ -196,14 +195,14 @@ package classes.Scenes.Areas.Mountain
 				flags[kFLAGS.IZMA_WORMS_SCARED] = 1;
 				//clear status
 				kGAMECLASS.inCombat = false;
-				kGAMECLASS.combat.clearStatuses(false);
+				kGAMECLASS.combat.clearStatuses();
 				doNext(camp.returnToCampUseOneHour);
 				return;
 			}
 			if (monster.hasStatusEffect(StatusEffects.TwuWuv)) {
 				outputText("You expose yourself and attempt to focus on expelling your squirming pets toward Sheila but as you picture launching a flood of parasites from [eachCock], the fantasy she sent returns to you, breaking your concentration!  Your hand darts automatically to your crotch, stroking [oneCock] as you imagine unloading into her cunt... only with effort do you pull it away!\n\n");
 				outputText("\"<i>Oh, my,</i>\" the demon teases.  \"<i>You don't have to masturbate yourself, [name]... I'll be happy to do it for you.</i>\"\n\n");
-				dynStats("lus", 5 + player.sens/10, "resisted", false);
+				dynStats("lus", 5 + player.sens/10, "scale", false);
 				monster.doAI();
 				return;
 			}
@@ -287,8 +286,7 @@ package classes.Scenes.Areas.Mountain
 			outputText("\n\nYou relax in the afterglow, pondering just how you'll handle living with the constant desire, barely noticing the colony slinking off, freshly lubricated by your sexual fluids.  You drink into a lusty slumber, absently fingering [oneCock].");
 			outputText("\n\n<b>You are infested, again!</b>");
 			//Reinfest
-			if (player.hasStatusEffect(StatusEffects.Infested)) {trace("BWUH?");}
-			else {
+			if (!player.hasStatusEffect(StatusEffects.Infested)) {
 				player.createStatusEffect(StatusEffects.Infested,0,0,0,0);
 				dynStats("cor", 0);
 			}

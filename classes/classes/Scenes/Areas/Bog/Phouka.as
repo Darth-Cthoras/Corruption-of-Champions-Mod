@@ -4,6 +4,8 @@
 package classes.Scenes.Areas.Bog
 {
 	import classes.*;
+	import classes.BodyParts.*;
+	import classes.BodyParts.Hips;
 	import classes.internals.WeightedDrop;
 
 	public class Phouka extends Monster
@@ -266,6 +268,7 @@ package classes.Scenes.Areas.Bog
 
 			this.a = "the ";
 			this.short = phoukaName;
+			this.imageName = "phouka";
 			this.long = "The " + this.short + " is flying around near you, waiting for an opening.  He has the general appearance of a faerie, though he is slightly larger and his skin and wings are coal black.  A large cock stands erect between his legs.  His cat-like green eyes, filled with lust, follow your every motion.";
 
 			this.createCock(1, 0.5, CockTypesEnum.HUMAN);
@@ -275,20 +278,20 @@ package classes.Scenes.Areas.Bog
 			this.hoursSinceCum = 20;
 
 			createBreastRow(0);
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 
 			this.tallness = 5;
-			this.hipRating = HIP_RATING_SLENDER;
-			this.buttRating = BUTT_RATING_TIGHT;
-			this.lowerBody = LOWER_BODY_TYPE_HUMAN
-			this.armType = ARM_TYPE_HUMAN;
+			this.hips.rating = Hips.RATING_SLENDER;
+			this.butt.rating = Butt.RATING_TIGHT;
+			this.lowerBody.type = LowerBody.HUMAN
+			this.arms.type = Arms.HUMAN;
 
-			this.skinTone = "black";
-			this.hairColor = "black";
-			this.hairLength = 1;
+			this.skin.tone = "black";
+			this.hair.color = "black";
+			this.hair.length = 1;
 
-			this.earType = EARS_ELFIN;
+			this.ears.type = Ears.ELFIN;
 
 			initStrTouSpeInte(55, 25, 80, 40);
 			initLibSensCor(75, 35, 100);
@@ -312,7 +315,7 @@ package classes.Scenes.Areas.Bog
 				.add(consumables.P_WHSKY, 35)
 				.add(null, 20);
 
-			this.wingType = WING_TYPE_GIANT_DRAGONFLY; //Maybe later, if the PC can get them, make a Faerie wing type.
+			this.theWingType = Wings.GIANT_DRAGONFLY; //Maybe later, if the PC can get them, make a Faerie wing type.
 			this.wingDesc = "small black faerie wings";
 			checkMonster();
 		}

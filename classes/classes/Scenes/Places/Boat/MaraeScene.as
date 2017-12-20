@@ -1,4 +1,4 @@
-package classes.Scenes.Places.Boat {
+﻿package classes.Scenes.Places.Boat {
 import classes.*;
 import classes.GlobalFlags.kFLAGS;
 import classes.GlobalFlags.kACHIEVEMENTS;
@@ -44,13 +44,13 @@ public class MaraeScene extends AbstractBoatContent implements TimeAwareInterfac
 			if (flags[kFLAGS.MET_MARAE] <= 0) {
 				flags[kFLAGS.MET_MARAE] = 1;
 				outputText("You approach the tree and note that its bark is unusually smooth.  Every leaf of the tree is particularly vibrant, bright green with life and color.   You reach out to touch the bark and circle around it, noting a complete lack of knots or discoloration.  As you finish the circle, you are surprised to see the silhouette of a woman growing from the bark.  The transformation stops, exposing the front half a woman from the waist up.   You give a start when she opens her eyes – revealing totally white irises, the only part of her NOT textured with bark.\n\n");
-				if (player.cor > 66 + player.corruptionTolerance() && flags[kFLAGS.MEANINGLESS_CORRUPTION] <= 0) outputText("The woman bellows, \"<i>Begone demon.  You tread on the precipice of damnation.</i>\"  The tree's eyes flash, and you find yourself rowing back to camp.  The compulsion wears off in time, making you wonder just what that tree-woman was!");
+				if (!player.isPureEnough(66)) outputText("The woman bellows, \"<i>Begone demon.  You tread on the precipice of damnation.</i>\"  The tree's eyes flash, and you find yourself rowing back to camp.  The compulsion wears off in time, making you wonder just what that tree-woman was!");
 				//Explain the dungeon scenario
 				else {
 					flags[kFLAGS.MARAE_QUEST_START] = 1;
 					outputText("\"<i>You seem so surprised by me, Champion.   I suppose that is inevitable.  Your origin is not of Mareth, our land, and few save for the demons remember me,</i>\" says the tree.\n\n");
 					outputText("You take a step back, amazed to find such a creature, apparently uncorrupted.  ");
-					if (player.lib + player.cor > (80 - player.corruptionTolerance())) outputText("Your eyes can't help but take note of the tree-woman's shapely breasts, and wonder if they feel like tits or wood.  ");
+					if (player.isCorruptEnough(80 - player.lib100)) outputText("Your eyes can't help but take note of the tree-woman's shapely breasts, and wonder if they feel like tits or wood.  ");
 					outputText("Feeling a bit confused, you introduce yourself and ask her who she is.\n\n");
 					outputText("\"<i>Me?</i>\" she asks, \"<i>I am the life-goddess Marae.  I am Mareth, for my roots touch every part of it.   Or I was.  Before THEY came.</i>\"\n\n");
 					outputText("You suggest, \"<i>The demons?</i>\"\n\n");
@@ -59,7 +59,7 @@ public class MaraeScene extends AbstractBoatContent implements TimeAwareInterfac
 					outputText("She sighs heavily, and you notice the bark of her nipples stiffening.  Her brow creases with something approximating worry as she continues, \"<i>They know of me.  My power originally kept them far from the shores of the lake, but they seek to corrupt me – to make me like them.   They've used magic and industry to trap the pure rains in the clouds around their mountain, starving me, and in its place they spill their tainted sexual fluids.   For... years now, my furthest reaches have been bathed in their vile cum.   While my power is great, I... I cannot resist forever.  My reach has dwindled to little more than this lake.  Parts of me have already fallen, taking the surrounding life with them.  I do not know how much longer I can endure... even now, the desire to mate with you rises within me.</i>\"\n\n");
 					outputText("She practically begs, \"<i>Please champion, you must help me.  The demons have a factory at the foot of the mountains.  It produces much of the fluid they use to taint me.  If you could find a way to shut it down, I... all of Mareth, might stand a chance.</i>\"\n\n");
 					outputText("You nod, understanding.  She commands, \"<i>Now go, there is nothing to be gained by your presence here.  Return if you manage to close that vile place.</i>\"\n\n");
-					if (player.lib + player.cor > (80 - player.corruptionTolerance())) {
+					if (player.isCorruptEnough(80-player.lib)) {
 						outputText("You could leave, but the desire to feel her breast will not go away.  What do you do?");
 						menu();
 						addButton(0, "Boob", grabHerBoob);
@@ -73,9 +73,10 @@ public class MaraeScene extends AbstractBoatContent implements TimeAwareInterfac
 			//Second meeting
 			else {
 				outputText("You approach Marae's tree, watching the goddess flow out of the tree's bark as if it was made of liquid.  Just as before, she appears as the top half of a woman, naked from the waist up, with her back merging into the tree's trunk.\n\n");
-				if (player.cor > 66 + player.corruptionTolerance() && flags[kFLAGS.MEANINGLESS_CORRUPTION] <= 0) {
+				if (!player.isPureEnough(66)) {
 					outputText("She bellows in rage, \"<i>I told you, begone!</i>\"\n\nYou turn tail and head back to your boat, knowing you cannot compete with her power directly.");
-					if (player.level >= 30) outputText("  f course, you could probably try to overthrow her.");
+					// ???
+//					if (player.level >= 30) outputText(" Of course, you could probably try to overthrow her.");
 					doNext(camp.returnToCampUseOneHour);
 				}
 				else {
@@ -430,9 +431,9 @@ public class MaraeScene extends AbstractBoatContent implements TimeAwareInterfac
 			else outputText("against your belly");
 			outputText(", and her sap-drooling teats are crushed into you.  Unbidden, your own " + player.nippleDescript(0) + "s grow hard under your " + player.armorName + ".  Marae glances down knowingly and begins to undo your gear, tossing it aside with almost bored contempt.  The sharp edges of her fingernails trace down your abdomen, circle your belly-button, and then slide wide to caress your " + player.hipDescript() + ".  The unexpected shift makes you gasp and rock against her, trying to get her fingertips between your " + player.legs() + ".  The goddess laughs and whispers, \"<i>No dear, that's a dick's job.</i>\"\n\n");
 
-			outputText("Your heart hammers in your chest, flushing your " + player.skinDesc + " with heat from the goddess' presence and perfect, knowing touches.   There's no way you could resist her at this point, even if you wanted to.  Her smooth, flawless hands grab your shoulders and push down with a gentle but firm pressure that brooks no resistance.  Your " + player.legs() + " fold underneath Marae's guidance, allowing you to take a proper, worshipful stance.  A confused, half-formed thought claws its way out of the arousal that's swimming through your brain, but you shake your head in irritation and begin to lick your lips while you gawk at Marae's proud new shaft.\n\n");
+			outputText("Your heart hammers in your chest, flushing your " + player.skin.desc + " with heat from the goddess' presence and perfect, knowing touches.   There's no way you could resist her at this point, even if you wanted to.  Her smooth, flawless hands grab your shoulders and push down with a gentle but firm pressure that brooks no resistance.  Your " + player.legs() + " fold underneath Marae's guidance, allowing you to take a proper, worshipful stance.  A confused, half-formed thought claws its way out of the arousal that's swimming through your brain, but you shake your head in irritation and begin to lick your lips while you gawk at Marae's proud new shaft.\n\n");
 
-			outputText("Marae runs her slender fingers through your " + player.hairDescript() + ", pulling your " + player.face() + " closer and closer until you smell the fragrance of her nectar and make out every detail of her impeccably smooth penis.  The goddess commands, \"<i>Worship it as you would worship me.</i>\"  You nod, feeling remarkably obedient as you lean forwards to take her in your mouth.   A bead of moisture rolls down the tip, smearing over your lower lip as you open up to encapsulate the suddenly hermaphroditic goddess' prick.  Her pre is sweet, though it doesn't surprise you considering it's coming from part of a flower.  It reminds you a little of honey, though there is an undercurrent of something else that you can't quite place.\n\n");
+			outputText("Marae runs her slender fingers through your " + player.hairDescript() + ", pulling your " + player.faceDescript() + " closer and closer until you smell the fragrance of her nectar and make out every detail of her impeccably smooth penis.  The goddess commands, \"<i>Worship it as you would worship me.</i>\"  You nod, feeling remarkably obedient as you lean forwards to take her in your mouth.   A bead of moisture rolls down the tip, smearing over your lower lip as you open up to encapsulate the suddenly hermaphroditic goddess' prick.  Her pre is sweet, though it doesn't surprise you considering it's coming from part of a flower.  It reminds you a little of honey, though there is an undercurrent of something else that you can't quite place.\n\n");
 
 			outputText("Bobbing back and forth, you begin to fellate the goddess of fertility with unthinking, flawless precision.  Marae's hands continue to toy with your " + player.hairDescript() + ", wrenching it painfully once when you accidentally bump her with your teeth.  You whimper submissively and work harder, and your goddess rewards you by sending a tentacle to your groin.  The rounded tip nuzzles against you through your " + player.armorName + ", but quickly angles itself to slip inside.  It curls around your body, coating you with slippery fluids as it works its way back towards your " + player.vaginaDescript(0) + ".\n\n");
 
@@ -441,7 +442,7 @@ public class MaraeScene extends AbstractBoatContent implements TimeAwareInterfac
 			outputText("  Both are dripping and giving tiny squirts of sweet pleasure that simultaneously dull the mind and reinforce your worship of this sexually-charged deity.\n\n");
 
 			outputText("Marae grunts and pulls on ");
-			if (player.horns > 0) outputText("your horns");
+			if (player.horns.value > 0) outputText("your horns");
 			else outputText("your " + player.hairDescript());
 			outputText(", shoving her thick clit-cock deep inside your throat.  You reflexively swallow down the bulging fuck-meat and ");
 			if (player.cor < 33) outputText("struggle to ");
@@ -489,7 +490,7 @@ public class MaraeScene extends AbstractBoatContent implements TimeAwareInterfac
 			}
 			outputText("A hot, slippery pressure touches something inside your " + player.assholeDescript() + " and makes you squirt even harder.  Marae's minions have found your prostate!  You grunt and groan, but the orgasm doesn't seem to stop.  The goddess teases, \"<i>What?  You didn't think I'd actually let you cum on me did you?</i>\"\n\n");
 
-			outputText("It doesn't matter, you're giving her what she wants.  You cum until your " + player.legs() + " give out and you're sprawled on your back, " + player.sMultiCockDesc() + " being milked of its seed by the slurping, cunt-tentacles.  Every time you start to come down, the one in your backdoor rubs you just right and forces out another load.  Marae steps over your " + player.face() + " and drops down, allowing you to lick the nectar that drips from her sensitive, flower-like folds while you cum.  It's sweet, potent, and refreshing.  It makes it easy to keep cumming but hard to stay awake, and your eyes roll back as you pass out from an overload of pleasure.");
+			outputText("It doesn't matter, you're giving her what she wants.  You cum until your " + player.legs() + " give out and you're sprawled on your back, " + player.sMultiCockDesc() + " being milked of its seed by the slurping, cunt-tentacles.  Every time you start to come down, the one in your backdoor rubs you just right and forces out another load.  Marae steps over your " + player.faceDescript() + " and drops down, allowing you to lick the nectar that drips from her sensitive, flower-like folds while you cum.  It's sweet, potent, and refreshing.  It makes it easy to keep cumming but hard to stay awake, and your eyes roll back as you pass out from an overload of pleasure.");
 		}
 		//[Hermz]  Marae grows vinecawks for DP under her flowercunt and sexes.
 		else {
@@ -515,8 +516,8 @@ public class MaraeScene extends AbstractBoatContent implements TimeAwareInterfac
 			}
 			outputText("\n\n");
 
-			if (player.vaginas[0].vaginalWetness < VAGINA_WETNESS_WET) outputText("Sticky wetness glistens between your thighs");
-			else if (player.vaginas[0].vaginalWetness < VAGINA_WETNESS_DROOLING) outputText("Drops of feminine arousal run down your thighs");
+			if (player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_WET) outputText("Sticky wetness glistens between your thighs");
+			else if (player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_DROOLING) outputText("Drops of feminine arousal run down your thighs");
 			else outputText("Trails of viscous feminine fluid leak from your " + player.vaginaDescript(0));
 			outputText(", reminding you of your unused femsex.  Marae grunts underneath you, and while at first you assume it's from the penetration, the prodding of two cock-like protrusions at your lusty holes corrects your misguided assumptions.  You pull back and begin to fuck her in earnest, and with each long rock back, you can see she's grown tentacles from underneath her ass, like two prehensile tails.  They push forwards and spear you, arresting your movement while you try to cope with the sudden stretching of two of your orifices.  Warmth radiates from the twin intruders along with a slippery fullness.  They're pumping something inside you that tingles and makes " + player.sMultiCockDesc() + " bounce and drip.");
 			player.cuntChange(12, true, true, false);
@@ -687,7 +688,7 @@ public class MaraeScene extends AbstractBoatContent implements TimeAwareInterfac
 		outputText("\n\n(Do you fight Marae or stay with her and abandon your quests? Or you could leave if you want.)");
 		menu();
 		addButton(0, "Fight Her", promptFightMarae, level3MaraeEncounter, null, null, "Fight Marae the corrupted goddess!");
-		addButton(1, "Stay With Her", maraeBadEnd, null, null, null, "Stay with Marae and end your adventures?");
+		addButton(1, "Stay With Her", maraeBadEnd).hint("Stay with Marae and end your adventures?");
 		addButton(4, "Leave", camp.returnToCampUseOneHour);
 	}
 
@@ -737,7 +738,7 @@ public class MaraeScene extends AbstractBoatContent implements TimeAwareInterfac
 		}
 		flags[kFLAGS.PURE_MARAE_ENDGAME] = 1;
 		menu();
-		addButton(0, "Bring it on!", initiateFightMarae, null, null, null, "Challenge Marae to a fight. This is going to be an extremely HARD boss fight! \n\nRecommended level: 30+");
+		addButton(0, "Bring it on!", initiateFightMarae).hint("Challenge Marae to a fight. This is going to be an extremely HARD boss fight! \n\nRecommended level: 30+");
 		addButton(1, "Not yet!", camp.returnToCampUseOneHour);
 	}
 

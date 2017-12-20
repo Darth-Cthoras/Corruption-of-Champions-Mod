@@ -161,7 +161,7 @@
 			if (flags[kFLAGS.LOPPE_PC_MET_UMA] == 0) {
 				outputText("You wander around Tel'Adre for a good while until something has caught your eyes. The exterior is unlike anything you've seen before. ");
 				outputText("\"Kemono's Oriental Clinic\" is written on a wooden board above the entryway. You open the door and head inside.\n\n");
-				outputText("The strange internal hallway appears strange, but the waiting room outside is light and airy.  Windows are adorned with multiple elaborate windchimes, which tinkle and clatter softly as a cooling breeze drifts through the house. A huge shelf dominates one wall, covered in - you find yourself double-checking - what look like tiny, miniature versions of trees.  A nondescript statue-fountain stands in one corner, water welling from its tip and flowing gently down its sides to create a calming sound.  In another corner, there is a small garden of colorful, polished stones and soft white sand.  Multiple lushly-cushioned chairs complete the room, obviously a waiting room - a dense bead curtain cordons off a doorway leading deeper inside the building, and Loppe's mother must clearly lie beyond.\n\n");
+				outputText("The strange internal hallway appears strange, but the waiting room outside is light and airy.  Windows are adorned with multiple elaborate windchimes, which tinkle and clatter softly as a cooling breeze drifts through the house. A huge shelf dominates one wall, covered in - you find yourself double-checking - what look like tiny, miniature versions of trees.  A nondescript statue-fountain stands in one corner, water welling from its tip and flowing gently down its sides to create a calming sound.  In another corner, there is a small garden of colorful, polished stones and soft white sand.  Multiple lushly-cushioned chairs complete the room, obviously a waiting room - a dense bead curtain cordons off a doorway leading deeper inside the building, and " + (flags[kFLAGS.LOPPE_PC_MET_UMA] >= 1 ? "Loppe's mother" : "the owner") + " must clearly lie beyond.\n\n");
 				outputText("A bipedal humanoid horse with unmistakable human features walks over to greet you. She's huge, easily seven feet tall, certainly far bigger than the half-horse who brought you here, with full, round breasts and wide womanly hips clearly delineated by the strange dress that she wears, a rich blue with a pattern of white snowflakes on it.  She looks "); 
 				// Assuming Uma is ~7' tall == 84". 6" leeway for the variants or more? PAGING FENOXO!
 				if (player.tallness < 78)
@@ -466,7 +466,7 @@
 
 			// Refactor to say something about nipples against the table?
 			outputText("You move to do as she asks; it's a little awkward adjusting to having your face in the - thankfully cushioned - hole.  You wriggle about to settle yourself comfortably on the table, [nipples] squashing into the surface, but you manage to make yourself relaxed and tell Uma that you're ready once more.\n\n");
-			outputText("You yelp as Uma presses the metal rod " + ((player.tailType > 0) ? "to the base of your tail" : "to your lower back") + ".  \"<i>I'm going to have to trace a few spots on your back dear, to ensure your flow of chi is not obstructed.  It might hurt again, but be brave, ok?</i>\"  You nod as best as you can and prepare yourself.\n\n");
+			outputText("You yelp as Uma presses the metal rod " + ((player.tail.type > 0) ? "to the base of your tail" : "to your lower back") + ".  \"<i>I'm going to have to trace a few spots on your back dear, to ensure your flow of chi is not obstructed.  It might hurt again, but be brave, ok?</i>\"  You nod as best as you can and prepare yourself.\n\n");
 			outputText("By the time Uma is finished you feel sore all over, the pain on your back seemingly bringing back the pain on your front.\n\n");
 			outputText("\"<i>It will be a little while before the flow of chi inside your body stabilizes, dear.  But by the time you're out of this clinic, you should feel much better,</i>\" Uma explains.\n\n");
 			outputText("You thank the mare and get dressed, bidding her farewell before you exit the clinic. Once outside, true to her words, you start to feel better... in fact you feel amazing!  It's no wonder her treatment is expensive, you feel just... amazing!\n\n");
@@ -1741,7 +1741,7 @@
 				if (player.hasCock()) outputText(", your forgotten cock spraying cum in a pearlescent arc to splatter onto the floor");
 				outputText(".\n\n");
 
-				outputText("\"<i>Oh, deary.  You're so cute I could just squeeze you all day!</i>\"  Uma laughs happily as she pumps her fingers inside you one more time, drawing one last discharge before you finally slump on the older mare's lap.  The mare removes her hand from your sensitive pussy and brings it close to her mouth, promptly licking your juices off her hand, close to your ear to ensure you hear every single lewd sound she makes as she cleans your orgasm from her hand.  \"<i>Hmm, virgins definitely have the best taste.  Sweet, slick and unclaimed.  Be sure to warn Loppe to go easy on you when you finally decide to work with her equine pride, though I wonder if she'll be able to restrain herself with such a cutie like you,</i>\" Uma says as she kisses the back of your neck once more before returning to her cleaning duty.\n\n");
+				outputText("\"<i>Oh, deary.  You're so cute I could just squeeze you all day!</i>\"  Uma laughs happily as she pumps her fingers inside you one more time, drawing one last discharge before you finally slump on the older mare's lap.  The mare removes her hand from your sensitive pussy and brings it close to her mouth, promptly licking your juices off her hand, close to your ear to ensure you hear every single lewd sound she makes as she cleans your orgasm from her hand.  \"<i>Hmm, virgins definitely have the best taste.  Sweet, slick and unclaimed" + (flags[kFLAGS.LOPPE_PC_MET_UMA] >= 1 ? ". Be sure to warn Loppe to go easy on you when you finally decide to work with her equine pride, though I wonder if she'll be able to restrain herself with such a cutie like you," : ",") + "</i>\" Uma says as she kisses the back of your neck once more before returning to her cleaning duty.\n\n");
 				outputText("You take a few moments to regain control of your [legs], but get up and start helping to clean up the mess - after all, you made it.  Once it's all clean, you kiss Uma on the cheek as a thank you before saying you have to be going.  \"<i>See you soon, dear.  I'd love to have given you more of a workout, but I think my daughter will appreciate your inexperience.  So make sure you come prepared next time, so we can have some more fun.</i>\" she informs you, as her fingers begin to prod at her own snatch.\n\n");
 				outputText("You can't resist a smile as you promise to remember that, redress yourself, and head back to camp.\n\n");
 			}
@@ -2067,14 +2067,14 @@
 			outputText("You respond by eagerly digging your mouth even deeper into the soft folds of Uma's sex, extending your tongue to reach even deeper inside the pretty filly.  Her taste is wonderful. Familiar and yet distinct, with a spice you attribute to being the mare's personal taste.  So intent you are on eating her out, that you're almost like a horse, eager to taste the dewy grass of the morning pasture.\n\n");
 			outputText("Uma moans and groans appreciatively, one hand reaching down to rub your head ");
 
-			if (player.earType == 2 || player.earType == 9 || player.earType == 5 || player.earType == 7) outputText("between your "); 
+			if (player.ears.type == 2 || player.ears.type == 9 || player.ears.type == 5 || player.ears.type == 7) outputText("between your "); 
 			
-			if (player.earType == 2) outputText("canine ");
-			if (player.earType == 9) outputText("vulpine ");
-			if (player.earType == 5) outputText("feline ");
-			if (player.earType == 7) outputText("loporid ");
+			if (player.ears.type == 2) outputText("canine ");
+			if (player.ears.type == 9) outputText("vulpine ");
+			if (player.ears.type == 5) outputText("feline ");
+			if (player.ears.type == 7) outputText("loporid ");
 
-			if (player.earType == 2 || player.earType == 9 || player.earType == 5 || player.earType == 7) outputText("ears.  ");
+			if (player.ears.type == 2 || player.ears.type == 9 || player.ears.type == 5 || player.ears.type == 7) outputText("ears.  ");
 
 			outputText("\"<i>Mmm oh yes dear, yes, that feels good.  It's been awhile since someone would do that for me...</i>\"  She croons in her pleasure.\n\n");
 			outputText("You take your mouth off her plush netherlips to pant and regain your breath, licking around your mouth to taste more of her.  You don't take long before you plunge yourself back between her legs, licking, slurping, drinking and tasting.\n\n");

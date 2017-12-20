@@ -1,7 +1,9 @@
 package classes.Scenes.Areas.Forest
 {
 	import classes.*;
-	import classes.internals.WeightedDrop;
+	import classes.BodyParts.*;
+import classes.StatusEffects.Combat.AkbalSpeedDebuff;
+import classes.internals.WeightedDrop;
 
 	public class Akbal extends Monster
 	{
@@ -106,14 +108,10 @@ package classes.Scenes.Areas.Forest
 			//*Special Attack A - 
 			if (rand(2) == 0 && player.spe > 20)
 			{
-				var speedChange:Number = player.spe / 5 * -1;
 				outputText("Akbal's eyes fill with light, and a strange sense of fear begins to paralyze your limbs.");
 				//(Speed decrease)
-				game.dynStats("spe", speedChange);
-				if (player.hasStatusEffect(StatusEffects.AkbalSpeed))
-					player.addStatusValue(StatusEffects.AkbalSpeed, 1, speedChange);
-				else
-					player.createStatusEffect(StatusEffects.AkbalSpeed, speedChange, 0, 0, 0);
+				var ase:AkbalSpeedDebuff = player.createOrFindStatusEffect(StatusEffects.AkbalSpeed) as AkbalSpeedDebuff;
+				ase.increase();
 			}
 			//*Special Attack B - 
 			else
@@ -166,7 +164,7 @@ package classes.Scenes.Areas.Forest
 
 		public function Akbal()
 		{
-			trace("Akbal Constructor!");
+			//trace("Akbal Constructor!");
 			this.a = "";
 			this.short = "Akbal";
 			this.imageName = "akbal";
@@ -181,16 +179,16 @@ package classes.Scenes.Areas.Forest
 			createBreastRow();
 			createBreastRow();
 			createBreastRow();
-			this.ass.analLooseness = ANAL_LOOSENESS_TIGHT;
-			this.ass.analWetness = ANAL_WETNESS_NORMAL;
+			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
+			this.ass.analWetness = AssClass.WETNESS_NORMAL;
 			this.tallness = 4*12;
-			this.hipRating = HIP_RATING_SLENDER;
-			this.buttRating = BUTT_RATING_TIGHT;
-			this.skinTone = "spotted";
-			this.skinType = SKIN_TYPE_FUR;
-			//this.skinDesc = Appearance.Appearance.DEFAULT_SKIN_DESCS[SKIN_TYPE_FUR];
-			this.hairColor = "black";
-			this.hairLength = 5;
+			this.hips.rating = Hips.RATING_SLENDER;
+			this.butt.rating = Butt.RATING_TIGHT;
+			this.skin.tone = "spotted";
+			this.theSkinType = Skin.FUR;
+			//this.skin.desc = Appearance.Appearance.DEFAULT_SKIN_DESCS[Skin.FUR];
+			this.hair.color = "black";
+			this.hair.length = 5;
 			initStrTouSpeInte(55, 53, 50, 75);
 			initLibSensCor(50, 50, 100);
 			this.weaponName = "claws";
@@ -212,7 +210,7 @@ package classes.Scenes.Areas.Forest
 			this.special1 = akbalLustAttack;
 			this.special2 = akbalSpecial;
 			this.special3 = akbalHeal;
-			this.tailType = TAIL_TYPE_DOG;
+			this.tail.type = Tail.DOG;
 			checkMonster();
 		}
 

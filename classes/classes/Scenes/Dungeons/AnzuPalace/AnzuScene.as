@@ -1,6 +1,7 @@
 package classes.Scenes.Dungeons.AnzuPalace 
 {
 	import classes.BaseContent;
+	import classes.BodyParts.*;
 	import classes.TimeAwareInterface;
 	import classes.GlobalFlags.*;
 	import classes.PerkLib;
@@ -158,7 +159,7 @@ package classes.Scenes.Dungeons.AnzuPalace
 			else if (anzuRelationshipLevel() == 2) {
 				outputText("Walking around Anzu’s palace, this time you don’t have to search for him, as you find the avian peacefully sleeping on a couch on the living room. Looks like he isn’t using his usual set of clothing, and only has his robes and underwear covering him.");
 				outputText("\n\nApproaching him silently, and seeing now an opportunity which you probably won't have again in a long time, your hand slip inside the folds of the soft fabric, reaching to his chest, and without advertence to him you start tickling his chest and belly. The avian awakens at the sudden touches, and starts laughing at your constant tickling.");
-				outputText("\n\n\"<i>[name], what are you…, no… please no…, stop you… \"<i> he only manages to say, in between laughter.");
+				outputText("\n\n\"<i>[name], what are you…, no… please no…, stop you… \"</i> he only manages to say, in between laughter.");
 				outputText("\n\nSeems you caught him by surprise. Anyways, you won’t have mercy on him. Keeping on the ticking, you start stroking with your fingers the soft feathers of his chest and then making them dance over his belly. You continue your assault for several minutes. ");
 				outputText("\n\nIt's funny to see the normally quiet avian laugh for a change, even if it is a forced laugh combined with a bit of squirming, and the sensation of his feathers under your fingers is strange and funny in the same way, like caressing one of the parrots who lived back in Ingnam, the only difference is that this is a huge one. Finally, when you think that he’s had enough for a while, you release him for your tickles, and leave him fall on the couch, still laughing a bit.");
 				outputText("\n\n\"<i>Oh, thanks.</i>\" he says, sounding relieved. But soon, his tone suddenly changes. \"<i>That was a smart move, attacking when I was asleep, but, being fair, I think that I’ll repay you for this.</i>\"");
@@ -268,13 +269,13 @@ package classes.Scenes.Dungeons.AnzuPalace
 			clearOutput();
 			outputText("\"<i>Do you need anything?</i>\" Anzu asks patiently.");
 			menu();
-			addButton(0, "Appearance", anzuAppearance, null, null, null, "Take a closer look at the avian deity.");
-			addButton(1, "Talk", anzuTalkMenu, null, null, null, "Get to know Anzu better.");
-			if (flags[kFLAGS.ANZU_RELATIONSHIP_LEVEL] >= 3) addButton(2, "Sex", anzuSexMenu, null, null, null, "Have some sexy times with the sexy avian deity.");
+			addButton(0, "Appearance", anzuAppearance).hint("Take a closer look at the avian deity.");
+			addButton(1, "Talk", anzuTalkMenu).hint("Get to know Anzu better.");
+			if (flags[kFLAGS.ANZU_RELATIONSHIP_LEVEL] >= 3) addButton(2, "Sex", anzuSexMenu).hint("Have some sexy times with the sexy avian deity.");
 			else addButtonDisabled(2, "Sex", "Maybe if Anzu likes you better, he will let you do that.");
 			if (kGAMECLASS.dungeonLoc == DungeonCore.DUNGEON_ANZU_ROOF) {
 				if (player.canFly()) {
-					if (flags[kFLAGS.ANZU_RELATIONSHIP_LEVEL] >= 4) addButton(3, "Race Him", null, null, null, null, "Challenge Anzu to a race and have some fun!");
+					if (flags[kFLAGS.ANZU_RELATIONSHIP_LEVEL] >= 4) addButton(3, "Race Him", null).hint("Challenge Anzu to a race and have some fun!");
 					else addButtonDisabled(3, "Race Him", "Maybe if Anzu likes you better, he'll consider letting you race against him.");
 				}
 				else addButtonDisabled(3, "Race Him", "You'll need a pair of flight-enabling wings to do that.");
@@ -300,11 +301,11 @@ package classes.Scenes.Dungeons.AnzuPalace
 			clearOutput();
 			outputText("\"<i>What would you like to talk about, " + player.mf("boy", "girl") + "?</i>\" Anzu asks.");
 			menu();
-			addButton(0, "His Past", anzuTalkPast, null, null, null, "Ask Anzu about his past.");
-			addButton(1, "The Palace", anzuTalkPalace, null, null, null, "Ask Anzu about the palace he currently lives in.");
-			addButton(2, "Glacial Rift", anzuTalkRift, null, null, null, "Ask Anzu about the Glacial Rift.");
-			addButton(3, "His Powers", anzuTalkPowers, null, null, null, "Ask Anzu about his powers. Surely as a deity, he has some interesting powers?");
-			addButton(4, "Marae & Lethice", anzuTalkMaraeAndLethice, null, null, null, "Ask Anzu what he thinks about Marae and Lethice.");
+			addButton(0, "His Past", anzuTalkPast).hint("Ask Anzu about his past.");
+			addButton(1, "The Palace", anzuTalkPalace).hint("Ask Anzu about the palace he currently lives in.");
+			addButton(2, "Glacial Rift", anzuTalkRift).hint("Ask Anzu about the Glacial Rift.");
+			addButton(3, "His Powers", anzuTalkPowers).hint("Ask Anzu about his powers. Surely as a deity, he has some interesting powers?");
+			addButton(4, "Marae & Lethice", anzuTalkMaraeAndLethice).hint("Ask Anzu what he thinks about Marae and Lethice.");
 			addButton(14, "Back", anzuMenus);
 		}
 		
@@ -337,21 +338,21 @@ package classes.Scenes.Dungeons.AnzuPalace
 			outputText(images.showImage("anzu-talk-palace"));
 			outputText("He said something about valkyries living here before he arrived. How was the palace before?");
 			outputText("\n\n\"<i>The group of women that used to live here before? With them, this place looked a little more rustic back then. Wooden tables, iron decorations, weapons hanging on the walls, and a fountain containing something they call mead. I had to redecorate the place after I threw them out.</i>\"");
-			outputText("\n\nAnzu makes a hand gesture to indicate you to follow him.");			
-			outputText("\n\n\"<i>I had to plaster the inner walls because the most of the bricks were exposed. After that, I decorated the walls and columns with silk and linen. The first floor, as you can see, has four principal areas, all connected to the principal hall.");			
-			outputText("\n\nTo the left, where we’re standing now, is the living room. Almost all of the furniture and vases which are here now were the ones which I could bring with myself from Mittani. The books which you see on the shelves are general history books, told from the mortal point of view of course, very lacking in term of general knowledge but still quite interesting.");			
-			outputText("\n\nNow, to the right side of the hall, is the dining room. I kept most of the furniture that the valkyries left behind. Behind the dining room is the kitchen. The staircase at the end of the hall leads to the basement and another, near the entrance, leads to the second floor. The door near the end of the hall leads to the bathroom. With the cold, a warm bath is always appreciated. ");			
+			outputText("\n\nAnzu makes a hand gesture to indicate you to follow him.");
+			outputText("\n\n\"<i>I had to plaster the inner walls because the most of the bricks were exposed. After that, I decorated the walls and columns with silk and linen. The first floor, as you can see, has four principal areas, all connected to the principal hall.");
+			outputText("\n\nTo the left, where we’re standing now, is the living room. Almost all of the furniture and vases which are here now were the ones which I could bring with myself from Mittani. The books which you see on the shelves are general history books, told from the mortal point of view of course, very lacking in term of general knowledge but still quite interesting.");
+			outputText("\n\nNow, to the right side of the hall, is the dining room. I kept most of the furniture that the valkyries left behind. Behind the dining room is the kitchen. The staircase at the end of the hall leads to the basement and another, near the entrance, leads to the second floor. The door near the end of the hall leads to the bathroom. With the cold, a warm bath is always appreciated.</i>\"");
 			outputText("\n\n\"<i>What’s in the basement?</i>\" You ask.");
 			outputText("\n\n\"<i>Come and see it yourself</i>\" Anzu answers.");
 			outputText("\n\nBoth of you go downstairs to the basement, and the first thing which catches your attention is a chariot. You ask Anzu if this is the chariot in which he arrived on when he travelled to Mareth.");
 			outputText("\n\n\"<i>Yes, I kept the chariot I stole from Ninurta here. It stays here most of the time as I have very little use for it</i>\" Anzu explains, and proceed to point to a door located behind the chariot.");
 			outputText("\n\n\"<i>Behind this door is the armory. Name a kind of weapon, and you’ll find it inside: swords, bows, axes, spears, halberds, and...I’m starting to sound like a weapon seller. Maybe I’ll show you the weapons in more detail later, for now, follow me to the second floor.</i>\"");
 			outputText("\n\nAfter returning to the first floor, you go upstairs to the second floor. The floor is shaped in a U like disposition. There are three rooms, two to the sides and one located at the end, with the hall connecting the three rooms and the staircases.");
-			outputText("\n\n\"<i>Now, " + player.short + " if you look to the left, you’ll see my bedroom.</i>\" He points a pretty large room and beckons you to follow him inside.");			
-			outputText("\n\nWow, this is a huge room. You could fit inside this room almost all of your " + camp.homeDesc() + " located in your camp! You ask Anzu what was this place before it became his bedroom.");			
-			outputText("\n\n\"<i>Apparently, it was the valkyrie’s common dormitories before I arrived. There was almost thirty of them, and after I threw out all the old and small beds, the space left was more than enough for most of my things. As you can see, I repaired the walls and decorated it in a similar way to the living room. I put a small fireplace here too. And that large thing is my bed.</i>\" He says, pointing to a huge mattress covered with linen sheets.");			
-			outputText("\n\nAround the fireplace which Anzu mentioned, there are some armchairs. The scent of flowers catch your attention for a moment, and you see many vases with them around the bedroom.");			
-			outputText("\n\n\"<i>I tried to replicate here my sanctuary in the Temple of Mittani, and besides the cold, I think I did a good job. Apart from my bedroom, on this floor you can find my study, and the rest of the books in the palace. These books contain information from my realm.");			
+			outputText("\n\n\"<i>Now, " + player.short + " if you look to the left, you’ll see my bedroom.</i>\" He points a pretty large room and beckons you to follow him inside.");
+			outputText("\n\nWow, this is a huge room. You could fit inside this room almost all of your " + camp.homeDesc() + " located in your camp! You ask Anzu what was this place before it became his bedroom.");
+			outputText("\n\n\"<i>Apparently, it was the valkyrie’s common dormitories before I arrived. There was almost thirty of them, and after I threw out all the old and small beds, the space left was more than enough for most of my things. As you can see, I repaired the walls and decorated it in a similar way to the living room. I put a small fireplace here too. And that large thing is my bed.</i>\" He says, pointing to a huge mattress covered with linen sheets.");
+			outputText("\n\nAround the fireplace which Anzu mentioned, there are some armchairs. The scent of flowers catch your attention for a moment, and you see many vases with them around the bedroom.");
+			outputText("\n\n\"<i>I tried to replicate here my sanctuary in the Temple of Mittani, and besides the cold, I think I did a good job. Apart from my bedroom, on this floor you can find my study, and the rest of the books in the palace. These books contain information from my realm.</i>\"");
 			outputText("\n\nAfter showing you the study, he points the third room, in the right side of the floor.");
 			outputText("\n\n\"<i>This room has no standard use. Generally I use it for random things when it becomes necessary.</i>\"");
 			outputText("\n\nYou follow him to the third floor. Similar to the second in shape, the only difference resides in the fact of here are only two large rooms, while a hall crosses the floor.");
@@ -361,13 +362,13 @@ package classes.Scenes.Dungeons.AnzuPalace
 			outputText("\n\n\"<i>A little cold at start, but when you get accustomed, it becomes really nice. You know, if you want to have a better view, you can follow me to the roof.</i>\"");
 			outputText("\n\nThe roof of the palace, surrounded by the forest pines, lead to a truly magnificent view. The hills extend for all the horizon, while the soft sound of the wind brings peace to your mind. Above you, the sky, framed by the treetops completes the setting.");
 			if (flags[kFLAGS.LETHICE_DEFEATED] > 0) {
-				outputText("\n\n\"<i>When I’m bored or feel too nostalgic, I use to go here in the night. Makes me focus in what I have now. Previously, those stars didn't appear in the sky but for some reason those stars returned.</i>\"");			
+				outputText("\n\n\"<i>When I’m bored or feel too nostalgic, I use to go here in the night. Makes me focus in what I have now. Previously, those stars didn't appear in the sky but for some reason those stars returned.</i>\"");
 				outputText("\n\nYou tell Anzu of how you defeated Lethice and he congratulates you in your efforts, even giving you an appreciative nod for making the stars return. You chat in the top of the palace with Anzu about the constellations and shooting stars until the cold makes you ask him to go inside again.");
 			}
 			else {
-				outputText("\n\n\"<i>When I’m bored or feel too nostalgic, I use to go here in the night. Makes me focus in what I have now. In the end, the only thing that I really miss from my former world, are the things that I can’t have when looking at the sky.</i>\"");			
-				outputText("\n\nYou give him a confused look.");	
-				outputText("\n\n\"<i>Stars.</i>\"");	
+				outputText("\n\n\"<i>When I’m bored or feel too nostalgic, I use to go here in the night. Makes me focus in what I have now. In the end, the only thing that I really miss from my former world, are the things that I can’t have when looking at the sky.</i>\"");
+				outputText("\n\nYou give him a confused look.");
+				outputText("\n\n\"<i>Stars.</i>\"");
 				outputText("\n\nThe lack of the stars in the night sky can be a little depressing. You recall how in the night, back on Ingnam you used to sit on the grass and count the stars of the sky. You chat in the top of the palace with Anzu about the constellations and shooting stars until the cold makes you ask him to go inside again.");	
 			}
 			outputText("\n\nBack in the living room, you thank him for having showed his palace to you.");			
@@ -502,15 +503,15 @@ package classes.Scenes.Dungeons.AnzuPalace
 				}
 			}
 			menu();
-			addButton(0, "Anal Catch", catchAnalPart1, null, null, null, "Have Anzu stuff you anally. \n\nNOTE: This is a REALLY long scene.");
-			if (player.hasVagina()) addButton(1, "Vaginal Catch", catchVaginal, null, null, null, "Have Anzu fill you vaginally to the brim.");
+			addButton(0, "Anal Catch", catchAnalPart1).hint("Have Anzu stuff you anally. \n\nNOTE: This is a REALLY long scene.");
+			if (player.hasVagina()) addButton(1, "Vaginal Catch", catchVaginal).hint("Have Anzu fill you vaginally to the brim.");
 			else addButtonDisabled(1, "Vaginal Catch", "You need a cooter for that.");
-			if (player.hasCock()) addButton(2, "Get Sucked", getBlown, null, null, null, "Have Anzu suck you off? Though his beak can prove to be a challenge.");
+			if (player.hasCock()) addButton(2, "Get Sucked", getBlown).hint("Have Anzu suck you off? Though his beak can prove to be a challenge.");
 			else addButtonDisabled(2, "Get Sucked", "You need to have a cock for that.");
-			addButton(3, "Blow Him", suckOffDeitysCock, null, null, null, "Suck off that big cock. You have the hunch that it will get your belly stuffed.");
-			if (player.hasCock()) addButton(4, "Fuck Him", fuckGodlyBirdButt, null, null, null, "Put that cock of yours to a good use and fuck that divine ass!");
+			addButton(3, "Blow Him", suckOffDeitysCock).hint("Suck off that big cock. You have the hunch that it will get your belly stuffed.");
+			if (player.hasCock()) addButton(4, "Fuck Him", fuckGodlyBirdButt).hint("Put that cock of yours to a good use and fuck that divine ass!");
 			else addButtonDisabled(4, "Fuck Him", "You need to have a cock to fuck that divine butt.");
-			if (player.lactationQ() >= 100 || player.findPerk(PerkLib.Feeder) >= 0) addButton(5, "Feed Him", feedAnzu, null, null, null, "Anzu is certainly thirsty. Put those breasts of yours to a good use.");
+			if (player.lactationQ() >= 100 || player.findPerk(PerkLib.Feeder) >= 0) addButton(5, "Feed Him", feedAnzu).hint("Anzu is certainly thirsty. Put those breasts of yours to a good use.");
 			else addButtonDisabled(5, "Feed Him", "This option is only available if you have lactating breasts.");
 			addButton(14, "Back", anzuMenus);
 		}
@@ -531,14 +532,14 @@ package classes.Scenes.Dungeons.AnzuPalace
 				if (flags[kFLAGS.ANZU_SUCKED_OFF_COUNTER] > 0) outputText(", and blowjob");
 				outputText(", nothing compares to a tight and nice hole to slide in his package. And, in a world like this, it’s matter of time before you lose your tightness, and what could be better to lose it with your " + (anzuRelationshipLevel() >= 4 ? "lover" : "friend") + " than with a random monster on the wilderness? For make yourself sure that he won’t object anymore, you slip a hand on his underwear and start caressing his balls. The massive nuts almost groan on their desire for release, prompting a shudder on him, who blushes at your fondling of his intimate parts.");
 				outputText("\n\n\"<i>O-okay, if you insist, friend….</i>\" a flustered Anzu answers</i>\" We should get started, then.</i>\"");
-				outputText("\n\nStill a little unsure, he starts removing your [armor] while you lean over the bed. After leaving your clothes on the side, he takes off his clothes, dropping them on the floor, leaving him only with his underwear. You display your naked form on the bed, and shake your butt in the air [if (player.tailType != 0)wagging your [tail]] to entice him. Despite his initial doubts, his arousal becomes obvious, judging by the way his cock starts tenting his underwear. He finally removes it, letting his partially erect cock hang free.");
+				outputText("\n\nStill a little unsure, he starts removing your [armor] while you lean over the bed. After leaving your clothes on the side, he takes off his clothes, dropping them on the floor, leaving him only with his underwear. You display your naked form on the bed, and shake your butt in the air [if (player.tail.type != 0)wagging your [tail]] to entice him. Despite his initial doubts, his arousal becomes obvious, judging by the way his cock starts tenting his underwear. He finally removes it, letting his partially erect cock hang free.");
 				outputText("\n\n\"<i>Um…, I think that now we should…</i>\" A nervous Anzu tries to explain \"<i>You know, get something to lube my dick, because, else...</i>\"");
 				outputText("\n\nHmm, seems like you have a throbbing and flopping source of lube just in front of you. With that on mind, you motion him to climb next to you. When both of you are on the bed, you grab his cock, whispering on his ear that you know how get all the lube that you could need, prompting an ‘oh’, from the avian. The lustful feeling that invade your bodies, and the increasingly erect cock in your hand tell you exactly what to do next.");
 			}
 			else {
 				outputText("Looking again for another ride in Anzu’s huge rod, you climb over him and ask if the is in the mood for another round on the bed. This time, the avian answer is a huge grin.");
 				outputText("\n\n\"<i>Seems like you can’t get enough of my cock, little friend.</i>\" he says, giving your [butt] a playful grope. \"<i>Well, since if that’s what you want, I think that can be arranged.</i>\"  ");
-				outputText("\n\nAfter tossing his robes and other clothes to the armchair, he starts undressing you. Far from his nervous initial state, the aroused avian is clearly happy to share his bed with you again. His hands " + player.clothedOrNaked("eagerly take of the upper and lower parts of your [armor] and") + " start caressing your [skin]. You display your " + player.clothedOrNaked("almost ") + "naked form on the bed, and shake your [if (player.tailType != 0)wagging your [tail]|[butt] in the air] to entice him.  Your reaction isn’t left unnoticed, as he gropes your " + (player.balls > 0 ? "[balls]" : player.hasCock() ? "cock" : "nipples") + player.clothedOrNaked(" when he takes off your underwear, leaving your nude body to his sight", " when he takes advantage of your already-naked state") + ". Finally, he removes his underwear too, dropping it in the floor and leaving his huge avian manhood exposed.");
+				outputText("\n\nAfter tossing his robes and other clothes to the armchair, he starts undressing you. Far from his nervous initial state, the aroused avian is clearly happy to share his bed with you again. His hands " + player.clothedOrNaked("eagerly take of the upper and lower parts of your [armor] and") + " start caressing your [skin]. You display your " + player.clothedOrNaked("almost ") + "naked form on the bed, and shake your [if (player.tail.type != 0)wagging your [tail]|[butt] in the air] to entice him.  Your reaction isn’t left unnoticed, as he gropes your " + (player.balls > 0 ? "[balls]" : player.hasCock() ? "cock" : "nipples") + player.clothedOrNaked(" when he takes off your underwear, leaving your nude body to his sight", " when he takes advantage of your already-naked state") + ". Finally, he removes his underwear too, dropping it in the floor and leaving his huge avian manhood exposed.");
 				outputText("\n\n\"<i>That’s enough teasing for now, little " + player.mf("boy", "girl") + ". Prepare yourself for the real action.</i>\" He whispers on your ear.");
 				outputText("\n\nClimbing on the bed, he hugs your" + (player.tallness >= 96 ? ", in comparison," : player.tallness >= 54 ? " small" : " tiny") + " frame on his strong arms. While he embraces you, the feeling of his hardening cock teases your backside. Seems like the avian has gotten much more confidence, and by the look that he’s giving to you, he’ll surely enjoy to be on the dominant position again. He relaxes his body on the bed, flexing his arms and legs, and leaving your face a few inches of his meaty rod.");
 				outputText("\n\n\"<i>Well, [name]. I think who you’ll know what to do.</i>\" Anzu tells you, \"<i> And, after all, we’ll need some lube before get started, don’t you?</i>\"");
@@ -721,7 +722,7 @@ package classes.Scenes.Dungeons.AnzuPalace
 				outputText("Now that you’ve played a bit on the bed, it time to get into business. The perfumed scent of the avian has been driving you crazy for a while, and now that you have a full sight of his athletic form, you attention goes down to his crotch. The thought of the hefty package inside his pants makes your mouth water. You then say Anzu that if he is stressed you’ll be more than happy to help him relieve pressure.");
 				outputText("\n\n\"<i>Relieve pressure?</i>\"...He asks doubtfully.");
 				outputText("\n\nPutting your hand on the bulge between his legs, you make yourself very clear about what kind of pressure are you talking about.");
-				outputText("\n\n\"<i>Oh, you mean that... \"<i> the avian says with a shy smile </i>\"Well, I use to give myself relief from time to time, but has passed a time, and lately I feel a little…</i>\"");
+				outputText("\n\n\"<i>Oh, you mean that... </i>\" the avian says with a shy smile \"<i>Well, I use to give myself relief from time to time, but has passed a time, and lately I feel a little…</i>\"");
 				outputText("\n\nBy the flushed look on his face when he’s saying this and the tone of his voice, sound like the big bird don’t mind having his nuts emptied. Despite that, Anzu seems a bit shy about that. Seeing how he’ll need a little more motivation, you slip a hand through his underwear.");
 				outputText("\n\n\"<i>So, you feel a little pent, up big boy?</i>\" you tease him, fondling his balls.");
 				outputText("\n\n\"<i>Y-yes…</i>\" the avian answers, shuddering in delight at you touch.");
@@ -747,7 +748,7 @@ package classes.Scenes.Dungeons.AnzuPalace
 			}
 			outputText("\n\nYou playfully pass fingers over his belly a moment, caressing it softly. The smell of Anzu feathers, a smell of violets and snow hits your nose when you approach more to his body. The perfumed scent is so wonderful that you bury your face on the feathers of his lower belly. Then, a musky scent attracts you, spurring you to go lower, until you realize that your [face] is just over the avian’s crotch. You start your task licking them, sucking around the heavy orbs, while the feathers that cover them tickle your tongue. The musky scent of them, combined with the soft perfume of his body overwhelms your senses, and before you can notice it, your " + (player.hasCock() ? "[cock] is quickly hardening" : "your [pussy] moistens and your body is getting infused by lust") + ".");
 			outputText("\n\n\"<i>So...this is how you worship a god.</i>\" Anzu laughs, somewhat flustered \"<i>It’s a weird way to do it, but I have to admit that I like it.</i>\"");
-			outputText("\n\nSmiling at his approval, you ignore your own lust and return to your main task. You keep worshipping his king sized balls, warm to your touch, while you can hear the cum inside them churning. Continuing your task, you slowly make your way to your prize: his cock. When you finally reach it, you start licking its sides. Almost forty inches of pure avian meat, and it’s all for you. Taking its tapered glans on your hands, you give it a lick, eliciting a moan from the avian. One of his hands goes down your head, lovingly caressing your " + (player.hairLength > 0 ? "hair" : "[skin]") + ". You get a whiff of the musky and delicious scent of the thick tool before continuing.");
+			outputText("\n\nSmiling at his approval, you ignore your own lust and return to your main task. You keep worshipping his king sized balls, warm to your touch, while you can hear the cum inside them churning. Continuing your task, you slowly make your way to your prize: his cock. When you finally reach it, you start licking its sides. Almost forty inches of pure avian meat, and it’s all for you. Taking its tapered glans on your hands, you give it a lick, eliciting a moan from the avian. One of his hands goes down your head, lovingly caressing your " + (player.hair.length > 0 ? "hair" : "[skin]") + ". You get a whiff of the musky and delicious scent of the thick tool before continuing.");
 			outputText("\n\nThis time your tongue goes to his tip. Beads of pre leak from his cumslit and your tongue eagerly delights on then, enjoying as the salty flavour inundates your tastebuds. Soon, the desire is too much, and your start sinking the meaty rod on your eager mouth. Having a long way to the end, you decide to start safely, and, bobbing down on it with pleasure, you engulf in your mouth on the first inches of his length, as your hand wraps around the base of Anzu’s manhood.");
 			outputText("\n\nPulling out his cock, you look up to Anzu with a mischievous smile and, in the mood for a bit more of foreplay, you start sliding his cock in and out, while your tongue dances across its surface, as his pre drips from the corners of your mouth.");
 			outputText("\n\n" + (player.tallness >= 50 ? (player.isNaga() ? "Taking some of the pre that leaks from his erection mixed with your saliva, you smear it on your tail tip and after making sure that it is well lubed, you slip it on his asshole, wriggling its way to his prostate" : "One of your hands start caressing his balls and finds its way to his anus, where you prod a finger inside a massage his prostate from the insides") : "You try to reach his anus, but due his impressive frame, looks like you won’t reach much far. Instead, you cup his huge nuts and squeeze them gently") + ". Taken for the desire, Anzu lets out a moan of delight, putting his hands on your head and pushing his cock deeper inside your mouth. You gasp as several inches of the monster are forced on your mouth at once. Seeing your discomfort, he releases your head and lets you take control.");
@@ -863,7 +864,7 @@ package classes.Scenes.Dungeons.AnzuPalace
 			else {
 				outputText("\n\n\"<i>Tasty, as always, [name]. Thanks again, for letting me have a drink.</i>\" Anzu says, hugging your upper body in the soft embrace of his warm feathers.");
 				outputText("\n\nYou stay this for a while, with the heat of the avian breath on you neck, and his feathers tickling your [skin]. After some more cuddling, you stand up and redress yourself, not without giving Anzu a last view of your bare chest. The avian then asks:");
-				outputText("\n\n\"<i>You’ll return here again when your breasts feel too full, right?</i>\" He asks, looking at you with his cheeks somewhat red in mild embarrassment </i>\"I’ve grown a taste for your milk…</i>\"");
+				outputText("\n\n\"<i>You’ll return here again when your breasts feel too full, right?</i>\" He asks, looking at you with his cheeks somewhat red in mild embarrassment \"<i>I’ve grown a taste for your milk…</i>\"");
 				outputText("\n\nSure, you answer him, but for now, you have to let them rest for a bit. After saying your goodbyes to the avian, you find your way through the Rift and return safely to your camp.");
 			}
 			dynStats("lus", 20, "sen", -1);
@@ -1164,7 +1165,7 @@ package classes.Scenes.Dungeons.AnzuPalace
 			outputText("You take the initiative, rubbing your backside against Anzu’s maleness, who stands proudly erect, now smearing your back with avian pre, that is quickly washed away by the water.");
 			outputText("\n\n\"<i>Heh, seems like a got a bit...., you know...[name]</i>\" Anzu says with a soft laugh, yet a bit embarrassed, after seeing his raging erection over your back. \"<i>And, having you so close, it’s no wonder that I eventually got a bit excited.</i>\"  he admits.");
 			outputText("\n\nHmm, seems like it can’t be helped, at least with someone that gets aroused so quickly like him, you remark.");
-			outputText("\n\nReclining your body against his, and rubbing your backside against his penis, you enjoy for a second the slimy sensation of his pre on your " + player.skinDesc + " while your upper body rests over his belly, the feeling of his wet and soapy feathers being and odd but quite pleasant sensation.");
+			outputText("\n\nReclining your body against his, and rubbing your backside against his penis, you enjoy for a second the slimy sensation of his pre on your " + player.skin.desc + " while your upper body rests over his belly, the feeling of his wet and soapy feathers being and odd but quite pleasant sensation.");
 			outputText("\n\nAfter some more rubbing, you start grinding your [ass] against his iron hard erection, one of your hands going down to knead softly his hefty sack. A look back reveals to you that your teasing had the desired effect, as Anzu face is blushing red, his breaths turning to half-measured pants, as the horny avian does useless efforts to hide his overexcited state.");
 			outputText("\n\nSoon, he gives up, and realizing that you aren’t being exactly a nice visitor, leaving him on that state, you finally ask him:");
 			outputText("\n\n\"<i>So, do you want to...relieve some pressure while we bath?</i>\"");
@@ -1190,7 +1191,7 @@ package classes.Scenes.Dungeons.AnzuPalace
 		}
 		private function anzuBathTimeDecline():void {
 			clearOutput();
-			outputText("Not in the mood of getting your " + player.skinDesc + " wet (and sticky) at this time of day, you thanks him for his offer but explain that you’re not exactly in the mood to get wet. Bidding him farewell, you leave him to his own matters and return to your camp.");
+			outputText("Not in the mood of getting your " + player.skin.desc + " wet (and sticky) at this time of day, you thanks him for his offer but explain that you’re not exactly in the mood to get wet. Bidding him farewell, you leave him to his own matters and return to your camp.");
 			kGAMECLASS.inDungeon = false;
 			kGAMECLASS.dungeonLoc = -1;
 			doNext(camp.returnToCampUseOneHour);
@@ -1225,7 +1226,7 @@ package classes.Scenes.Dungeons.AnzuPalace
 			clearOutput();
 			outputText(images.showImage("anzu-bed-mid"));
  			outputText("Well, with him as company, who wouldn’t want to stay in the palace for the night, you answer. The avian, overjoyed, despite being almost as tired as you, hugs you even tighter and proceeds to carry you on his arms, a " + (player.tallness >= 120 ? "a simple task, given his strength" : "a very easy task, given his strength and much larger frame") + ".");
-			outputText("\n\nSuddenly lifted from the ground by a couple of softly feathered arms, you let your body relax as  you let out a loud yawn. While on his arms you can feel his strong muscles embracing you, and you rest you head on his shoulder, " + (player.hairLength > 0 ? "while he ruffles your hair lovingly" : "rubs your neck, as he walks to his room") + ".");
+			outputText("\n\nSuddenly lifted from the ground by a couple of softly feathered arms, you let your body relax as  you let out a loud yawn. While on his arms you can feel his strong muscles embracing you, and you rest you head on his shoulder, " + (player.hair.length > 0 ? "while he ruffles your hair lovingly" : "rubs your neck, as he walks to his room") + ".");
 			outputText("\n\nAfter going upstairs, he finally arrives to the door, opening it with a soft push. The now familiar and perfumed scent of the bedroom greets you once more, as you're carefully placed on the gargantuan bed.");
 			outputText("\n\nClosing the door after him, the avian proceeds to remove some bed’s cover and puts you in a more comfortable position. " + player.clothedOrNaked("After he takes off his clothes and put them in a nearby drawer, you realize that you’re so tired that mustering the effort of taking your own is almost impossible. A bit sheepishly, you call Anzu over.") + "");
 			outputText("\n\n\"<i>Hey, [name].</i>\" sitting on the bed next to you, naked except for his undies. \"<i>Do you plan to sleep in your [armor] tonight?</i>\"");
@@ -1265,13 +1266,13 @@ package classes.Scenes.Dungeons.AnzuPalace
 			outputText(images.showImage("anzu-bed-blowjob"));
 			outputText("Softy disentangling yourself from the avian’s embrace, you try to get off from the unsurprisingly tall bed, without luck, as your " + player.feet() + " get stuck with something as you climb down the bed. Then, a familiar wetness near the area where your [leg] got stuck, reinforced with a tugging from the thing that refrains you from leaving, makes you turn back, only to found that the thing entangled with your " + player.foot() + " is nothing less than the avian’s underwear.");
 			outputText("\n\nSofty disentangling yourself from the avian’s embrace, you try to get off from the unsurprisingly tall bed, without luck, as your " + player.feet() + " get stuck with something as you climb down the bed. Then, a familiar wetness near the area where your [leg] got stuck, reinforced with a tugging from the thing that refrains you from leaving, makes you turn back, only to found that the thing entangled with your " + player.foot() + " is nothing less than the avian’s underwear.");
-			outputText("\n\nWhat a…curious way to get stuck. Adjusting yourself to get your " + player.foot() + " free, you end in an even more uncomfortable position, as you end up with your " + player.face() + " on Anzu’s crotch, and your " + (player.isNaga() ? "tail swishing over" : "[legs] resting on") + " the huge avian’s lower belly. In this position, you get a much closer look to the avian’s underwear, and realize that its cloth is tented and with a wet spot on the top. This, added to the subtle noises and moves that he makes from time to time, is a clear signal that the avian is having a…rather naughty dream.");
+			outputText("\n\nWhat a…curious way to get stuck. Adjusting yourself to get your " + player.foot() + " free, you end in an even more uncomfortable position, as you end up with your " + player.faceDescript() + " on Anzu’s crotch, and your " + (player.isNaga() ? "tail swishing over" : "[legs] resting on") + " the huge avian’s lower belly. In this position, you get a much closer look to the avian’s underwear, and realize that its cloth is tented and with a wet spot on the top. This, added to the subtle noises and moves that he makes from time to time, is a clear signal that the avian is having a…rather naughty dream.");
 			outputText("\n\nDistracted as you were from your task of going down to eat something, and a bit horny for the close contact and avian musk from you are subject, you come up with an idea. Why not get off the bird while you get a snack at the same time?");
 			outputText("\n\nWith this thought on mind, your start to take away his underwear, slow enough to not awake him, you reveal the prize under it: his gigantic manhood. This will do it nicely, you think to yourself, and, in the end,... isn’t like he won’t enjoy it, right? You’re pretty sure that he’ll have pleasant dreams tonight, if the happy rumbles coming from his beak as you touch him were proof of anything.");
 			outputText("\n\nTaking his meat on hand, your realize that, aroused by his naughty dream, the avian’s penis is hard and throbbing, some pre leaking from it and wetting its tip. You rub your [nose/snout/beak] along its length, enjoying the arousing scent of avian musk. Not wanting to waste any time, you proceed to lick the pre pouring from his cumslit, tasting again his exciting and sinful essence.");
-			outputText("\n\nOnce all his pre has been licked from the hard rod, you proceed to give slobbery licks along all its surface with your " + (player.tongueType == TONGUE_SNAKE ? "forked" : player.hasLongTongue() ? "long" : "") + " tongue, the salty taste of his exhilarating your body, your " + (player.hasCock() ? "hard [cock] leaking over his lower belly" : player.hasVagina() ? "pussy leaking over his lower belly" : "featureless crotch tingling with sensation") + ".");
+			outputText("\n\nOnce all his pre has been licked from the hard rod, you proceed to give slobbery licks along all its surface with your " + (player.tongue.type == Tongue.SNAKE ? "forked" : player.hasLongTongue() ? "long" : "") + " tongue, the salty taste of his exhilarating your body, your " + (player.hasCock() ? "hard [cock] leaking over his lower belly" : player.hasVagina() ? "pussy leaking over his lower belly" : "featureless crotch tingling with sensation") + ".");
 			outputText("\n\nSeems like the big bird liked your attentions, as his pants and moans, and more exactly, his rocking hard erection says. Back to business, you take the tip of his huge penis on your " + (9999 == 0 ? "[beak] having care to not apply to much pressure, as that would wake him" : "[lips] having care to not wake him") + ".");
-			outputText("\n\nBit by bit you engulf more and more inches of bird meat on your " + player.face() + ", " + (player.tallness >= 120 ? "and despite having some problems with the final inches, manage to get most of it on your " + player.face() + " on your throat" : player.tallness >= 60 ? "and having troubles past fifteen inches, as its tip touches the back of your throat, you decide to stop at this point" : "the tip itself being a mouthful, you struggle to get past a few inches though your throat") + ". Nevertheless, you try to make the most of it and take as much of his dick as you can.");
+			outputText("\n\nBit by bit you engulf more and more inches of bird meat on your " + player.faceDescript() + ", " + (player.tallness >= 120 ? "and despite having some problems with the final inches, manage to get most of it on your " + player.faceDescript() + " on your throat" : player.tallness >= 60 ? "and having troubles past fifteen inches, as its tip touches the back of your throat, you decide to stop at this point" : "the tip itself being a mouthful, you struggle to get past a few inches though your throat") + ". Nevertheless, you try to make the most of it and take as much of his dick as you can.");
 			outputText("\n\nWith the monster penis deep throat on you, you start sucking, pumping with your hands the  of his penis that was left out of your mouth. After a few pump and some vigorous sucks, the aroused moans from the sleeping avian are clear signals about that he’s gonna cum soon. Not waiting to want a second more, you increase the pace of your deepthroating, and your efforts are quickly rewarded");
 			outputText("\n\n\"<i>Gahh!</i>\" the still asleep Anzu shout, releasing with that a torrent of white and creamy goodness right to your gullet. ");
 			outputText("\n\nThe cummy effluvia from his orgasm starts flooding your stomach your belly " + (player.tallness >= 120 ? "extending a bit" : player.tallness >= 60 ? "getting overfilled and rounded" : "quickly inflated and distended") + " by the sheer amount of cum produced by the avian. Cum that overflows his belly reaches your gullet and mouth and soon, it becomes too much for your overwhelmed throat to handle, so you pull his, now half-flaccid dick, off of your mouth, the final jets of cum splattering all over your face and chest, and some even falling over your still open mouth. ");
