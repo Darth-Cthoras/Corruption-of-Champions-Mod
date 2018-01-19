@@ -67,11 +67,11 @@ package classes.Scenes.NPCs
 			var needNext:Boolean = false;
 			if (flags[kFLAGS.ANEMONE_KID] > 0) {
 				//if (flags[kFLAGS.KID_ITEM_FIND_HOURS] < 20) flags[kFLAGS.KID_ITEM_FIND_HOURS]++;
-				if (flags[kFLAGS.KID_SITTER] == 0 && flags[kFLAGS.MARBLE_KIDS] >= 5 && model.time.hours > 10 && model.time.hours < 18 && rand(4) == 0) {
+				if (flags[kFLAGS.KID_SITTER] == 0 && flags[kFLAGS.MARBLE_KIDS] >= 5 && getGame().time.hours > 10 && getGame().time.hours < 18 && rand(4) == 0) {
 					kidABabysitsCows();
 					needNext = true;
 				}
-				if (flags[kFLAGS.KID_SITTER] == 1 && model.time.hours > 10 && model.time.hours < 18 && rand(4) == 0) {
+				if (flags[kFLAGS.KID_SITTER] == 1 && getGame().time.hours > 10 && getGame().time.hours < 18 && rand(4) == 0) {
 					flags[kFLAGS.KID_SITTER] = 2;
 				}
 				else if (flags[kFLAGS.KID_SITTER] == 2) flags[kFLAGS.KID_SITTER] = 1;
@@ -1135,15 +1135,15 @@ package classes.Scenes.NPCs
 
 //KID A FOLLOWER STUFF
 		public function anemoneBarrelDescription():void {
-			if (model.time.hours < 6) //(morning)
+			if (getGame().time.hours < 6) //(morning)
 				outputText("Kid A is sleeping in her barrel right now.");
-			else if (model.time.hours <= 10)
+			else if (getGame().time.hours <= 10)
 				outputText("Kid A stands next to her barrel, refilling it from one of your waterskins.  A second full skin is slung over her shoulder.  She gives you a grin.\n\n");
 			else if (flags[kFLAGS.KID_SITTER] > 1)
 				outputText("Kid A is absent from her barrel right now, dragooned into babysitting again.\n\n");
-			else if (model.time.hours < 16) //(midday)
+			else if (getGame().time.hours < 16) //(midday)
 				outputText("Kid A is deep in her barrel with the lid on top, hiding from the midday sun.\n\n");
-			else if (model.time.hours < 22) //(night hours)
+			else if (getGame().time.hours < 22) //(night hours)
 				outputText("Kid A is peeking out of her barrel.  Whenever you make eye contact she breaks into a smile; otherwise she just stares off into the distance, relaxing.\n\n");
 			else outputText("Kid A is here, seated demurely on the rim of her barrel and looking somewhat more purple under the red moon.  She glances slyly at you from time to time.\n\n");
 		}
@@ -1156,7 +1156,7 @@ package classes.Scenes.NPCs
 			spriteSelect(SpriteDb.s_kida);
 			outputText("You walk over to the barrel.  ");
 			//[(display if hourssinceKiditem >= 16)
-			if (flags[kFLAGS.KID_ITEM_FIND_HOURS] != model.time.days) {
+			if (flags[kFLAGS.KID_ITEM_FIND_HOURS] != getGame().time.days) {
 				outputText("An item sits next to it, left there by the anemone as a present to you.  Or 'rent', if you choose to think of it that way.  ");
 			}
 			//[(if Kid A has been given a weapon)
@@ -1174,7 +1174,7 @@ package classes.Scenes.NPCs
 
 			//Tutor, N.Watch, and Evict require the anemone to be present
 			menu();
-			if (flags[kFLAGS.KID_ITEM_FIND_HOURS] != model.time.days) addButton(0, "Item", getAnemoneItem, undefined, undefined, undefined, "Take her gift.");
+			if (flags[kFLAGS.KID_ITEM_FIND_HOURS] != getGame().time.days) addButton(0, "Item", getAnemoneItem, undefined, undefined, undefined, "Take her gift.");
 			else addButtonDisabled(0, "Item", "She has nothing to give you now.");
 			
 			if (flags[kFLAGS.ANEMONE_WEAPON_ID] != 0) addButton(1, "Take Weapon", takeOutOfAnemone, undefined, undefined, undefined, "Take away her weapon.");
@@ -1221,7 +1221,7 @@ package classes.Scenes.NPCs
 			}
 			else if (kidAXP() < 100) {
 				//Mino Blood/Large Axe/Comfortable Clothes/Lust Draft/Lust Dagger/Bro Brew(same odds as player drop)
-				itype = randomChoice(consumables.MINOBLO, weapons.L__AXE, armors.C_CLOTH, consumables.L_DRAFT, weapons.L_DAGGR);
+				itype = randomChoice(consumables.MINOBLO, weapons.L__AXE0, armors.C_CLOTH, consumables.L_DRAFT, weapons.L_DAGR0);
 				if (rand(100) == 0) itype = consumables.BROBREW;
 			}
 			else {
@@ -1233,11 +1233,11 @@ package classes.Scenes.NPCs
 					itype = randomChoice(consumables.TSTOOTH, consumables.S_GOSSR,consumables.B_GOSSR,useables.T_SSILK,consumables.REPTLUM);
 			}
 			outputText(itype.longName + ".");
-			if (itype == weapons.L__AXE) outputText("  Holy... how did she drag this thing home!?");
+			if (itype == weapons.L__AXE0) outputText("  Holy... how did she drag this thing home!?");
 			outputText("\n\n");
 			inventory.takeItem(itype, playerMenu);
 			//(set hourssinceKiditem = 0)
-			flags[kFLAGS.KID_ITEM_FIND_HOURS] = model.time.days;
+			flags[kFLAGS.KID_ITEM_FIND_HOURS] = getGame().time.days;
 		}
 
 //[Give Weapon]
@@ -1332,23 +1332,23 @@ package classes.Scenes.NPCs
 			//duel effects by weapon, output in new PG
 			//[Pipe] or [Wizard Staff] or [Eldritch Staff]
 			if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.PIPE.id ||
-					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.MACE.id ||
+					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.MACE__0.id ||
 					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.W_STAFF.id ||
 					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.E_STAFF.id ||
 					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.L_STAFF.id) {
 				outputText("\n\nThough she acts like she's not serious and pulls her swings more often than not, the heft of the ");
 				if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.PIPE.id) outputText("pipe");
-				else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.MACE.id) outputText("mace");
+				else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.MACE__0.id) outputText("mace");
 				else outputText("stick");
-				if (flags[kFLAGS.ANEMONE_WEAPON_ID] != weapons.MACE.id) outputText(" is still enough to bruise you a bit.");
+				if (flags[kFLAGS.ANEMONE_WEAPON_ID] != weapons.MACE__0.id) outputText(" is still enough to bruise you a bit.");
 				else outputText(" manages to bruise you a lot.");
 				HPChange(-5, false);
-				if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.MACE.id) HPChange(-15, false);
+				if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.MACE__0.id) HPChange(-15, false);
 				kidAXP(6);
 			}
 			//(HP - 5, KidXP + 1)
 			//[Riding Crop]
-			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.RIDINGC.id) {
+			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.RIDING0.id) {
 				outputText("\n\nShe seems to enjoy smacking you with the riding crop, making sultry eyes at you and pursing her lips whenever she lands a crack on your [butt] or [chest].  So much so, in fact, that her own penis is betraying her arousal, bobbing in time as she swishes the weapon around.  The humiliation ");
 				if (player.lib < 50) outputText("is");
 				else outputText("isn't");
@@ -1359,7 +1359,7 @@ package classes.Scenes.NPCs
 				kidAXP(6);
 			}
 			//[Lust Dagger]
-			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.L_DAGGR.id) {
+			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.L_DAGR0.id) {
 				outputText("\n\nThe enchanted dagger is light enough for the anemone to use one-handed, and she makes a good practice of turning aside your mock blows with it while reaching in to stimulate you with her other hand.  For good measure, she nicks you with the blade itself whenever her caress elicits a distracted flush.");
 				//(HP -5, lust +10, KidXP + 3)
 				HPChange(-5, false);
@@ -1367,7 +1367,7 @@ package classes.Scenes.NPCs
 				kidAXP(5);
 			}
 			//[Dagger]
-			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.DAGGER.id) {
+			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.DAGGER0.id) {
 				outputText("\n\nThe dagger is light enough for the anemone to use one-handed, and she makes a good practice of turning aside your mock blows with it while reaching in to stimulate you with her other hand.  For good measure, she nicks you with the blade itself whenever her caress elicits a distracted flush.");
 				//(HP -5, lust +5, KidXP + 3)
 				HPChange(-5, false);
@@ -1389,19 +1389,19 @@ package classes.Scenes.NPCs
 				//(no effect, señorita)
 			}
 			//[Large Axe], [Large Hammer], [Large Claymore], or [Huge Warhammer]
-			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.L__AXE.id ||
-					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.L_HAMMR.id ||
-					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.WARHAMR.id ||
-					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.L__AXE.id) {
+			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.L__AXE0.id ||
+					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.L_HAMR0.id ||
+					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.WARHAM0.id ||
+					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.L__AXE0.id) {
 				outputText("\n\nShe can barely lift the weapon you've given her, although for a while she does manage to support one end with the ground and tilt it by the haft to ward off your blows with cleverness.  Distracting her by way of a feint, you part her from it and advance with a smile full of playful menace... whereupon she shrieks and pushes you backwards, causing you to trip over the weapon and fall with a crash.");
 				//(HP - 5, KidXP - 4)
 				kidAXP(-4);
 				HPChange(-5, false);
 			}
 			//[Katana] or [Spellsword]
-			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.KATANA.id ||
+			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.KATANA0.id ||
 					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.S_BLADE.id ||
-					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.SCIMITR.id ||
+					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.SCIMTR0.id ||
 					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.B_SCARB.id ) {
 				outputText("\n\nThe light sword and the light anemone seem to be a good match, and she actually manages to make several deft moves with it after your instruction.  One is a bit too deft, as she fails to rein in her swing and delivers a long, drawing cut that connects with your [leg].");
 				//(HP - 20, KidXP + 2)
@@ -1409,14 +1409,14 @@ package classes.Scenes.NPCs
 				HPChange(-20, false);
 			}
 			//[Spear]
-			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.SPEAR.id) {
+			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.SPEAR_0.id) {
 				outputText("\n\nThe natural length of the spear and the anemone racial mindset to get close and communicate by touch don't mesh well; she chokes up well past halfway on the haft despite your repeated instruction and pokes at you from close range with very little force, the idle end of the weapon waggling through the air behind her.");
 				//(HP -5, KidXP - 1)
 				kidAXP(-1);
 				HPChange(-5, false);
 			}
 			//[Whip] or [Succubi's Whip]
-			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.WHIP.id ||
+			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.WHIP__0.id ||
 					flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.SUCWHIP.id) {
 				outputText("\n\nThe whip seems almost like an extension of her hand once she decides its purpose is to tangle things up as opposed to lashing and lacerating flesh.  One of her overzealous swings finds you <i>both</i> tied in its coils; her petite body presses against yours as she colors in embarrassment.  Her distracted struggles to loosen the bonds accomplish little except to rub her sensitive parts along yours.");
 				if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.SUCWHIP.id) outputText("  The demonic enchantment chooses then to activate, and her color deepens as her lust peaks, as does your own.");
@@ -1482,7 +1482,7 @@ package classes.Scenes.NPCs
 				return;
 			}
 			//[Flintlock Pistol] (Because guns are awesome.)
-			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.FLINTLK.id) {
+			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.FLNTLK0.id) {
 				outputText("\n\nAs if the anemone girl already knows how to use a gun, she easily pulls the trigger and fires rounds of ammunition towards you!  ");
 				if (silly()) outputText("Pew pew pew!  ");
 				if (player.spe >= 70) {
@@ -1498,7 +1498,7 @@ package classes.Scenes.NPCs
 				}
 				kidAXP(5);
 			}
-			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.CROSSBW.id) {
+			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.CRSBOW0.id) {
 				outputText("\n\nAs if the anemone girl already knows how to use a crossbow, she easily pulls the lever mechanism and fires a bolt towards you!  She reloads the crossbow and fires again.  ");
 				if (player.spe >= 60) {
 					outputText("You easily dodge the incoming bolts thanks to your speed!");
@@ -1513,7 +1513,7 @@ package classes.Scenes.NPCs
 				}
 				kidAXP(5);
 			}
-			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.FLAIL.id) {
+			else if (flags[kFLAGS.ANEMONE_WEAPON_ID] == weapons.FLAIL_0.id) {
 				outputText("\n\nThe girl holds up the flail with no problem and you teach her how to use the weapon.  However, after dozens of swings, she accidentally hits herself with the spiked ball and looks at you with a whimper.  You tell her to stop; maybe this isn't the right weapon for her?");
 				HPChange(-10, false);
 				kidAXP( -2);

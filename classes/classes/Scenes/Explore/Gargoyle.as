@@ -44,7 +44,7 @@ public function gargoylesTheShowNowOnWBNetwork():void {
 	//[Next]
 	menu();
 	addButton(0,"Next",gargoyleMeeting2);
-	model.time.hours++;
+	getGame().time.hours++;
 }
 
 //(Advance time by 1 hour) 
@@ -124,14 +124,10 @@ private function nameZeGargoyle():void {
 		// Solution? Fuck you for naming your Gargoyle "0".
 		clearOutput();
 		outputText("<b>You must name her.</b>");
-		mainView.nameBox.text = "";
-		mainView.nameBox.visible = true;
-		mainView.nameBox.width = 165;
-		menu();
+		mainView.promptCharacterName();
 		mainView.nameBox.x = mainView.mainText.x + 5;
-		
 		mainView.nameBox.y = mainView.mainText.y + 3 + mainView.mainText.textHeight;
-		
+		menu();
 		addButton(0,"Next",nameZeGargoyle);
 		return;
 	}
@@ -246,11 +242,11 @@ public function returnToCathedral(woken:Boolean = false):void {
 	}
 	menu();
 	//[b]Cathedral Interior – 06:00 –> 09:00 & 18:00 –> 21:00[/b]
-	if (model.time.hours <= 9 || model.time.hours >= 18 || woken) {
+	if (getGame().time.hours <= 9 || getGame().time.hours >= 18 || woken) {
 		if (!woken) {
 			outputText(images.showImage("gargoyle-cathedral"));
 			outputText("\n\nIn the dim ");
-			if (model.time.hours <= 9) outputText("early morning");
+			if (getGame().time.hours <= 9) outputText("early morning");
 			else outputText("late evening");
 			outputText(" light streaming in from the broken windows, you see " + flags[kFLAGS.GAR_NAME] + " poking around some of the rubble, slowly but surely making efforts to repair the damage done to the Cathedral.  Seeing you, however, she immediately drops what she was doing and ");
 			if (gargoyleConfidence() < 70) outputText("kneels before you, head bowed low.");

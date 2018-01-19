@@ -7,7 +7,7 @@ package classes.lists
 	 */
 	public class ColorLists 
 	{
-		public static const humanSkinColors:Array = [
+		public static const HUMAN_SKIN:Array = [
 			"light",
 			"fair",
 			"olive",
@@ -17,21 +17,28 @@ package classes.lists
 			"russet",
 		];
 
-		public static const salamanderSkinColors:Array = [
+		public static const GOBLIN_SKIN:Array = [
+			"pale yellow",
+			"grayish-blue",
+			"green",
+			"dark green",
+		];
+
+		public static const SALAMANDER_SKIN:Array = [
 			"light",
 			"fair",
 			"tan",
 			"dark",
 		];
 
-		public static const redPandaHairColors:Array = [
+		public static const RED_PANDA_HAIR:Array = [
 			"white",
 			"auburn",
 			"red",
 			"russet",
 		];
 
-		public static const redPandaTailColors:Array = [
+		public static const RED_PANDA_TAIL:Array = [
 			["auburn",  "russet"],
 			["black",   "gray"],
 			["blond",   "sandy-blonde"],
@@ -49,7 +56,7 @@ package classes.lists
 			["russet",  "orange"],
 		];
 
-		public static const horseFurColors:Array = [
+		public static const HORSE_FUR:Array = [
 			"brown",
 			"chocolate",
 			"auburn",
@@ -67,7 +74,7 @@ package classes.lists
 			"black and white",
 		];
 
-		public static const catFurColors:Array = [
+		public static const CAT_FUR:Array = [
 			"brown",
 			"chocolate",
 			"auburn",
@@ -88,7 +95,24 @@ package classes.lists
 			["gray", "white"],
 		];
 
-		public static const foxFurColors:Array = [
+		public static const DOG_FUR:Array = [
+			"brown",
+			"chocolate",
+			"auburn",
+			"caramel",
+			"orange",
+			"black",
+			"dark gray",
+			"gray",
+			"light gray",
+			"silver",
+			"white",
+			"orange and white",
+			"brown and white",
+			"black and white",
+		];
+
+		public static const FOX_FUR:Array = [
 			["orange", "white"],
 			["orange", "white"],
 			["orange", "white"],
@@ -99,7 +123,7 @@ package classes.lists
 			"brown",
 		];
 
-		public static const basicKitsuneHairColors:Array = [
+		public static const BASIC_KITSUNE_HAIR:Array = [
 			"white",
 			"black",
 			"black",
@@ -109,7 +133,7 @@ package classes.lists
 			"red",
 		];
 
-		public static const basicKitsuneFurColors:Array = [
+		public static const BASIC_KITSUNE_FUR:Array = [
 			["orange", "white"],
 			"black",
 			["black", "white"],
@@ -118,7 +142,7 @@ package classes.lists
 			"white",
 		];
 
-		public static const elderKitsuneColors:Array = [
+		public static const ELDER_KITSUNE:Array = [
 			"metallic golden",
 			"golden blonde",
 			"metallic silver",
@@ -127,7 +151,21 @@ package classes.lists
 			"iridescent gray",
 		];
 
-		public static const cockatriceColors:Array = [
+		public static const KITSUNE_SKIN:Array = [
+			"tan",
+			"olive",
+			"light",
+		];
+
+		public static const KITSUNE_SKIN_MYSTIC:Array = [
+			"dark",
+			"ebony",
+			"ashen",
+			"sable",
+			"milky white",
+		];
+
+		public static const COCKATRICE:Array = [
 			["blue",   "turquoise", "blue"],
 			["orange", "red",       "orange"],
 			["green",  "yellow",    "green"],
@@ -137,7 +175,7 @@ package classes.lists
 			["white",  "grey",      "white"],
 		];
 
-		public static const nagaLowerBodyColors:Array = [
+		public static const NAGA_LOWERBODY:Array = [
 			["red",          "orange"],
 			["orange",       "yellow"],
 			["yellow",       "yellowgreen"],

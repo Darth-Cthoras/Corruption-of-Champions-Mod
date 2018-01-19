@@ -293,7 +293,6 @@ private function keltEagerlyGetNaked():void {
 
 //Naked Requirement, Reluctantly
 private function keltReluctantlyGetNaked():void {
-	doNext(camp.returnToCampUseOneHour);
 	spriteSelect(SpriteDb.s_kelt);
 	clearOutput();
 	outputText("You are uncomfortable with the idea of being naked in front of this crude, cruel taskmaster.  But he is good at what he does, and if this is the only way to convince him to teach you, then you'll just have to get it over with.  You agree to his terms reluctantly, and begin to strip off your " + player.armorDescript() + ".\r\r");		   
@@ -555,7 +554,6 @@ private function keltMainEncounterAfterNakedReq():void {
 
 //Normal Encounter 2
 private function keltMainEncounter2():void {
-	clearOutput();
 	//Used for randomization
 	var temporary:Number = 0;
 	//(No bow equipped)
@@ -579,7 +577,6 @@ private function keltMainEncounter2():void {
 }
 
 private function keltMainEncounter3():void {
-	clearOutput();
 	var temporary:Number = 0;
 	//(Clothed)
 	if (!player.hasStatusEffect(StatusEffects.NakedOn)) {

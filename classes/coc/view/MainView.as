@@ -12,7 +12,10 @@
  ****/
 
 package coc.view {
+import classes.GlobalFlags.kFLAGS;
+import classes.GlobalFlags.kGAMECLASS;
 import coc.view.UIUtils;
+import flash.text.TextFormat;
 
 import fl.controls.ComboBox;
 import fl.controls.ScrollBarDirection;
@@ -21,12 +24,21 @@ import fl.controls.UIScrollBar;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
+
+import flash.events.TimerEvent;
+import flash.utils.Timer;
+
 import flash.text.TextField;
 
 public class MainView extends Block {
 	[Embed(source="../../../res/ui/CoCLogo.png")]
 	public static const GameLogo:Class;
-	[Embed(source="../../../res/ui/background1.png")]
+	[Embed(source="../../../res/ui/disclaimer-bg.png")]
+	public static const DisclaimerBG:Class;
+	[Embed(source="../../../res/ui/warning.png")]
+	public static const Warning:Class;
+	
+	[Embed(source="../../../res/ui/background1.jpg")]
 	public static const Background1:Class;
 	[Embed(source="../../../res/ui/background2.png")]
 	public static const Background2:Class;
@@ -114,6 +126,11 @@ public class MainView extends Block {
 	internal static const SPRITE_X:Number = GAP;
 	internal static const SPRITE_Y:Number = SCREEN_H - SPRITE_H - GAP;
 
+	internal static const CREDITS_X:Number = GAP;
+	internal static const CREDITS_Y:Number = STATBAR_Y + STATBAR_H + GAP;
+	internal static const CREDITS_W:Number = STATBAR_W - GAP;
+	internal static const CREDITS_H:Number = SPRITE_Y - CREDITS_Y;
+
 	internal static const TOPROW_W:Number = STATBAR_W + 2 * GAP + TEXTZONE_W;
 
 	internal static const BOTTOM_X:Number         = STATBAR_W + GAP;
@@ -124,8 +141,14 @@ public class MainView extends Block {
 	internal static const BOTTOM_W:Number         = TEXTZONE_W;
 	internal static const BOTTOM_HGAP:Number      = (BOTTOM_W - BTN_W * BOTTOM_COLS) / (2 * BOTTOM_COLS);
 	internal static const BOTTOM_Y:Number         = SCREEN_H - BOTTOM_H;
+	internal static const MONSTER_X:Number        = TEXTZONE_X + MainView.TEXTZONE_W + GAP;
+	internal static const MONSTER_Y:Number        = TEXTZONE_Y;
+	internal static const MONSTER_W:Number        = 200;
+	internal static const MONSTER_H:Number        = TEXTZONE_H;
+
 
 	private var blackBackground:BitmapDataSprite;
+	public var textBGTranslucent:BitmapDataSprite;
 	public var textBGWhite:BitmapDataSprite;
 	public var textBGTan:BitmapDataSprite;
 	public var background:BitmapDataSprite;
@@ -133,8 +156,11 @@ public class MainView extends Block {
 
 	public var mainText:TextField;
 	public var nameBox:TextField;
+	public var creditsBox:TextField;
 	public var eventTestInput:TextField;
 	public var aCb:ComboBox;
+	public var monsterStatsView:MonsterStatsView;
+
 
 	public var toolTipView:ToolTipView;
 	public var statsView:StatsView;
@@ -157,7 +183,7 @@ public class MainView extends Block {
 	protected var options:Object;
 
 	public var charView:CharView;
-	public function MainView():void {
+	public function MainView() {
 		super();
 		addElement(blackBackground = new BitmapDataSprite({
 			bitmapClass: ButtonBackground2,
@@ -185,14 +211,17 @@ public class MainView extends Block {
 		}));
 		topRow.addElement(newGameButton = new CoCButton({
 			labelText  : 'New Game',
+			toolTipText: "Start a new game.",
 			bitmapClass: ButtonBackground1
 		}));
 		topRow.addElement(dataButton = new CoCButton({
 			labelText  : 'Data',
+			toolTipText: "Save or load your files.",
 			bitmapClass: ButtonBackground2
 		}));
 		topRow.addElement(statsButton = new CoCButton({
 			labelText  : 'Stats',
+			toolTipText: "View your stats.",
 			bitmapClass: ButtonBackground3
 		}));
 		topRow.addElement(levelButton = new CoCButton({
@@ -201,11 +230,21 @@ public class MainView extends Block {
 		}));
 		topRow.addElement(perksButton = new CoCButton({
 			labelText  : 'Perks',
+			toolTipText: "View your perks.",
 			bitmapClass: ButtonBackground5
 		}));
 		topRow.addElement(appearanceButton = new CoCButton({
 			labelText  : 'Appearance',
+			toolTipText: "View your detailed appearance.",
 			bitmapClass: ButtonBackground6
+		}));
+		addElement(textBGTranslucent = new BitmapDataSprite( {
+			alpha    : 0.4,
+			fillColor: '#FFFFFF',
+			x        : TEXTZONE_X,
+			y        : TEXTZONE_Y,
+			width    : TEXTZONE_W,
+			height   : TEXTZONE_H
 		}));
 		addElement(textBGWhite = new BitmapDataSprite({
 			fillColor: '#FFFFFF',
@@ -231,6 +270,19 @@ public class MainView extends Block {
 			mouseEnabled     : true,
 			defaultTextFormat: {
 				size: 20
+			}
+		});
+		creditsBox = addTextField({
+			multiline        : true,
+			wordWrap         : true,
+			x                : CREDITS_X,
+			y                : CREDITS_Y,
+			width            : CREDITS_W,
+			height           : CREDITS_H,
+			mouseEnabled     : true,
+			defaultTextFormat: {
+				size: 16,
+				font: 'Arial'
 			}
 		});
 		scrollBar = new UIScrollBar();
@@ -281,6 +333,10 @@ public class MainView extends Block {
 		this.statsView.y = STATBAR_Y;
 		this.statsView.hide();
 		this.addElement(this.statsView);
+
+		this.monsterStatsView = new MonsterStatsView(this);
+		this.monsterStatsView.hide();
+		this.addElement(this.monsterStatsView);
 
 
 		this.formatMiscItems();
@@ -391,12 +447,21 @@ public class MainView extends Block {
 
 	protected function hookAllButtons():void {
 		var b:Sprite;
-
 		for each(b in this.allButtons) {
-			b.mouseChildren = false;
-			b.addEventListener(MouseEvent.ROLL_OVER, this.hoverButton);
-			b.addEventListener(MouseEvent.ROLL_OUT, this.dimButton);
+			hookButton(b);
 		}
+	}
+	
+	public function hookButton(b:Sprite):void {
+		b.mouseChildren = false;
+		b.addEventListener(MouseEvent.ROLL_OVER, this.hoverButton);
+		b.addEventListener(MouseEvent.ROLL_OUT, this.dimButton);
+	}
+
+	public function hookMonster(b:Sprite):void {
+		b.mouseChildren = false;
+		b.addEventListener(MouseEvent.ROLL_OVER, this.hoverMonster);
+		b.addEventListener(MouseEvent.ROLL_OUT, this.dimButton);
 	}
 
 	//////// Internal(?) view update methods ////////
@@ -472,6 +537,19 @@ public class MainView extends Block {
 		this.toolTipView.hide();
 	}
 
+	protected function hoverMonster(event:MouseEvent):void {
+		var monster:MonsterStatsView;
+		monster = event.target as MonsterStatsView;
+
+		if (monster && monster.visible && monster.toolTipText) {
+			this.toolTipView.header = monster.toolTipHeader;
+			this.toolTipView.text   = monster.toolTipText;
+			this.toolTipView.showForMonster(monster);
+		}
+		else {
+			this.toolTipView.hide();
+		}
+	}
 
 	//////// Bottom Button Methods ////////
 
@@ -564,8 +642,9 @@ public class MainView extends Block {
 				return perksButton;
 			case MENU_APPEARANCE:
 				return appearanceButton;
+			default:
+				return null;
 		}
-		return null;
 	}
 
 	////////
@@ -712,6 +791,104 @@ public class MainView extends Block {
 
 		this.scrollBar.scrollTarget = this.mainText;
 
+	}
+	
+	public function showMainText():void {
+		this.setTextBackground();
+		this.mainText.visible = true;
+		this.scrollBar.visible = true;
+	}
+	public function hideMainText():void {
+		this.clearTextBackground();
+		this.resetTextFormat();
+		this.mainText.visible = false;
+		this.scrollBar.visible = false;
+	}
+	public function resetTextFormat():void {
+		var normalFormat:TextFormat = new TextFormat();
+		normalFormat.font = "Times New Roman, serif";
+		normalFormat.bold = false;
+		normalFormat.italic = false;
+		normalFormat.underline = false;
+		normalFormat.bullet = false;
+		normalFormat.size = kGAMECLASS.flags[kFLAGS.CUSTOM_FONT_SIZE] || 20;
+		this.mainText.defaultTextFormat = normalFormat;
+	}
+	
+	public function clearTextBackground():void {
+		this.textBGTranslucent.visible = false;
+		this.textBGWhite.visible = false;
+		this.textBGTan.visible = false;
+	}
+	public function setTextBackground(selection:int = -1):void {
+		clearTextBackground();
+		if (selection == 0) this.textBGTranslucent.visible = true;
+		if (selection == 1) this.textBGWhite.visible = true;
+		if (selection == 2) this.textBGTan.visible = true;
+	}
+	
+	public function promptCharacterName():void {
+		this.nameBox.visible = true;
+		this.nameBox.width = 165
+		this.nameBox.text = "";
+		this.nameBox.maxChars = 16;
+		this.nameBox.restrict = "a-zA-Z0-9 .'\\-";
+	}
+	public function moveCombatView(event:TimerEvent = null):void{
+		this.mainText.width -= 10;
+		this.scrollBar.x -= 10;
+		//this.scrollBar.x -= 200;
+		this.textBGTan.width -= 10;
+		//this.textBGTan.x -= 200;
+		this.textBGWhite.width -= 10;
+		//this.textBGWhite.x -= 200;
+		this.textBGTranslucent.width -= 10;
+		//this.textBGTranslucent.x -= 200;
+		this.monsterStatsView.x -= 10;
+		this.monsterStatsView.refreshStats(kGAMECLASS);
+
+	
+	}
+	
+	public function moveCombatViewBack(event:TimerEvent = null):void{
+		this.mainText.width += 10;
+		this.scrollBar.x +=  10;
+		//this.scrollBar.x -= 200;
+		this.textBGTan.width +=  10 ;
+		//this.textBGTan.x -= 200;
+		this.textBGWhite.width +=  10;
+		//this.textBGWhite.x -= 200;
+		this.textBGTranslucent.width +=  10;
+		//this.textBGTranslucent.x -= 200;
+		this.monsterStatsView.x+=  10;
+
+	
+	}
+
+	public function endCombatView():void{
+		if (!monsterStatsView.moved) return;
+		else monsterStatsView.moved = false;
+		//Now animate the bar.
+		var tmr:Timer = new Timer(30, 20);
+		tmr.addEventListener(TimerEvent.TIMER, moveCombatViewBack);
+		/*tmr.addEventListener(TimerEvent.TIMER_COMPLETE, function ():void {
+				this.monsterStatsView.x -= 200;
+			});*/
+		tmr.start();
+		this.monsterStatsView.hide();
+	}
+	
+	public function updateCombatView():void {
+		monsterStatsView.show();
+		if (monsterStatsView.moved) return;
+		else monsterStatsView.moved = true;
+		//Now animate the bar.
+		var tmr:Timer = new Timer(30, 20);
+		tmr.addEventListener(TimerEvent.TIMER, moveCombatView);
+		/*tmr.addEventListener(TimerEvent.TIMER_COMPLETE, function ():void {
+				this.monsterStatsView.x -= 200;
+			});*/
+		tmr.start();
 	}
 }
 }

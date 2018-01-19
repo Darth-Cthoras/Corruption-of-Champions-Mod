@@ -278,7 +278,7 @@
 			if (arms.type == Arms.SPIDER) armorDef += 2;
 			if (lowerBody.type == LowerBody.CHITINOUS_SPIDER_LEGS || lowerBody.type == LowerBody.BEE) armorDef += 2;
 			//Bonus when being a samurai
-			if (armor == game.armors.SAMUARM && weapon == game.weapons.KATANA) {
+			if (armor == game.armors.SAMUARM && weapon == game.weapons.KATANA0) {
 				armorDef += 2;
 			}
 			//Agility boosts armor ratings!
@@ -340,7 +340,7 @@
 			if (hasPerk(PerkLib.IronFists3) && str >= 80 && weaponName == "fists")
 				attack += 3;
 			//Bonus for being samurai!
-			if (armor == game.armors.SAMUARM && weapon == game.weapons.KATANA)
+			if (armor == game.armors.SAMUARM && weapon == game.weapons.KATANA0)
 				attack += 2;
 			//Berserking bonus!
 			if (hasStatusEffect(StatusEffects.Berzerking)) attack += 30;
@@ -930,8 +930,10 @@
 				race = "demon-morph";
 			if (sharkScore() >= 3)
 				race = "shark-morph";
-			if (bunnyScore() >= 4)
+			if (bunnyScore() >= 4) {
 				race = "bunny-" + mf("boy", "girl");
+				if (horns.type == Horns.ANTLERS && horns.value > 0) race = "jackalope-" + mf("boy", "girl");
+			}
 			if (harpyScore() >= 4)
 			{
 				if (gender >= 2)
@@ -1560,13 +1562,13 @@
 				kitsuneCounter++;
 			//If the character's kitsune score is greater than 1 and:
 			//If the character has "blonde","black","red","white", or "silver" hair, +1
-			if (kitsuneCounter > 0 && (InCollection(hairOrFurColors, convertMixedToStringArray(ColorLists.basicKitsuneHairColors)) || InCollection(hairOrFurColors, ColorLists.elderKitsuneColors)))
+			if (kitsuneCounter > 0 && (InCollection(hairOrFurColors, convertMixedToStringArray(ColorLists.BASIC_KITSUNE_HAIR)) || InCollection(hairOrFurColors, ColorLists.ELDER_KITSUNE)))
 				kitsuneCounter++;
 			//If the character's femininity is 40 or higher, +1
 			if (kitsuneCounter > 0 && femininity >= 40)
 				kitsuneCounter++;
 			//If the character has fur, scales, or gooey skin, -1
-			if (hasFur() && !InCollection(hairOrFurColors, convertMixedToStringArray(ColorLists.basicKitsuneFurColors)) && !InCollection(hairOrFurColors, ColorLists.elderKitsuneColors))
+			if (hasFur() && !InCollection(hairOrFurColors, convertMixedToStringArray(ColorLists.BASIC_KITSUNE_FUR)) && !InCollection(hairOrFurColors, ColorLists.ELDER_KITSUNE))
 				kitsuneCounter--;
 			if (hasScales())
 				kitsuneCounter -= 2;
@@ -1632,7 +1634,7 @@
 			var horseCounter:Number = 0;
 			if (ears.type == Ears.ELFIN)
 				horseCounter++;
-			if (skin.tone == "pale yellow" || skin.tone == "grayish-blue" || skin.tone == "green" || skin.tone == "dark green")
+			if (ColorLists.GOBLIN_SKIN.indexOf(skin.tone) !== -1)
 				horseCounter++;
 			if (horseCounter > 0)
 			{
@@ -2996,7 +2998,7 @@
 		// 0..5 or -1 if no
 		public function roomInExistingStack(itype:ItemType):Number {
 			for (var i:int = 0; i<itemSlots.length; i++){
-				if (itemSlot(i).itype == itype && itemSlot(i).quantity != 0 && itemSlot(i).quantity < 5)
+				if (itemSlot(i).itype == itype && itemSlot(i).quantity != 0 && itemSlot(i).quantity < itype.getMaxStackSize())
 					return i;
 			}
 			return -1;
