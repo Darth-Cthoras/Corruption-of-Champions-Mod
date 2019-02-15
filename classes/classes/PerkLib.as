@@ -173,18 +173,42 @@ package classes
 		public static const ImprovedEndurance:PerkType = mk("Improved Endurance", "Improved Endurance",
 				"Increases maximum fatigue by 20.",
 				"You choose the 'Improved Endurance' perk. Thanks to your physical conditioning, your maximum fatigue has been increased by 20!</b>");
+		public static const ImprovedEndurance2:PerkType = mk("Improved Endurance 2", "Improved Endurance 2",
+				"Increases maximum fatigue by further 10.",
+				"You choose the 'Improved Endurance 2' perk. Thanks to your improved physical conditioning, your maximum fatigue has been increased by further 10!</b>");
+		public static const ImprovedEndurance3:PerkType = mk("Improved Endurance 3", "Improved Endurance 3",
+				"Increases maximum fatigue by further 10.",
+				"You choose the 'Improved Endurance 2' perk. Thanks to your superior physical conditioning, your maximum fatigue has been increased by further 10!</b>");
 		public static const ImprovedSelfControl:PerkType = mk("Improved Self-Control", "Improved Self-Control",
 				"Increases maximum lust by 20.",
 				"You choose the 'Improved Self-Control' perk. Thanks to your mental conditioning, your maximum lust has been increased by 20!</b>");
+		public static const ImprovedSelfControl2:PerkType = mk("Improved Self-Control 2", "Improved Self-Control 2",
+				"Increases maximum lust by further 10.",
+				"You choose the 'Improved Self-Control 2' perk. Thanks to your improved mental conditioning, your maximum lust has been increased by further 10!</b>");
+		public static const ImprovedSelfControl3:PerkType = mk("Improved Self-Control 3", "Improved Self-Control 3",
+				"Increases maximum lust by further 10.",
+				"You choose the 'Improved Self-Control 2' perk. Thanks to your superior mental conditioning, your maximum lust has been increased by further 10!</b>");
+		public static const ImprovedVision:PerkType = mk("Improved Vision", "Improved Vision",
+				"Improves your vision allowing you to see openings most wouldn't (+3% Crit)",
+				"You've chosen the 'Improved Vision' perk, which raises your critical strike chance by 3%.");
+		public static const ImprovedVision2:PerkType = mk("Improved Vision 2", "Improved Vision 2",
+				"Improves your vision allowing you to see openings most wouldn't (+7% Crit)",
+				"You've chosen the 'Improved Vision 2' perk, which raises your critical strike chance by 7%.");
+		public static const ImprovedVision3:PerkType = mk("Improved Vision 3", "Improved Vision 3",
+				"Improves your vision allowing you to see openings most wouldn't (+10% Crit)",
+				"You've chosen the 'Improved Vision 3' perk, which raises your critical strike chance by 10%.");
+		public static const Indefatigable:PerkType = mk("Indefatigable", "Indefatigable",
+				"Can no longer lose by lust. Can still submit manually at maximum lust via Fantasize.",
+				"You choose the 'Indefatigable' perk. Thanks to your sheer willpower, you can no longer lose when your lust reaches maximum. (Choosing Fantasize at maximum lust still allows you to submit.)")
 		public static const IronFists:PerkType = mk("Iron Fists", "Iron Fists",
 				"Hardens your fists to increase attack rating by 5.",
-				"You choose the 'Iron Fists' perk, hardening your fists. This increases attack power by 5.");
+				"You choose the 'Iron Fists' perk, hardening your fists. This increases attack power of unarmed attacks by 5 and gauntlets by 2.");
 		public static const IronFists2:PerkType = mk("Iron Fists 2", "Iron Fists 2",
 				"Further hardens your fists to increase attack rating by another 3.",
-				"You choose the 'Iron Fists 2' perk, further hardening your fists. This increases attack power by another 3.");
+				"You choose the 'Iron Fists 2' perk, further hardening your fists. This increases attack power of unarmed attacks by another 3 and gauntlets by 1.");
 		public static const IronFists3:PerkType = mk("Iron Fists 3", "Iron Fists 3",
 				"Even more hardens your fists to increase attack rating again by 3.",
-				"You choose the 'Iron Fists 3' perk, even further hardening your fists. This increases attack power again by 3.");				
+				"You choose the 'Iron Fists 3' perk, even further hardening your fists. This increases attack power of unarmed attacks again by another 3 and gauntlets by 1.");				
 		public static const IronMan:PerkType = mk("Iron Man", "Iron Man",
 				"Reduces the fatigue cost of physical specials by 50%.",
 				"You choose the 'Iron Man' perk, reducing the fatigue cost of physical special attacks by 50%");
@@ -287,17 +311,23 @@ package classes
 				"You choose the 'Strong Back 2: Strong Harder' perk, enabling a fifth item slot.");
 		public static const Tactician:PerkType = mk("Tactician", "Tactician",
 				"[if (player.inte>=50)" +
-						"Increases critical hit chance by up to 10% (Intelligence-based)." +
+						"Increases critical hit chance by 1% per 5 points intelligence above 50." +
 						"|" +
 						"<b>You are too dumb to gain benefit from this perk.</b>" +
 						"]",
-				"You choose the 'Tactician' perk, increasing critical hit chance by up to 10% (Intelligence-based).");
+				"You choose the 'Tactician' perk, increasing critical hit chance by 1% per 5 points intelligence above 50.");
 		public static const Tank:PerkType = mk("Tank", "Tank",
 				"Raises max HP by 50.",
 				"You choose the 'Tank' perk, giving you an additional 50 HP!");
 		public static const Tank2:PerkType = mk("Tank 2", "Tank 2",
 				"+1 extra HP per point of toughness.",
 				"You choose the 'Tank 2' perk, granting an extra maximum HP for each point of toughness.");
+		public static const Tank3:PerkType = mk("Tank 3", "Tank 3",
+				"+5 extra HP per character level.",
+				"You choose the 'Tank 3' perk, granting 5 extra maximum HP for each level.");
+		public static const TitanGrip:PerkType = mk("Titan Grip", "Titan Grip",
+				"Allows you to wield large weapons in one hand, granting shield usage.",
+				"You choose the 'Titan Grip' perk. Thanks to your incredible strength, you can now wield large weapons with one hand!");
 		public static const ThunderousStrikes:PerkType = mk("Thunderous Strikes", "Thunderous Strikes",
 				"+20% 'Attack' damage while strength is at or above 80.",
 				"You choose the 'Thunderous Strikes' perk, increasing normal damage by 20% while your strength is over 80.");
@@ -343,9 +373,9 @@ package classes
 				"Increases the gems awarded from victory in battle.");
 		public static const PentUp:PentUpPerk = new PentUpPerk();
 		public static const PhallicPotential:PerkType = mk("Phallic Potential", "Phallic Potential",
-				"Increases the effects of penis-enlarging transformations.");
+				"Increases the effects of penis-enlarging transformations. This only affects cocks covered by scarlet cock-socks.");
 		public static const PhallicRestraint:PerkType = mk("Phallic Restraint", "Phallic Restraint",
-				"Reduces the effects of penis-enlarging transformations.");
+				"Reduces the effects of penis-enlarging transformations. This only affects cocks covered by cobalt cock-socks.");
 
 		// Armor perks
 		public static const BloodMage:PerkType = mk("Blood Mage", "Blood Mage",
@@ -478,6 +508,8 @@ package classes
 				"Your caring attitude towards love and romance makes you slightly more resistant to lust and corruption.", null, true);
 		public static const SensualLover:PerkType = mk("Sensual Lover", "Sensual Lover",
 				"Your sensual attitude towards love and romance makes your tease ability slightly more effective.", null, true);
+		public static const WarDance:PerkType = mk("War Dance", "War Dance",
+				"+15% Damage against enemies in hand to hand combat and -20% Evasion change for the enemy.");
 		public static const Whispered:PerkType = mk("Whispered", "Whispered",
 				"Akbal's blessings grant limited telepathy that can induce fear.");
 				
@@ -513,12 +545,7 @@ package classes
 					 .requireLevel(6);
 			IronFists2.requireStr(65)
 					  .requireLevel(6)
-					  .requireNGPlus(1)
 					  .requirePerk(IronFists);
-			IronFists3.requireStr(80)
-					  .requireLevel(6)
-					  .requireNGPlus(1)
-					  .requirePerk(IronFists2);
 			Parry.requireStr(50)
 				 .requireSpe(50)
 				 .requireLevel(6);
@@ -530,11 +557,18 @@ package classes
 			ShieldSlam.requireStr(80)
 					  .requireTou(60)
 					  .requireLevel(12);
+			IronFists3.requireStr(80)
+					  .requireLevel(12)
+					  .requireNGPlus(1)
+					  .requirePerk(IronFists2);
 			//Tier 3 Strength Perks
 			ColdFury.requireStr(75)
 					.requireLevel(18)
 					.requirePerk(Berzerker)
 					.requirePerk(ImprovedSelfControl);
+			TitanGrip.requireStr(90)
+					.requireLevel(18)
+					.requirePerk(StrongBack);
 			//------------
 			// TOUGHNESS
 			//------------
@@ -556,13 +590,26 @@ package classes
 						   .requireLevel(6);
 			ShieldMastery.requireTou(50)
 						 .requireLevel(6);
+			ImprovedEndurance2.requireLevel(6)
+							  .requireStr(60)
+							  .requireTou(60)
+							  .requirePerk(ImprovedEndurance);
 			//Tier 2 Toughness Perks
+			Tank3.requireTou(80)
+				 .requireLevel(12)
+				 .requireNGPlus(1)
+				 .requirePerk(Tank2);
 			Resolute.requireTou(75)
 					.requireLevel(12);
 			Juggernaut.requireTou(75)
 					  .requireLevel(12);
 			IronMan.requireTou(60)
 				   .requireLevel(12);
+			ImprovedEndurance3.requireLevel(12)
+							  .requireStr(70)
+							  .requireTou(70)
+							  .requireNGPlus(1)
+							  .requirePerk(ImprovedEndurance2);
 			//------------
 			// SPEED
 			//------------
@@ -643,6 +690,11 @@ package classes
 									 || player.hasPerk(EnlightenedNinetails)
 									 || player.hasPerk(CorruptedNinetails);
 						 }, "Any Fire Spell");
+			//Tier 3 Intelligence perks
+			Indefatigable.requireInt(90)
+						 .requireLevel(18)
+						 .requirePerk(ImprovedSelfControl3)
+						 .requireNGPlus(1);
 			// Spell-boosting perks
 			// Battlemage: auto-use Might
 			Battlemage.requireInt(80)
@@ -678,8 +730,18 @@ package classes
 			FertilityMinus.defaultValue1 = 15;
 			FertilityMinus.defaultValue2 = 0.7;
 			WellAdjusted.requireLevel(6).requireLib(60);
+			ImprovedSelfControl2.requireLevel(6)
+			                    .requireInt(60)
+								.requireLib(50)
+								.requirePerk(ImprovedSelfControl);
 			//Slot 5 - minimum libido
 			Masochist.requireLevel(6).requireLib(60).requireCor(50);
+			//Tier 2 Libido Perks
+			ImprovedSelfControl3.requireLevel(12)
+			                    .requireInt(70)
+								.requireLib(75)
+								.requireNGPlus(1)
+								.requirePerk(ImprovedSelfControl2);
 			//------------
 			// SENSITIVITY
 			//------------
@@ -714,6 +776,13 @@ package classes
 			Survivalist2.requireLevel(12)
 						.requirePerk(Survivalist)
 						.requireHungerEnabled();
+			//Other Misc Perks
+			ImprovedVision.requireLevel(30)
+			          .requirePerk(Tactician);
+			ImprovedVision2.requireLevel(60)
+			          .requirePerk(ImprovedVision);
+			ImprovedVision3.requireLevel(90)
+			          .requirePerk(ImprovedVision2);
 		}
 		{
 			initRequirements();

@@ -10,9 +10,15 @@
 	import classes.Items.WeaponLib;
 	import classes.Items.ShieldLib;
 	import classes.Items.UndergarmentLib;
+	import classes.Scenes.Areas.Desert.SandTrap;
+	import classes.Scenes.Dungeons.DeepCave.EncapsulationPod;
 	import classes.Scenes.Dungeons.Factory.SecretarialSuccubus;
+	import classes.Scenes.Dungeons.LethicesKeep.Doppelganger;
+	import classes.Scenes.Dungeons.LethicesKeep.Lethice;
 	import classes.Scenes.NPCs.Kiha;
+	import classes.Scenes.Places.Boat.Marae;
 	import classes.Scenes.Quests.UrtaQuest.MilkySuccubus;
+	import classes.StatusEffects.Combat.BasiliskSlowDebuff;
 	import classes.internals.ChainedDrop;
 	import classes.internals.RandomDrop;
 	import classes.internals.Utils;
@@ -45,10 +51,10 @@
 			kGAMECLASS.mainView.statsView.showStatDown(a);
 		}
 		protected final function statScreenRefresh():void {
-			game.statScreenRefresh();
+			kGAMECLASS.output.statScreenRefresh();
 		}
 		protected final function doNext(eventNo:Function):void { //Now typesafe
-			game.doNext(eventNo);
+			kGAMECLASS.output.doNext(eventNo);
 		}
 		protected final function combatMiss():Boolean {
 			return game.combat.combatMiss();
@@ -159,34 +165,30 @@
 		public override function maxHP():Number
 		{
 			//Base HP
-			var temp:Number = 50 + this.bonusHP;
-			if (flags[kFLAGS.GRIMDARK_MODE] > 0) {
-				temp = (15 * level) + this.bonusHP;
-			}
-			temp += (this.tou * 2);
-			//Apply perks
-			if (findPerk(PerkLib.Tank) >= 0) temp += 50;
-			if (findPerk(PerkLib.Tank2) >= 0) temp += this.tou;
+			var hp:Number = (flags[kFLAGS.GRIMDARK_MODE] > 0 ? (15 * level) : 50) + this.bonusHP;
+
 			//Apply NG+, NG++, NG+++, etc.
-			if (short === "doppleganger" || short === "pod" || short === "sand trap" || short === "sand tarp") {
-				temp += 200 * player.newGamePlusMod();
-			}
-			else if (short === "Lethice") {
-				temp += 1200 * player.newGamePlusMod();
-			}
-			else if (short === "Marae") {
-				temp += 2500 * player.newGamePlusMod();
-			}
-			else {
-				temp += 1000 * player.newGamePlusMod();
-			}
+			hp = getAscensionHP(hp);
+
+			hp += (this.tou * 2);
+
+			//Apply perks
+			if (findPerk(PerkLib.Tank) >= 0) hp += 50;
+			if (findPerk(PerkLib.Tank2) >= 0) hp += this.tou;
+			if (findPerk(PerkLib.Tank3) >= 0) hp += level * 5;
+
 			//Apply difficulty
-			if (flags[kFLAGS.GAME_DIFFICULTY] <= 0) temp *= 1.0;
-			else if (flags[kFLAGS.GAME_DIFFICULTY] === 1) temp *= 1.25;
-			else if (flags[kFLAGS.GAME_DIFFICULTY] === 2) temp *= 1.5;
-			else temp *= 2.0;
-			temp = Math.round(temp);
-			return temp;
+			if (flags[kFLAGS.GAME_DIFFICULTY] <= 0) hp *= 1.0;
+			else if (flags[kFLAGS.GAME_DIFFICULTY] === 1) hp *= 1.25;
+			else if (flags[kFLAGS.GAME_DIFFICULTY] === 2) hp *= 1.5;
+			else hp *= 2.0;
+
+			return Math.round(hp);
+		}
+
+		public function getAscensionHP(hp:Number):Number
+		{
+			return hp * (1 + player.ascensionFactor(1.50)); // +150% per NG+-level
 		}
 
 		override public function maxLust():Number {
@@ -275,7 +277,7 @@
 			///*OPTIONAL*/ //this.cumMultiplier = ; // default 1
 			///*OPTIONAL*/ //this.hoursSinceCum = ; // default 0
 			//// 2.2. Female
-			///*REQUIRED*/ this.createVagina(virgin=true|false,VaginaClass.WETNESS_,VaginaClass.LOOSENESS_); // default true,normal,tight
+			///*REQUIRED*/ this.createVagina(virgin=true|false,Vagina.WETNESS_,Vagina.LOOSENESS_); // default true,normal,tight
 			///*OPTIONAL*/ //this.createStatusEffect(StatusEffects.BonusVCapacity, bonus, 0, 0, 0);
 			//// 2.3. Hermaphrodite
 			//// Just create cocks and vaginas. Last call determines pronouns.
@@ -302,8 +304,8 @@
 			//// Note useful method: this.createBreastRow(Appearance.breastCupInverse("C")); // "C" -> 3
 
 			//// 4. Ass
-			///*OPTIONAL*/ //this.ass.analLooseness = AssClass.LOOSENESS_; // default TIGHT
-			///*OPTIONAL*/ //this.ass.analWetness = AssClass.WETNESS_; // default DRY
+			///*OPTIONAL*/ //this.ass.analLooseness = Ass.LOOSENESS_; // default TIGHT
+			///*OPTIONAL*/ //this.ass.analWetness = Ass.WETNESS_; // default DRY
 			///*OPTIONAL*/ //this.createStatusEffect(StatusEffects.BonusACapacity, bonus, 0, 0, 0);
 			//// 5. Body
 			///*REQUIRED*/ this.tallness = ;
@@ -521,7 +523,7 @@
 		protected function initGenderless():void
 		{
 			this.cocks = new Vector.<Cock>();
-			this.vaginas = new Vector.<VaginaClass>();
+			this.vaginas = new Vector.<Vagina>();
 			initedGenitals = true;
 			if (plural) {
 				this.pronoun1 = "they";
@@ -622,7 +624,7 @@
 				    var damage:int = eOneAttack();
 					outputAttack(damage);
 					postAttack(damage);
-					game.statScreenRefresh();
+					kGAMECLASS.output.statScreenRefresh();
 					outputText("\n");
 				}
 				if (statusEffectv1(StatusEffects.Attacks) >= 0) {
@@ -895,7 +897,7 @@
 			if (temp > player.gems) temp = player.gems;
 			outputText("\n\nYou'll probably wake up in eight hours or so, missing " + temp + " gems.");
 			player.gems -= temp;
-			game.doNext(game.camp.returnToCampUseEightHours);
+			kGAMECLASS.output.doNext(game.camp.returnToCampUseEightHours);
 		}
 
 		/**
@@ -1039,14 +1041,14 @@
 				result += Pronoun3+(i>0?(" #"+(i+1)):"")+" "+cock.cockType.toString().toLowerCase()+" cock is ";
 				result += Appearance.inchesAndFeetsAndInches(cock.cockLength)+" long and "+cock.cockThickness+"\" thick";
 				if (cock.isPierced) result += ", pierced with " + cock.pLongDesc;
-				if (cock.knotMultiplier !== 1) result += ", with knot of size " + cock.knotMultiplier;
+				if (cock.knotMultiplier !== Cock.KNOTMULTIPLIER_NO_KNOT) result += ", with knot of size " + cock.knotMultiplier;
 				result+=".\n";
 			}
 			if (balls > 0 || ballSize > 0) result += Hehas + numberOfThings(balls, "ball") + " of size " + ballSize+".\n";
 			if (cumMultiplier !== 1 || cocks.length > 0) result += Pronoun1 + " " + have+" cum multiplier " + cumMultiplier + ". ";
 			if (hoursSinceCum > 0 || cocks.length > 0) result += "It were " + hoursSinceCum + " hours since " + pronoun1 + " came.\n\n";
 			for (i = 0; i < vaginas.length; i++) {	
-				var vagina:VaginaClass = (vaginas[i] as VaginaClass);
+				var vagina:Vagina = (vaginas[i] as Vagina);
 				result += Pronoun3+ (i>0?(" #"+(i+1)):"")+" "+(Appearance.DEFAULT_VAGINA_TYPE_NAMES[vagina.type]||("vaginaType#"+vagina.type))+(vagina.virgin?" ":" non-")+"virgin vagina is ";
 				result += Appearance.describeByScale(vagina.vaginalLooseness,Appearance.DEFAULT_VAGINA_LOOSENESS_SCALES,"tighter than","looser than");
 				result += ", "+Appearance.describeByScale(vagina.vaginalWetness,Appearance.DEFAULT_VAGINA_WETNESS_SCALES,"drier than","wetter than");
@@ -1061,7 +1063,7 @@
 				var nipple:String = nippleLength+"\" ";
 				if (nipplesPierced) nipple+="pierced by "+nipplesPLong;
 				for (i = 0; i < breastRows.length; i++) {
-					var row:BreastRowClass = (breastRows[i] as BreastRowClass);
+					var row:BreastRow = (breastRows[i] as BreastRow);
 					result += Pronoun3+(i>0?(" #"+(i+1)):"") + " breast row has " + row.breasts;
 					result += " " + row.breastRating.toFixed(2) + "-size (" + Appearance.breastCup(row.breastRating) + ") breasts with ";
 					result += numberOfThings(row.nipplesPerBreast, nipple+(row.fuckable ? "fuckable nipple" : "unfuckable nipple")) + " on each.\n";
@@ -1108,7 +1110,7 @@
 				game.urtaQuest.milkyUrtaTic();
 			}
 			//Countdown
-			var tcd:StatusEffectClass = statusEffectByType(StatusEffects.TentacleCoolDown);
+			var tcd:StatusEffect = statusEffectByType(StatusEffects.TentacleCoolDown);
 			if (tcd!=null) {
 				tcd.value1-=1;
 				if (tcd.value1 <= 0) {
@@ -1186,6 +1188,25 @@
 					store = game.combat.doDamage(store);
 					if (plural) outputText(capitalA + short + " bleed profusely from the jagged wounds your weapon left behind. <b>(<font color=\"#800000\">" + store + "</font>)</b>\n\n");
 					else outputText(capitalA + short + " bleeds profusely from the jagged wounds your weapon left behind. <b>(<font color=\"#800000\">" + store + "</font>)</b>\n\n");
+				}
+			}
+			if (hasStatusEffect(StatusEffects.BasiliskCompulsion) && spe > 1) {
+				var oldSpeed:Number = spe;
+				var speedDiff:Number = 0;
+				var bse:BasiliskSlowDebuff = createOrFindStatusEffect(StatusEffects.BasiliskSlow) as BasiliskSlowDebuff;
+				bse.applyEffect(statusEffectv1(StatusEffects.BasiliskCompulsion));
+				speedDiff = Math.round(oldSpeed - spe);
+				if (plural) {
+					outputText(capitalA + short + "  still feel the spell of those grey eyes, making " + pronoun3 + " movements slow and difficult,"
+					          +" the remembered words tempting " + pronoun2 + " to look into your eyes again. "
+					          + Pronoun1 + " need to finish this fight as fast as " + pronoun3 + "  heavy limbs will allow."
+					          +" <b>(<font color=\"#800000\">" + Math.round(speedDiff) + "</font>)</b>\n\n");
+				} else {
+					outputText(capitalA + short + "  still feels the spell of those grey eyes, making " + pronoun3 + " movements slow and difficult,"
+					          +" the remembered words tempting " + pronoun2 + " to look into your eyes again. "
+					          + Pronoun1 + " needs to finish this fight as fast as " + pronoun3 + "  heavy limbs will allow."
+					          +" <b>(<font color=\"#800000\">" + Math.round(speedDiff) + "</font>)</b>\n\n");
+
 				}
 			}
 			if (hasStatusEffect(StatusEffects.OnFire)) {
@@ -1326,5 +1347,17 @@
 			return 8; //This allows different monsters to delay the player by different amounts of time after a combat loss. Normal loss causes an eight hour blackout
 		}
 
+		override public function set HP(value:Number):void {
+			super.HP = value;
+			game.mainView.monsterStatsView.refreshStats(game);
+		}
+		override public function set lust(value:Number):void {
+			super.lust = value;
+			game.mainView.monsterStatsView.refreshStats(game);
+		}
+		override public function set fatigue(value:Number):void {
+			super.fatigue = value;
+			game.mainView.monsterStatsView.refreshStats(game);
+		}
 	}
 }

@@ -66,11 +66,11 @@ package classes {
 			//Jewelry effect
 			if (player.jewelryEffectId == JewelryLib.CORRUPTION)
 			{
-				if (player.cor < 80) dynStats("cor", (player.jewelryEffectMagnitude/10));
+				if (player.cor < 80) dynStats("cor", (player.jewelryEffectMagnitude / 100));
 			}
 			if (player.jewelryEffectId == JewelryLib.PURITY)
 			{
-				dynStats("cor", -0.1);
+				dynStats("cor", -(player.jewelryEffectMagnitude / 100));
 			}
 			//Armor
 			if (player.armor == armors.LTHCARM)
@@ -189,6 +189,20 @@ package classes {
 				player.removePerk(PerkLib.Flexibility);
 				needNext = true;
 			}
+			//War Dance perk
+			if (player.ferretScore() >= 6) {
+				if (!player.hasPerk(PerkLib.WarDance)) {
+					outputText("\n\nDue how strong and agile the muscles on your legs and arms are, you’re able to hit your enemies with ease,"
+					          +" making your melee attacks stronger and harder to avoid.\n(<b>Gained Perk: War Dance</b>)\n");
+					player.createPerk(PerkLib.WarDance, 0, 0, 0, 0);
+					needNext = true;
+				}
+			} else if (player.hasPerk(PerkLib.WarDance)) {
+				outputText("\nYou notice that you aren't as strong and agile as you were when you had a more ferret-like body."
+				          +" Hand to hand combat would probably be harder for you now.\n\n(<b>Lost Perk: War Dance</b>)\n");
+				player.removePerk(PerkLib.WarDance);
+				needNext = true;
+			}
 			//Lustzerker perk
 			if (player.tail.type == Tail.SALAMANDER && player.lowerBody.type == LowerBody.SALAMANDER && player.arms.type == Arms.SALAMANDER) { //Check for gain of lustzerker - requires legs, arms and tail
 				if (player.findPerk(PerkLib.Lustzerker) < 0) {
@@ -282,9 +296,9 @@ package classes {
 				}
 			}
 			if (player.findPerk(PerkLib.WetPussy) >= 0 && player.hasVagina()) {
-				if (player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_WET) {
+				if (player.vaginas[0].vaginalWetness < Vagina.WETNESS_WET) {
 					outputText("\n<b>Your " + player.vaginaDescript(0) + " returns to its normal, wet state.</b>\n");
-					player.vaginas[0].vaginalWetness = VaginaClass.WETNESS_WET;
+					player.vaginas[0].vaginalWetness = Vagina.WETNESS_WET;
 					needNext = true;
 				}
 			}
@@ -434,7 +448,7 @@ package classes {
 					getGame().dynStats("lib", -player.statusEffectv2(StatusEffects.Heat), "scale");
 					player.removeStatusEffect(StatusEffects.Heat); //remove heat
 					if (player.lib < 1) player.lib = 1;
-					getGame().statScreenRefresh();
+					output.statScreenRefresh();
 					outputText("\n<b>Your body calms down, at last getting over your heat.</b>\n");
 					needNext = true;
 				}
@@ -447,7 +461,7 @@ package classes {
 					getGame().dynStats("lib", -player.statusEffectv2(StatusEffects.Rut), "scale", false);
 					player.removeStatusEffect(StatusEffects.Rut); //remove heat
 					if (player.lib < 10) player.lib = 10;
-					getGame().statScreenRefresh();
+					output.statScreenRefresh();
 					outputText("\n<b>Your body calms down, at last getting over your rut.</b>\n");
 					needNext = true;
 				}
@@ -709,26 +723,26 @@ package classes {
 				var recoveryProgress:int = player.vaginas[0].recoveryProgress;
 				
 				if (player.findPerk(PerkLib.FerasBoonWideOpen) < 0) {
-					if (player.vaginas[0].vaginalLooseness == VaginaClass.LOOSENESS_LOOSE && recoveryProgress >= VAGINA_RECOVER_THRESHOLD_LOOSE) {
+					if (player.vaginas[0].vaginalLooseness == Vagina.LOOSENESS_LOOSE && recoveryProgress >= VAGINA_RECOVER_THRESHOLD_LOOSE) {
 						outputText("\nYour " + player.vaginaDescript(0) + " recovers from your ordeals, tightening up a bit.\n");
 						player.vaginas[0].vaginalLooseness--;
 						player.vaginas[0].resetRecoveryProgress();
 						needNext = true;
 					}
-					if (player.vaginas[0].vaginalLooseness == VaginaClass.LOOSENESS_GAPING && recoveryProgress >= VAGINA_RECOVER_THRESHOLD_GAPING) {
+					if (player.vaginas[0].vaginalLooseness == Vagina.LOOSENESS_GAPING && recoveryProgress >= VAGINA_RECOVER_THRESHOLD_GAPING) {
 						outputText("\nYour " + player.vaginaDescript(0) + " recovers from your ordeals, tightening up a bit.\n");
 						player.vaginas[0].vaginalLooseness--;
 						player.vaginas[0].resetRecoveryProgress();
 						needNext = true;
 					}
-					if (player.vaginas[0].vaginalLooseness == VaginaClass.LOOSENESS_GAPING_WIDE && recoveryProgress >= VAGINA_RECOVER_THRESHOLD_GAPING_WIDE) {
+					if (player.vaginas[0].vaginalLooseness == Vagina.LOOSENESS_GAPING_WIDE && recoveryProgress >= VAGINA_RECOVER_THRESHOLD_GAPING_WIDE) {
 						outputText("\nYour " + player.vaginaDescript(0) + " recovers from your ordeals and becomes tighter.\n");
 						player.vaginas[0].vaginalLooseness--;
 						player.vaginas[0].resetRecoveryProgress();
 						needNext = true;
 					}
 				}
-				if (player.vaginas[0].vaginalLooseness >= VaginaClass.LOOSENESS_LEVEL_CLOWN_CAR && recoveryProgress >= VAGINA_RECOVER_THRESHOLD_CLOWN_CAR) {
+				if (player.vaginas[0].vaginalLooseness >= Vagina.LOOSENESS_LEVEL_CLOWN_CAR && recoveryProgress >= VAGINA_RECOVER_THRESHOLD_CLOWN_CAR) {
 					outputText("\nYour " + player.vaginaDescript(0) + " recovers from the brutal stretching it has received and tightens up a little bit, but not much.\n");
 					player.vaginas[0].vaginalLooseness--;
 					player.vaginas[0].resetRecoveryProgress();
@@ -996,7 +1010,7 @@ package classes {
 					player.fertilizeEggs(); //convert eggs to fertilized based on player cum output, reduce lust by 100 and then add 20 lust
 					player.orgasm('Dick'); //reduce lust by 100 and add 20, convert eggs to fertilized depending on cum output
 					getGame().dynStats("lus", 20);
-					getGame().doNext(playerMenu);
+					kGAMECLASS.output.doNext(playerMenu);
 					//Hey Fenoxo - maybe the unsexed characters get a few \"cock up the ovipositor\" scenes for fertilization with some characters (probably only willing ones)?
 					//Hey whoever, maybe you write them? -Z
 					return true;
@@ -1016,7 +1030,7 @@ package classes {
 					player.fertilizeEggs(); //reduce lust by 100 and add 20, convert eggs to fertilized depending on cum output
 					player.orgasm('Dick');
 					getGame().dynStats("lus", 20);
-					getGame().doNext(playerMenu);
+					kGAMECLASS.output.doNext(playerMenu);
 					//Hey Fenoxo - maybe the unsexed characters get a few \"cock up the ovipositor\" scenes for fertilization with some characters (probably only willing ones)?
 					//Hey whoever, maybe you write them? -Z
 					return true;

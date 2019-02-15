@@ -3,7 +3,8 @@ package classes.display
 	import classes.display.BindDisplay;
 	import coc.view.Block;
 	import coc.view.CoCButton;
-	import fl.containers.ScrollPane;
+	import coc.view.MainView;
+	import com.bit101.components.ScrollPane;
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.display.Stage;
@@ -12,6 +13,8 @@ package classes.display
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
+	import flash.text.TextFormatAlign;
+	import flash.display.Bitmap;
 
 	/**
 	 * Provides a scrollable container for game settings.
@@ -39,11 +42,6 @@ package classes.display
 		{
 			move(xPos,yPos);
 			setSize(width,height);
-			
-			// Cheap hack to remove the stupid styling elements of the stock ScrollPane
-			var blank:MovieClip = new MovieClip();
-			this.setStyle("upSkin", blank);
-			
 			// Initiate a new container for content that will be placed in the scroll pane
 			_content = new Block({layoutConfig:{
 				type: Block.LAYOUT_FLOW,
@@ -52,42 +50,43 @@ package classes.display
 			}});
 			_content.name = "controlContent";
 			_content.addEventListener(Block.ON_LAYOUT,function(e:Event):void{
-				if (source) {
+				if (content) {
 					update();
 				}
 			});
 			_contentChildren = 0;
 
 			// Hook into some stuff so that we can fix some bugs that ScrollPane has
-			this.addEventListener(Event.ADDED_TO_STAGE, AddedToStage);
-			this.source = _content;
+			this.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
+			this.content.addChild(_content);
 		}
 		
 		/**
 		 * Cleanly get us a reference to the stage to add/remove other event listeners
 		 * @param	e
 		 */
-		private function AddedToStage(e:Event):void
+		private function addedToStage(e:Event):void
 		{
-			this.removeEventListener(Event.ADDED_TO_STAGE, AddedToStage);
-			this.addEventListener(Event.REMOVED_FROM_STAGE, RemovedFromStage);
+			this.removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
+			this.addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
 			
 			_stage = this.stage;
 			
-			_stage.addEventListener(MouseEvent.MOUSE_WHEEL, MouseScrollEvent);
+			_stage.addEventListener(MouseEvent.MOUSE_WHEEL, mouseScrollEvent);
 		}
 		
-		private function RemovedFromStage(e:Event):void
+		private function removedFromStage(e:Event):void
 		{
-			this.removeEventListener(Event.REMOVED_FROM_STAGE, RemovedFromStage);
-			this.addEventListener(Event.ADDED_TO_STAGE, AddedToStage);
+			this.removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
+			this.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
 			
-			_stage.removeEventListener(MouseEvent.MOUSE_WHEEL, MouseScrollEvent);
+			_stage.removeEventListener(MouseEvent.MOUSE_WHEEL, mouseScrollEvent);
 		}
 		
-		private function MouseScrollEvent(e:MouseEvent):void
+		private function mouseScrollEvent(e:MouseEvent):void
 		{
-			this.verticalScrollPosition += -( e.delta * 8 );
+			this._vScrollbar.value += -( e.delta * 8 );
+			update();
 		}
 		
 		public function get initialized():Boolean { return _initialized; }
@@ -112,9 +111,10 @@ package classes.display
 		
 		public function addOrUpdateToggleSettings(label:String, args:Array):BindDisplay {
 			var i:int;
+			var numberOfArgs:int = args.length;
 			if (_content.getElementByName(label) != null) {
 				var existingSetting:BindDisplay = _content.getElementByName(label) as BindDisplay;
-				for (i = 0; i < args.length; i++) {
+				for (i = 0; i < numberOfArgs; i++) {
 					if (args[i] is String) {
 						if (args[i] == "overridesLabel") {
 							existingSetting.htmlText = args[i-1][2];
@@ -134,7 +134,7 @@ package classes.display
 				newSetting.label.multiline = true;
 				newSetting.label.wordWrap = true;
 				newSetting.htmlText = "<b>" + label + ":</b>\n";
-				for (i = 0; i < args.length; i++) {
+				for (i = 0; i < numberOfArgs; i++) {
 					if (args[i] is String) {
 						if (args[i] == "overridesLabel") {
 							newSetting.htmlText = args[i-1][2];

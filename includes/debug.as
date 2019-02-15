@@ -33,10 +33,10 @@ public function debugPane():void {
 
 	outputText(images.showImage("monster-ceraph"));
 
-	menu();
-	addButton(0, "Test Input", eventTester);
-	addButton(1, "Parser Tests", doThatTestingThang);
-	addButton(4, "Back", gameSettings.exitSettings);
+	output.menu();
+	output.addButton(0, "Test Input", eventTester);
+	output.addButton(1, "Parser Tests", doThatTestingThang);
+	output.addButton(4, "Back", gameSettings.exitSettings);
 }
 
 public function doThatTestingThang():void
@@ -174,7 +174,7 @@ public function doThatTestingThang():void
 * 17 \[if (hasCock) HERP|DERP\]
 * 17 [if (hasCock) HERP|DERP]
 * 18 \[if (hasVagina) HERP|DERP\]
-* 18 [if (hasVagina) HERP|DERP]
+* 18 [if (hasVagina) HERP | DERP]
 
 ** Member Accessors**
 
@@ -206,6 +206,8 @@ public function doThatTestingThang():void
 * 31 you feel your [if (tallness >= 120)frame|[if (tallness >= 80)smaller frame|much smaller frame]] surrounded 
 * 32 \[if (bakeryTalkedRoot)talked about root|didn't talk about root\]
 * 32 [if (bakeryTalkedRoot)talked about root|didn't talk about root]
+* 33 \[if (hasCatEyes == false) HERP|DERP\]
+* 33 [if (hasCatEyes == false) HERP|DERP]
 
 
 
@@ -303,8 +305,8 @@ convert "
 	]]>);
 
 
-	menu();
-	addButton(4, "Back", debugPane)
+	output.menu();
+	output.addButton(4, "Back", debugPane)
 
 }
 
@@ -326,9 +328,9 @@ public function eventTester():void {
 ]]>;
 
 	;
-	menu();
-	addButton(0, "Proceed", eventTesterGo);
-	addButton(4, "Back", eventTesterExit);
+	output.menu();
+	output.addButton(0, "Proceed", eventTesterGo);
+	output.addButton(4, "Back", eventTesterExit);
 }
 
 public function eventTesterGo():void {
@@ -338,11 +340,11 @@ public function eventTesterGo():void {
 
 	trace("Temp = ", temp);
 
-	menu();
+	output.menu();
 	clearOutput();
 	outputText(temp);
 
-	addButton(14, "Back", eventTester);
+	output.addButton(14, "Back", eventTester);
 	output.flush();
 }
 

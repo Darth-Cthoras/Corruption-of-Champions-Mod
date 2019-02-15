@@ -52,7 +52,7 @@ public function greetHeckel():void {
 	}
 	menu();
 	addButton(0, "Training", heckelTraining);
-	addButton(14, "Leave", telAdre.gymDesc);
+	addButton(14, "Leave", telAdre.gym.gymDesc);
 }
 
 //First time Sex
@@ -65,7 +65,7 @@ private function heckelTraining():void {
 		outputText("You tell Heckel that you're looking for a training partner, and she makes no attempt to hide her gaze as she looks you up and down.  When she's finished, she shakes her head and picks up her pace on the track.  \"<i>I don't think so, " + player.short + ".  Maybe if you spend some more time around here, you'll find your own way into the swing of things.  From what I'm seeing, there's no way you can handle what I've got.</i>\"\n\n");
 
 		outputText("You open your mouth to reply, but the hyena has already started another lap.  Deciding it isn't worth it, you turn away indignantly.");
-		doNext(telAdre.gymDesc);
+		doNext(telAdre.gym.gymDesc);
 		return;
 	}
 	//Centaur or Genderless
@@ -73,10 +73,11 @@ private function heckelTraining():void {
 		outputText("You tell Heckel that you're looking for a training partner, but she suddenly looks off balance. She shifts from foot to foot as she looks you up and down, head cocked to the side.\n\n");
 
 		outputText("\"<i>Err, look " + player.short + ", people around here come in all shapes and sizes and use all sorts of... equipment. Maybe you should go find someone more your type to ask, because I honestly don't know what to do with yours.</i>\"\n\n");
-		doNext(telAdre.gymDesc);
+		doNext(telAdre.gym.gymDesc);
 		return;
 	}
 	if (flags[kFLAGS.TIMES_FUCKED_HECKEL_BLOWJOB] + flags[kFLAGS.TIMES_FUCKED_HECKEL_ANAL] == 0) {
+		spriteSelect(SpriteDb.s_heckel_nude);
 		outputText("You tell Heckel that you're looking for a training partner, and she makes no attempt to hide her gaze as she looks you up and down.  When she's finished, her unsettling grin returns.  \"<i>Excellent!  Let me just get cleaned up and we'll start with some stretches.</i>\"\n\n");
 		
 		if (flags[kFLAGS.LIFETIME_GYM_MEMBER] == 0) {
@@ -111,6 +112,7 @@ private function heckelTraining():void {
 			player.gems -= 10;
 			statScreenRefresh();
 		}
+		spriteSelect(SpriteDb.s_heckel_nude);
 		outputText("You know the drill as you follow Heckel into the locker room. You watch her undress before she walks into the shower room, admiring the way her toned ass moves in counterpoint to her tail. She shoots you a fang-filled grin as she disappears around the corner, and you use the opportunity to shed your own clothes.\n\n");
 
 		outputText("By the time she comes back into the locker room, you're completely naked. She doesn't bother to cover herself as she towels her fur off, making the coarse hair stand on end in more than a few places. She tosses the towel aside as she passes you, her black cock already bobbing between her legs. She sits down on one of the simple wooden benches and pats the spot next to her, beckoning you over.\n\n");

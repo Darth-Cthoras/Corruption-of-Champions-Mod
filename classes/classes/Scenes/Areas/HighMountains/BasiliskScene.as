@@ -7,13 +7,17 @@ package classes.Scenes.Areas.HighMountains
 	import classes.BodyParts.*;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.GlobalFlags.kGAMECLASS;
+	import classes.Scenes.Monsters.StareMonster;
+	import classes.Scenes.Monsters.pregnancies.PlayerBasiliskPregnancy;
+	import classes.Scenes.PregnancyProgression;
 	import classes.display.SpriteDb;
 	import classes.internals.*;
 
 	public class BasiliskScene extends BaseContent
 	{
-		public function BasiliskScene()
+		public function BasiliskScene(pregnancyProgression:PregnancyProgression, output:GuiOutput)
 		{
+			new PlayerBasiliskPregnancy(pregnancyProgression, output);
 		}
 		
 		//Vars
@@ -40,13 +44,10 @@ package classes.Scenes.Areas.HighMountains
 				outputText("At the top of the pass you take a moment to catch your breath, and notice something white lying on the ground, sheltered by a rock formation. Is that a harpy egg? What is it doing away from a nest? Something on the rocks catches your eye: a tiny pool of grey, split by a vertical black slit. You look closer at it to try to make sense of it. It's part of something bigger... but that's not important. What is important is that you keep staring into that depthless pool of grey. If you keep looking into it, you are quite sure you will be able to see forever; like two mirrors held up against each other, it's just a case of looking hard enough. Is there even anything outside of the grey pool? You don't think there is, and why would you even want to find out? Everything to be seen and known is there, in those bottomless depths...\n\n");
 		
 				outputText("Using every vestige of your willpower, you tear your gaze away from the terrible, paralyzing sight. Panting and feeling groggy, you desperately hold the rock formation in the corner of your eye. A tall, thin bipedal shape disengages from the stone against which it had been camouflaging itself, and stalks predatorily towards you. With small, quick glances you glean fleeting impressions of grey-green scales, a tightly muscled yellow underbelly, cruelly curved index claws, a whip like tail. The creature moves its snub head towards yours suddenly, trying to catch your gaze with its deadly grey eyes again. You recoil and ready yourself to fight it as best you can.");
-				if (flags[kFLAGS.CODEX_ENTRY_BASILISKS] <= 0) {
-					flags[kFLAGS.CODEX_ENTRY_BASILISKS] = 1;
-					outputText("\n\n<b>New codex entry unlocked: Basilisks!</b>")
-				}
+				unlockCodexEntry("Basilisks", kFLAGS.CODEX_ENTRY_BASILISKS);
 				var basilisk:Basilisk = new Basilisk();
 				//(spd loss)
-				Basilisk.speedReduce(player,5);
+				StareMonster.speedReduce(player, 5);
 				flags[kFLAGS.TIMES_ENCOUNTERED_BASILISK]++;
 				startCombat(basilisk);
 			}
@@ -63,10 +64,7 @@ package classes.Scenes.Areas.HighMountains
 					outputText("  You quickly put on your Laybans, so you won't be forced to fight blindly.");
 				}
 				
-				if (flags[kFLAGS.CODEX_ENTRY_BASILISKS] <= 0) {
-					flags[kFLAGS.CODEX_ENTRY_BASILISKS] = 1;
-					outputText("\n\n<b>New codex entry unlocked: Basilisks!</b>")
-				}
+				unlockCodexEntry("Basilisks", kFLAGS.CODEX_ENTRY_BASILISKS);
 				flags[kFLAGS.TIMES_ENCOUNTERED_BASILISK]++;
 				startCombat(new Basilisk());
 			}
@@ -561,7 +559,7 @@ package classes.Scenes.Areas.HighMountains
 			if (player.hasCock()) {
 				outputText("At the corner of your vision, you see a small, familiar green shape hover into view. The goblin is so busy sorting through her inventory of drugs that you actually manage to see her before she sees you. When she does lift her head up and notices the petrified, naked individual in front of her, she is so surprised she drops her satchel.\n\n");
 		
-				outputText("\"<i>A " + player.race() + "!</i>\" she yelps. Then, after shifting her startled attention downwards, \"<i>A cock!</i>\" Hesitantly at first, then with increasing confidence as how vulnerable you are sinks in, she does a round circuit of you, taking in every angle of your frozen, helpless flesh.\n\n"); 
+				outputText("\"<i>A " + player.race + "!</i>\" she yelps. Then, after shifting her startled attention downwards, \"<i>A cock!</i>\" Hesitantly at first, then with increasing confidence as how vulnerable you are sinks in, she does a round circuit of you, taking in every angle of your frozen, helpless flesh.\n\n"); 
 				
 				outputText("\"<i>Get caught with our pants down by a basilisk, did we, stud?</i>\" she purrs. \"<i>Well, not to worry. I'll take good care of you.</i>\" You somehow doubt her good intentions, and your suspicions are confirmed when, after completing her sauntering circumference of you, she shoves your bottom half as hard as she can. You fall slowly like a wooden board; being unable to brace yourself, the sensation of dropping is horrible, and, once your skull connects with the ground, painful. Before you can clear your swimming vision you feel the goblin's soft, dense weight on your chest, and then her eager lips upon yours, sucking and lavishing every inch of your frozen mouth that her tongue can reach. A tingling sensation spreads from your mouth downwards as her drug-laced lipstick takes effect. By the time she has finished with your mouth and worked her way downwards, your " + player.cockDescript(0) + " is bulging with need and springs readily into her warm hands like a loyal pet.\n\n");
 		
@@ -585,7 +583,7 @@ package classes.Scenes.Areas.HighMountains
 			else if (!player.hasVagina()) {
 				outputText("At the corner of your vision, you see a small, familiar green shape hover into view. The goblin is so busy sorting through her inventory of drugs that you actually manage to see her before she sees you. When she does lift her head up and notices the petrified, naked individual in front of her, she is so surprised she drops her satchel.\n\n");
 		
-				outputText("\"<i>A " + player.race() + "!</i>\" she yelps. Hesitantly at first, then with increasing confidence as how vulnerable you are sinks in, she does a round circuit of you, taking in every angle of your frozen, helpless flesh.\n\n");
+				outputText("\"<i>A " + player.race + "!</i>\" she yelps. Hesitantly at first, then with increasing confidence as how vulnerable you are sinks in, she does a round circuit of you, taking in every angle of your frozen, helpless flesh.\n\n");
 		
 				outputText("\"<i>Get caught with our pants down by a basilisk, did we?</i>\" the goblin purrs. \"<i>Well, not to worry. I'll take good c- hey, what gives?!</i>\" From behind you, you feel her hands thread their way around your " + player.legs() + " before feeling and slapping all around your featureless groin. \"<i>This is fucking bullshit!</i>\" she howls. \"<i>I get a toy that can't stop me all to my lonesome, and it's some colossal jerkoff who thinks it's funny to have no sex!</i>\" She stomps around to your front and glares at you, simmering with rage. \"<i>I bet you think you're a real smartass, you bastard... you bitch... you... whatever! Ooh, I'll fix you!</i>\" With a look of complete disgust she storms off. Having faced down this bizarre rant, you allow yourself to feel a tiny bit of relief. You were worried for a moment there she'd go for your ass... a short distance away, you hear the goblin calling to someone.\n\n");
 		
@@ -613,7 +611,7 @@ package classes.Scenes.Areas.HighMountains
 			else {
 				outputText("At the corner of your vision, you see a small, familiar green shape hover into view. The goblin is so busy sorting through her inventory of drugs that you actually manage to see her before she sees you. When she does lift her head up and notices the petrified, naked individual in front of her, she is so surprised she drops her satchel.\n\n");
 		
-				outputText("\"<i>A " + player.race() + "!</i>\" she yelps. Hesitantly at first, then with increasing confidence as how vulnerable you are sinks in, she does a round circuit of you, taking in every angle of your frozen, helpless flesh.\n\n");
+				outputText("\"<i>A " + player.race + "!</i>\" she yelps. Hesitantly at first, then with increasing confidence as how vulnerable you are sinks in, she does a round circuit of you, taking in every angle of your frozen, helpless flesh.\n\n");
 		
 				outputText("\"<i>Get caught with our pants down by a basilisk, did we slut?</i>\" she purrs. \"<i>Well, not to worry. I'll take good care of you.</i>\" You somehow doubt her good intentions, and your suspicions are confirmed when, after completing her sauntering circumference of you, she shoves your bottom half as hard as she can. You fall slowly like a wooden board; being unable to brace yourself, the sensation of dropping is horrible, and, once your skull connects with the ground, painful. Before you can clear your swimming vision you feel the goblin's soft, dense weight on your chest, and then her eager lips upon yours, sucking and tonguing every inch of your frozen mouth that she can reach. A tingling sensation spreads from your mouth downwards as her pheromone-laced lipstick takes effect. By the time she has finished with your mouth and worked her way downwards, your paralyzed body feels warm and receptive, and your " + player.vaginaDescript(0) + " is wet with need. You feel small fingers caressing your mons before slipping their way inside, circling your " + player.clitDescript() + " before testing your depths. You wish you could cringe away or even thrust yourself forward to try and make the goblin better address your growing need, but that is impossible; you stare in front of you, petrified, as the fingers continue their lazy tour of your sex until your juices are running like a river in spring.\n\n"); 
 		

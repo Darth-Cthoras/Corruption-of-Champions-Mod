@@ -26,13 +26,7 @@ package classes.Items.Consumables
 			var tfSource:String = "regularHummus";
 			var temp:int = 0;
 			
-			clearOutput();
-			changes = 0;
-			changeLimit = 1;
-			if (rand(2) === 0) changeLimit++;
-			if (rand(2) === 0) changeLimit++;
-			if (player.findPerk(PerkLib.HistoryAlchemist) >= 0) changeLimit++;
-			if (player.findPerk(PerkLib.TransformationResistance) >= 0) changeLimit--;
+			mutations.initTransformation([2, 2]);
 			clearOutput();
 			outputText("You crack open the small clay jar to reveal a lightly colored paste that smells surprisingly delicious. You begin eating it with your fingers, wishing all the while for some crackers...");
 			player.refillHunger(10);
@@ -53,9 +47,15 @@ package classes.Items.Consumables
 			if (rand(5) === 0) {
 				mutations.updateOvipositionPerk(tfSource);
 			}
-			//Remove Incorporeality Perk
+			//Remove ghost legs
+			if (player.lowerBody.incorporeal && changes < changeLimit && rand(4) === 0) {
+				outputText("\n\nYou feel a strange sensation in your [legs] as they start to feel more solid. They become more opaque until finally, you can no longer see through your [legs].");
+				player.lowerBody.incorporeal = false;
+				changes++;
+			}
+			//Remove Incorporeality Perk, if not permanent
 			if (player.hasPerk(PerkLib.Incorporeality) && player.perkv4(PerkLib.Incorporeality) === 0 && changes < changeLimit && rand(4) === 0) {
-				outputText("\n\nYou feel a strange sensation in your [legs] as they start to feel more solid. They become more opaque until finally, you can no longer see through your [legs]. \n<b>(Perk Lost: Incorporeality!)</b>");
+				outputText("\n\nYour body somehow feels more solid, more substantial than it did a moment ago, and the constant hum of ghostly spiritual imagery in your mind's eye has vanished as well. You concentrate for a few seconds, trying to push yourself back into an incorporeal state, but you just can't seem to do it anymore. \n<b>(Perk Lost: Incorporeality!)</b>");
 				player.removePerk(PerkLib.Incorporeality);
 				changes++;
 			}
@@ -74,7 +74,7 @@ package classes.Items.Consumables
 				player.skin.tone = randomChoice(ColorLists.HUMAN_SKIN);
 				outputText(player.skin.tone + " colored.</b>");
 				player.underBody.skin.tone = player.skin.tone;
-				mutations.updateClaws(player.claws.type);
+				player.arms.updateClaws(player.arms.claws.type);
 			}
 			//Change skin to normal
 			if (!player.hasPlainSkin() && (player.ears.type === Ears.HUMAN || player.ears.type === Ears.ELFIN) && rand(4) === 0 && changes < changeLimit) {
@@ -132,9 +132,7 @@ package classes.Items.Consumables
 			}
 			//Nipples Turn Back:
 			if (player.hasStatusEffect(StatusEffects.BlackNipples) && changes < changeLimit && rand(3) === 0) {
-				outputText("\n\nSomething invisible brushes against your " + player.nippleDescript(0) + ", making you twitch.  Undoing your clothes, you take a look at your chest and find that your nipples have turned back to their natural flesh colour.");
-				changes++;
-				player.removeStatusEffect(StatusEffects.BlackNipples);
+				mutations.removeBlackNipples(tfSource);
 			}
 			//Hair turns normal
 			if (changes < changeLimit && player.hair.type !== Hair.NORMAL && rand(3) === 0) {
@@ -170,16 +168,7 @@ package classes.Items.Consumables
 			}
 			//Removes wings
 			if ((player.wings.type !== Wings.NONE || player.rearBody.type == RearBody.SHARK_FIN) && rand(5) === 0 && changes < changeLimit) {
-				if (player.rearBody.type == RearBody.SHARK_FIN) {
-					outputText("\n\nA wave of tightness spreads through your back, and it feels as if someone is stabbing a dagger into your spine."
-					          +" After a moment the pain passes, though your fin is gone!");
-					player.rearBody.restore();
-				} else {
-					outputText("\n\nA wave of tightness spreads through your back, and it feels as if someone is stabbing a dagger into each of your"
-					          +" shoulder-blades.  After a moment the pain passes, though your wings are gone!");
-				}
-				player.wings.type = Wings.NONE;
-				changes++;
+				mutations.removeWings(tfSource);
 			}
 			//Removes tail
 			if (player.tail.type !== Tail.NONE && rand(5) === 0 && changes < changeLimit) {

@@ -6,9 +6,11 @@ package classes
 	import classes.GlobalFlags.kGAMECLASS;
 	import classes.Items.*;
 	import classes.internals.Profiling;
+	import classes.menus.GenderDebug;
 	import flash.events.TimerEvent;
 	import flash.utils.*;
 	import flash.utils.describeType;
+	import flash.events.TextEvent;
 
 	public class DebugMenu extends BaseContent
 	{
@@ -40,6 +42,10 @@ package classes
 			//buildArray();
 			Profiling.LogProfilingReport();
 			if (!getGame().inCombat) {
+				
+				// initalizing the menu here due to order the required classes are inizalized
+				var genderDebugMenu:GenderDebug = new GenderDebug(kGAMECLASS, kGAMECLASS.output, kGAMECLASS.player, accessDebugMenu);
+				
 				hideMenus();
 				mainView.nameBox.visible = false;
 				mainView.nameBox.text = "";
@@ -56,6 +62,8 @@ package classes
 				if (player.isPregnant()) addButton(4, "Abort Preg", abortPregnancy);
 				addButton(5, "DumpEffects", dumpEffectsMenu).hint("Display your status effects");
 				addButton(7, "HACK STUFFZ", styleHackMenu).hint("H4X0RZ");
+				addButton(8, "Scene Test", testScene).hint("Manually Proc a Scene.");
+				addButton(9, genderDebugMenu.getButtonText(), genderDebugMenu.enter).hint(genderDebugMenu.getButtonHint());
 				addButton(14, "Exit", playerMenu);
 			}
 			if (getGame().inCombat) {
@@ -64,9 +72,55 @@ package classes
 				doNext(playerMenu);
 			}
 		}
+
+		private var selectedScene:*;
+		private function testScene(selected:*=null):void {
+			clearOutput();
+			if(!selected){selected = kGAMECLASS;}
+			selectedScene = selected;
+			mainView.mainText.addEventListener(TextEvent.LINK, linkhandler);
+			getFun("variable",selected);
+			getFun("method",selected);
+			menu();
+			addButton(0,"Back",linkhandler,new TextEvent(TextEvent.LINK,false,false,"-1"));
+
+			function getFun(type:String, scene:*):void {
+				var funsxml:XML = describeType(scene);
+				var funs:Array = [];
+				for each(var item:XML in funsxml[type]) {
+					funs.push(item);
+				}
+				funs.sortOn("@name");
+				if (funs.length > 0) {
+					outputText("<b><u>"+type.toUpperCase()+"</u></b>\n");
+				}
+				for each (var fun:* in funs) {
+					outputText("<u><a href=\"event:" + fun.@name+"\">" + fun.@name+"</a></u>\n");
+				}
+			}
+			function linkhandler(e:TextEvent):void {
+				mainView.mainText.removeEventListener(TextEvent.LINK, linkhandler);
+				if (e.text == "-1") {
+					mainView.mainText.removeEventListener(TextEvent.LINK, linkhandler);
+					if(selectedScene != kGAMECLASS){testScene();}
+					else{accessDebugMenu();}
+					return;
+				}
+				if (selectedScene[e.text] is Function) {
+					clearOutput();
+					doNext(accessDebugMenu);
+					var selected:Function = selectedScene[e.text];
+					selectedScene = null;
+					selected();
+				} else {
+					selectedScene = selectedScene[e.text];
+					testScene(selectedScene);
+				}
+			}
+		}
 		private function  dumpEffectsMenu():void {
 			clearOutput();
-			for each (var effect:StatusEffectClass in player.statusEffects) {
+			for each (var effect:StatusEffect in player.statusEffects) {
 				outputText("'"+effect.stype.id+"': "+effect.value1+" "+effect.value2+" "+effect.value3+" "+effect.value4+"\n");
 			}
 			doNext(accessDebugMenu);
@@ -167,13 +221,14 @@ package classes
 			transformativeArray.push(consumables.MOUSECO);
 			transformativeArray.push(consumables.MINOBLO);
 			transformativeArray.push(consumables.MYSTJWL);
+			transformativeArray.push(consumables.OCULUMA);
 			transformativeArray.push(consumables.P_LBOVA);
 			transformativeArray.push(consumables.PIGTRUF);
 			transformativeArray.push(consumables.PRFRUIT);
 			transformativeArray.push(consumables.PROBOVA);
 			transformativeArray.push(consumables.P_DRAFT);
-			transformativeArray.push(consumables.P_S_MLK);
 			//Page 4
+			transformativeArray.push(consumables.P_S_MLK);
 			transformativeArray.push(consumables.PSDELIT);
 			transformativeArray.push(consumables.PURHONY);
 			transformativeArray.push(consumables.SATYR_W);
@@ -185,8 +240,8 @@ package classes
 			transformativeArray.push(consumables.RINGFIG);
 			transformativeArray.push(consumables.RIZZART);
 			transformativeArray.push(consumables.S_GOSSR);
-			transformativeArray.push(consumables.SALAMFW);
 			//Page 5
+			transformativeArray.push(consumables.SALAMFW);
 			transformativeArray.push(consumables.SHARK_T);
 			transformativeArray.push(consumables.SNAKOIL);
 			transformativeArray.push(consumables.SPHONEY);
@@ -198,7 +253,9 @@ package classes
 			transformativeArray.push(consumables.VIXVIGR);
 			transformativeArray.push(consumables.W_FRUIT);
 			transformativeArray.push(consumables.WETCLTH);
+			//Page 6
 			transformativeArray.push(consumables.WOLF_PP);
+			transformativeArray.push(consumables.UBMBOTT);
 			
 			//------------
 			// Consumables
@@ -314,7 +371,7 @@ package classes
 			materialArray.push(useables.EBNFLWR);
 			materialArray.push(useables.IMPSKLL);
 			materialArray.push(useables.LETHITE);
-			materialArray.push(null);
+			materialArray.push(useables.OBSHARD);
 			materialArray.push(null);
 			materialArray.push(null);
 			materialArray.push(null);
@@ -345,7 +402,7 @@ package classes
 			weaponArray.push(weapons.FLAIL_0);
 			weaponArray.push(weapons.FLNTLK0);
 			weaponArray.push(weapons.HALBRD0);
-			weaponArray.push(weapons.H_GAUNT);
+			weaponArray.push(weapons.H_GAUN0);
 			weaponArray.push(weapons.HNTCANE);
 			//Page 2
 			weaponArray.push(weapons.JRAPIER);
@@ -364,7 +421,7 @@ package classes
 			weaponArray.push(weapons.RRAPIER);
 			weaponArray.push(weapons.RSBLADE);
 			weaponArray.push(weapons.S_BLADE);
-			weaponArray.push(weapons.S_GAUNT);
+			weaponArray.push(weapons.S_GAUN0);
 			weaponArray.push(weapons.SCARBLD);
 			weaponArray.push(weapons.SCIMTR0);
 			weaponArray.push(weapons.SPEAR_0);
@@ -661,7 +718,23 @@ package classes
 			addButton(12,"HairLength",changeHairLength);
 			addButton(14, "Back", bodyPartEditorRoot);
 		}
-
+		
+		private static const COLOR_CONSTANTS:Array = [
+			"albino", "aqua", "ashen", "auburn", "black", "blond", "blonde", "blue", "bronzed", "brown", "caramel",
+			"cerulean", "chocolate", "crimson", "crystal", "dark", "dusky", "ebony", "emerald", "fair",
+			"golden", "gray", "green", "indigo", "light", "mahogany", "metallic", "midnight", "olive", "orange",
+			"peach", "pink", "purple", "red", "russet", "sable", "sanguine", "silky", "silver",
+			"tan", "tawny", "turquoise", "white", "yellow",
+			"aphotic blue-black", "ashen grayish-blue", "creamy-white", "crimson platinum",
+			"dark blue", "dark gray", "dark green", "deep blue", "deep red",
+			"ghostly pale", "glacial white", "golden blonde", "grayish-blue", "iridescent gray",
+			"leaf green", "light blonde", "light blue", "light gray", "light green", "light grey", "light purple", "lime green",
+			"mediterranean-toned", "metallic golden", "metallic silver", "midnight black", "milky white",
+			"pale white", "pale yellow", "platinum blonde", "platinum crimson", "platinum-blonde", "purplish-black",
+			"quartz white", "reddish-orange", "rough gray",
+			"sandy blonde", "sandy brown", "sandy-blonde", "shiny black", "silver blonde", "silver-white", "snow white",
+			"yellowish-green", "black and yellow", "white and black"
+		];
 		private static const SKIN_BASE_TYPES:Array = [
 			/* [INTERMOD: xianxia]
 			[Skin.PLAIN,"(0) PLAIN"],
@@ -692,11 +765,6 @@ package classes
 			[Skin.MOSS,"(11) MOSS"]
 		];
 		*/
-		private static const SKIN_TONE_CONSTANTS:Array = [
-			"pale", "light", "dark", "green", "gray",
-			"blue", "black", "white", "dirty red", "blueish yellow",
-			"ghostly pale", "bubblegum pink",
-		];
 		private static const SKIN_ADJ_CONSTANTS:Array = [
 			"(none)", "tough", "smooth", "rough", "sexy",
 			"freckled", "glistering", "shiny", "slimy","goopey",
@@ -733,11 +801,6 @@ package classes
 			[Hair.BASILISK_PLUME, "(7) BASILISK_PLUME"],
 			[Hair.WOOL, "(8) WOOL"],
 		];
-		private static const HAIR_COLOR_CONSTANTS:Array = [
-			"blond", "brown", "black", "red", "white",
-			"silver blonde","sandy-blonde", "platinum blonde", "midnight black", "golden blonde",
-			"rainbow", "seven-colored",
-		];
 		private static const HAIR_LENGTH_CONSTANTS:Array = [
 			0,0.5,1,2,4,
 			8,12,24,32,40,
@@ -749,19 +812,6 @@ package classes
 					"hairorfur", "skin", "skin.noadj", "skinfurscales", "skintone",
 					"underbody.skinfurscales", "underbody.skintone", "face"
 			)+".\n");
-
-			/* [INTERMOD: xianxia]
-			outputText(generateTagDemos(
-							"skin", "skin base", "skin coat", "skin full",
-							"skin noadj", "skin base.noadj", "skin coat.noadj", "skin full.noadj",
-							"skin notone", "skin base.notone", "skin coat.notone", "skin full.notone",
-							"skin type", "skin base.type", "skin coat.type", "skin full.type",
-							"skin color", "skin base.color", "skin coat.color",
-							"skin isare", "skin base.isare", "skin coat.isare",
-							"skin vs","skin base.vs", "skin coat.vs",
-							"skinfurscales", "skintone") + ".\n");
-			outputText(generateTagDemos("face","face deco","face full","player.facePart.isDecorated")+".\n");
-			*/
 		}
 		private function changeLayerType(editBase:Boolean,page:int=0,setIdx:int=-1):void {
 			/* [INTERMOD: xianxia]
@@ -778,13 +828,13 @@ package classes
 			if (setIdx>=0) (editBase?player.skin.base:player.skin.coat).color = SKIN_TONE_CONSTANTS[setIdx];
 			*/
 			if (setIdx>=0) {
-				if (editBase) player.skin.tone = SKIN_TONE_CONSTANTS[setIdx];
-				else player.skin.furColor = SKIN_TONE_CONSTANTS[setIdx];
+				if (editBase) player.skin.tone = COLOR_CONSTANTS[setIdx];
+				else player.skin.furColor = COLOR_CONSTANTS[setIdx];
 			}
 			menu();
 			dumpPlayerData();
 			tagDemosSkin();
-			showChangeOptions(bodyPartEditorSkin, page, SKIN_TONE_CONSTANTS, curry(changeLayerColor,editBase));
+			showChangeOptions(bodyPartEditorSkin, page, COLOR_CONSTANTS, curry(changeLayerColor,editBase));
 		}
 		private function changeLayerAdj(editBase:Boolean,page:int=0,setIdx:int=-1):void {
 			/* [INTERMOD: xianxia]
@@ -826,10 +876,10 @@ package classes
 			showChangeOptions(bodyPartEditorSkin, page, HAIR_TYPE_CONSTANTS, changeHairType);
 		}
 		private function changeHairColor(page:int=0,setIdx:int=-1):void {
-			if (setIdx>=0) player.hair.color = HAIR_COLOR_CONSTANTS[setIdx];
+			if (setIdx>=0) player.hair.color = COLOR_CONSTANTS[setIdx];
 			menu();
 			dumpPlayerData();
-			showChangeOptions(bodyPartEditorSkin, page, HAIR_COLOR_CONSTANTS, changeHairColor);
+			showChangeOptions(bodyPartEditorSkin, page, COLOR_CONSTANTS, changeHairColor);
 		}
 		private function changeHairLength(page:int=0,setIdx:int=-1):void {
 			if (setIdx>=0) player.hair.length = HAIR_LENGTH_CONSTANTS[setIdx];
@@ -861,7 +911,7 @@ package classes
 			[Face.COW_MINOTAUR,"(3) COW_MINOTAUR"],
 			[Face.SHARK_TEETH,"(4) SHARK_TEETH"],
 			[Face.SNAKE_FANGS,"(5) SNAKE_FANGS"],
-			[Face.CAT,"(6) CAT"],
+			[Face.CATGIRL,"(6) CATGIRL"],
 			[Face.LIZARD,"(7) LIZARD"],
 			[Face.BUNNY,"(8) BUNNY"],
 			[Face.KANGAROO,"(9) KANGAROO"],
@@ -883,6 +933,7 @@ package classes
 			[Face.COCKATRICE,"(25) COCKATRICE"],
 			//[Face.BEAK,"(26) BEAK"], // Unused placeholder
 			[Face.RED_PANDA,"(27) RED_PANDA"],
+			[Face.CAT,"(28) CAT"],
 			/* [INTERMOD: xianxia]
 			[Face.MANTICORE,"(25) MANTICORE"],
 			[Face.SALAMANDER_FANGS,"(26) SALAMANDER_FANGS"],
@@ -909,6 +960,7 @@ package classes
 			[Tongue.DRACONIC, "(3) DRACONIC"],
 			[Tongue.ECHIDNA, "(4) ECHIDNA"],
 			[Tongue.LIZARD, "(5) LIZARD"],
+			[Tongue.CAT, "(6) CAT"],
 			/* [INTERMOD: xianxia]
 			[Tongue.CAT, "(5) CAT"],
 			*/
@@ -932,6 +984,7 @@ package classes
 			[Eyes.WOLF, "(6) WOLF"],
 			[Eyes.SPIDER, "(7) SPIDER"],
 			[Eyes.COCKATRICE, "(8) COCKATRICE"],
+			[Eyes.CAT, "(9) CAT"],
 		];
 		private static const EAR_TYPE_CONSTANTS:Array    = [
 			[Ears.HUMAN, "(0) HUMAN"],
@@ -1144,7 +1197,7 @@ package classes
 			[Claws.SALAMANDER,"(3) SALAMANDER"],
 			[Claws.CAT,"(4) CAT"],
 			[Claws.DOG,"(5) DOG"],
-			[Claws.RAPTOR,"(6) RAPTOR"],
+			[Claws.FOX,"(6) FOX"],
 			[Claws.MANTIS,"(7) MANTIS"],
 		];
 		private static const TAIL_TYPE_CONSTANTS:Array  = [
@@ -1297,16 +1350,16 @@ package classes
 			showChangeOptions(bodyPartEditorTorso, page, ARM_TYPE_CONSTANTS, changeArmType);
 		}
 		private function changeClawType(page:int=0,setIdx:int=-1):void {
-			if (setIdx>=0) player.claws.type = setIdx;
+			if (setIdx>=0) player.arms.claws.type = setIdx;
 			menu();
 			dumpPlayerData();
 			showChangeOptions(bodyPartEditorTorso, page, CLAW_TYPE_CONSTANTS, changeClawType);
 		}
 		private function changeClawTone(page:int=0,setIdx:int=-1):void {
-			if (setIdx>=0) player.claws.tone = SKIN_TONE_CONSTANTS[setIdx];
+			if (setIdx>=0) player.arms.claws.tone = COLOR_CONSTANTS[setIdx];
 			menu();
 			dumpPlayerData();
-			showChangeOptions(bodyPartEditorTorso, page, SKIN_TONE_CONSTANTS, changeClawTone);
+			showChangeOptions(bodyPartEditorTorso, page, COLOR_CONSTANTS, changeClawTone);
 		}
 		private function changeTailType(page:int=0,setIdx:int=-1):void {
 			if (setIdx>=0) player.tail.type = setIdx;
@@ -1469,7 +1522,7 @@ package classes
 			outputText("Which NPC would you like to reset?");
 			menu();
 			if (flags[kFLAGS.URTA_COMFORTABLE_WITH_OWN_BODY] < 0 || flags[kFLAGS.URTA_QUEST_STATUS] == -1) addButton(0, "Urta", resetUrta);
-			if (flags[kFLAGS.JOJO_STATUS] >= 5 || flags[kFLAGS.JOJO_DEAD_OR_GONE] > 0) addButton(1, "Jojo", resetJojo);
+			if (getGame().jojoScene.isJojoCorrupted() || flags[kFLAGS.JOJO_DEAD_OR_GONE] > 0) addButton(1, "Jojo", resetJojo);
 			if (flags[kFLAGS.EGG_BROKEN] > 0) addButton(2, "Ember", resetEmber);
 			if (flags[kFLAGS.SHEILA_DISABLED] > 0 || flags[kFLAGS.SHEILA_DEMON] > 0 || flags[kFLAGS.SHEILA_CITE] < 0 || flags[kFLAGS.SHEILA_CITE] >= 6) addButton(6, "Sheila", resetSheila);
 			
@@ -1595,7 +1648,7 @@ package classes
 		
 		private function saveFlag(flagId:int = 0):void {
 			var temp:* = Number(mainView.nameBox.text);
-			if (temp is Number || temp is int) flags[flagId] = temp;
+			if (!isNaN(temp)) flags[flagId] = temp;
 			else flags[flagId] = mainView.nameBox.text;
 			flagEditor();
 		}

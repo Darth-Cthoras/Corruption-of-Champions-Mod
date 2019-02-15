@@ -1,4 +1,4 @@
-﻿package classes
+package classes
 {
 	import classes.BodyParts.*;
 	import classes.GlobalFlags.kACHIEVEMENTS;
@@ -16,8 +16,12 @@
 	import classes.Items.WeaponLib;
 	import classes.Scenes.Areas.Forest.KitsuneScene;
 	import classes.Scenes.Places.TelAdre.UmasShop;
+	import classes.internals.LoggerFactory;
+	import classes.internals.Serializable;
+	import classes.internals.SerializationUtils;
 	import classes.lists.BreastCup;
 	import classes.lists.ColorLists;
+	import mx.logging.ILogger;
 
 	use namespace kGAMECLASS;
 
@@ -25,24 +29,29 @@
 	 * ...
 	 * @author Yoffy
 	 */
-	public class Player extends PlayerHelper {
+	public class Player extends PlayerHelper implements Serializable {
+		private static const LOGGER:ILogger = LoggerFactory.getLogger(Player);
+		
+		private static const SERIALIZATION_VERSION:int = 1;
+		private static const NUMBER_OF_ITEMSLOTS:int = 10;
 		
 		public function Player() {
-			//Item things
-			itemSlot1 = new ItemSlotClass();
-			itemSlot2 = new ItemSlotClass();
-			itemSlot3 = new ItemSlotClass();
-			itemSlot4 = new ItemSlotClass();
-			itemSlot5 = new ItemSlotClass();
-			itemSlot6 = new ItemSlotClass();
-			itemSlot7 = new ItemSlotClass();
-			itemSlot8 = new ItemSlotClass();
-			itemSlot9 = new ItemSlotClass();
-			itemSlot10 = new ItemSlotClass();
-			itemSlots = [itemSlot1, itemSlot2, itemSlot3, itemSlot4, itemSlot5, itemSlot6, itemSlot7, itemSlot8, itemSlot9, itemSlot10];
+			itemSlots = new Vector.<classes.ItemSlot>();
+			initializeItemSlots();
 		}
 		
-		protected final function outputText(text:String):void
+		private function initializeItemSlots():void
+		{
+			for (var i:int = 0; i < NUMBER_OF_ITEMSLOTS; i++) {
+				itemSlots.push(new ItemSlot());
+			}
+			
+			itemSlot(0).unlocked = true;
+			itemSlot(1).unlocked = true;
+			itemSlot(2).unlocked = true;
+		}
+		
+		protected function outputText(text:String):void
 		{
 			game.outputText(text);
 		}
@@ -83,19 +92,66 @@
 		override public function pregnancyUpdate():Boolean {
 			return game.pregnancyProgress.updatePregnancy(); //Returns true if we need to make sure pregnancy texts aren't hidden
 		}
-
-		// Inventory
-		public var itemSlot1:ItemSlotClass;
-		public var itemSlot2:ItemSlotClass;
-		public var itemSlot3:ItemSlotClass;
-		public var itemSlot4:ItemSlotClass;
-		public var itemSlot5:ItemSlotClass;
-		public var itemSlot6:ItemSlotClass;
-		public var itemSlot7:ItemSlotClass;
-		public var itemSlot8:ItemSlotClass;
-		public var itemSlot9:ItemSlotClass;
-		public var itemSlot10:ItemSlotClass;
-		public var itemSlots:/*ItemSlotClass*/Array;
+		
+		/**
+		 * deprecated legacy itemSlots
+		 * 
+		 * Do not use these for new code, use itemSlot(index:int) instead.
+		 */
+		
+		public function get itemSlot1():ItemSlot
+		{
+			return itemSlot(0);
+		}
+		
+		public function get itemSlot2():ItemSlot
+		{
+			return itemSlot(1);
+		}
+		
+		public function get itemSlot3():ItemSlot
+		{
+			return itemSlot(2);
+		}
+		
+		public function get itemSlot4():ItemSlot
+		{
+			return itemSlot(3);
+		}
+		
+		public function get itemSlot5():ItemSlot
+		{
+			return itemSlot(4);
+		}
+		
+		public function get itemSlot6():ItemSlot
+		{
+			return itemSlot(5);
+		}
+		
+		public function get itemSlot7():ItemSlot
+		{
+			return itemSlot(6);
+		}
+		
+		public function get itemSlot8():ItemSlot
+		{
+			return itemSlot(7);
+		}
+		
+		public function get itemSlot9():ItemSlot
+		{
+			return itemSlot(8);
+		}
+		
+		public function get itemSlot10():ItemSlot
+		{
+			return itemSlot(9);
+		}
+		
+		// end of legacy item slots
+		
+		public var itemSlots:Vector.<ItemSlot>;
 		
 		public var prisonItemSlots:Array = [];
 		public var previouslyWornClothes:/*String*/Array = []; //For tracking achievement.
@@ -595,7 +651,7 @@
 			// we return "1 damage received" if it is in (0..1) but deduce no HP
 			var returnDamage:int = (damage>0 && damage<1)?1:damage;
 			if (damage>0){
-				//game.HPChange(-damage, display);
+				//player.HPChange(-damage, display);
 				HP -= damage;
 				if (display) game.output.text(game.combat.getDamageText(damage));
 				game.mainView.statsView.showStatDown('hp');
@@ -603,11 +659,18 @@
 				if (flags[kFLAGS.MINOTAUR_CUM_REALLY_ADDICTED_STATE] > 0) {
 					game.dynStats("lus", int(damage / 2));
 				}
+				if (flags[kFLAGS.YAMATA_MASOCHIST]>1 && flags[kFLAGS.AIKO_BOSS_COMPLETE] < 1) {
+					game.dynStats("lus", int(damage / 8));
+				}
 				//Prevent negatives
 				if (HP<=0){
 					HP = 0;
-					//This call did nothing. There is no event 5010: if (game.inCombat) game.doNext(5010);
+					//This call did nothing. There is no event 5010: if (game.inCombat) kGAMECLASS.output.doNext(5010);
 				}
+			}
+			if (damage > 0 && display) {
+				flags[kFLAGS.ACHIEVEMENT_PROGRESS_DAMAGE_SPONGE] += damage;
+				if (flags[kFLAGS.ACHIEVEMENT_PROGRESS_DAMAGE_SPONGE] >= 10000) kGAMECLASS.awardAchievement("Damage Sponge", kACHIEVEMENTS.COMBAT_DAMAGE_SPONGE, true, true, true);
 			}
 			return returnDamage;
 		}
@@ -779,8 +842,8 @@
 			}
 			return desc;
 		}
-
-		public function race():String
+		
+		override public function get race():String
 		{
 			//Determine race type:
 			var race:String = "human";
@@ -788,12 +851,12 @@
 			{
 				if (isTaur() && lowerBody.type == LowerBody.CAT) {
 					race = "cat-taur";
-					if (face.type == 0)
+					if (face.type === Face.HUMAN || (hasCatFace() && !isFurryOrScaley()))
 						race = "sphinx-morph"; // no way to be fully feral anyway
 				}
 				else {
 					race = "cat-morph";
-					if (face.type == 0)
+					if (face.type === Face.HUMAN || (hasCatFace() && !isFurryOrScaley()))
 						race = "cat-" + mf("boy", "girl");
 				}
 			}
@@ -978,6 +1041,10 @@
 			{
 				race = "satyr";
 			}
+			if (dryadScore() >= 3)
+			{
+				race = "dryad";
+			}
 			if (rhinoScore() >= 4)
 			{
 				race = "rhino-morph";
@@ -1132,7 +1199,7 @@
 				impCounter++;
 			if (horns.type == Horns.IMP)
 				impCounter++;
-			if (arms.type == Arms.PREDATOR && claws.type == Claws.IMP)
+			if (arms.type == Arms.PREDATOR && arms.claws.type == Claws.IMP)
 				impCounter++;
 			if (tallness <= 42)
 				impCounter++;
@@ -1304,14 +1371,22 @@
 		//Determine Ferret Rating!
 		public function ferretScore():Number
 		{
-			var counter:int = 0;
-			if (face.type == Face.FERRET_MASK) counter++;
-			if (face.type == Face.FERRET) counter+=2;
-			if (ears.type == Ears.FERRET) counter++;
-			if (tail.type == Tail.FERRET) counter++;
-			if (lowerBody.type == LowerBody.FERRET) counter++;
-			if (hasFur() && counter > 0) counter++;
-			return counter;
+			var ferretCounter:int = 0;
+			if (face.type === Face.FERRET_MASK)
+				ferretCounter++;
+			if (face.type === Face.FERRET)
+				ferretCounter += 2;
+			if (ears.type === Ears.FERRET)
+				ferretCounter++;
+			if (tail.type === Tail.FERRET)
+				ferretCounter++;
+			if (lowerBody.type === LowerBody.FERRET)
+				ferretCounter++;
+			if (arms.type === Arms.FERRET)
+				ferretCounter++;
+			if (ferretCounter >= 2 && hasFur())
+				ferretCounter += 2;
+			return ferretCounter;
 		}
 		//Wolf Score
 		public function wolfScore():Number
@@ -1352,6 +1427,8 @@
 			if (tail.type == Tail.DOG)
 				dogCounter++;
 			if (lowerBody.type == LowerBody.DOG)
+				dogCounter++;
+			if (arms.type == Arms.DOG)
 				dogCounter++;
 			if (dogCocks() > 0)
 				dogCounter++;
@@ -1425,6 +1502,8 @@
 				foxCounter++;
 			if (lowerBody.type == LowerBody.FOX)
 				foxCounter++;
+			if (arms.type == Arms.FOX)
+				foxCounter++;
 			if (dogCocks() > 0 && foxCounter > 0)
 				foxCounter++;
 			if (breastRows.length > 1 && foxCounter > 0)
@@ -1443,13 +1522,17 @@
 		public function catScore():Number
 		{
 			var catCounter:Number = 0;
-			if (face.type == Face.CAT)
+			if (hasCatFace())
+				catCounter++;
+			if (tongue.type == Tongue.CAT)
 				catCounter++;
 			if (ears.type == Ears.CAT)
 				catCounter++;
 			if (tail.type == Tail.CAT)
 				catCounter++;
 			if (lowerBody.type == LowerBody.CAT)
+				catCounter++;
+			if (arms.type == Arms.CAT)
 				catCounter++;
 			if (countCocksOfType(CockTypesEnum.CAT) > 0)
 				catCounter++;
@@ -1481,7 +1564,7 @@
 				lizardCounter++;
 			if (hasDragonHorns(true))
 				lizardCounter++;
-			if (arms.type == Arms.PREDATOR && claws.type == Claws.LIZARD)
+			if (arms.type == Arms.PREDATOR && arms.claws.type == Claws.LIZARD)
 				lizardCounter++;
 			if (lizardCounter > 2) {
 				if ([Tongue.LIZARD, Tongue.SNAKE].indexOf(tongue.type) != -1)
@@ -1617,7 +1700,7 @@
 				dragonCounter++;
 			if (hasDragonfire())
 				dragonCounter++;
-			if (arms.type == Arms.PREDATOR && claws.type == Claws.DRAGON)
+			if (arms.type == Arms.PREDATOR && arms.claws.type == Claws.DRAGON)
 				dragonCounter++;
 			if (eyes.type == Eyes.DRAGON)
 				dragonCounter++;
@@ -1848,6 +1931,25 @@
 		//------------
 		// Mod-Added
 		//------------
+		
+	    //dryad score
+		public function dryadScore():Number
+		{
+			var dryad:Number = 0;
+			if (hasCock())
+				dryad--;
+			if (arms.type != Arms.HUMAN)
+				dryad--;
+			if (hair.type == Hair.LEAF)
+				dryad++;
+			if (dryad >= 1 && ears.type == Ears.ELFIN)
+				dryad++;
+			if (skin.type == Skin.BARK)
+				dryad++;
+			
+			return dryad;
+		}
+
 		public function sirenScore():Number 
 		{
 			var sirenCounter:Number = 0;
@@ -1979,7 +2081,7 @@
 		public function manticoreScore():Number
 		{
 			var catCounter:Number = 0;
-			if (face.type == Face.CAT)
+			if (hasCatFace())
 				catCounter++;
 			if (ears.type == Ears.CAT)
 				catCounter++;
@@ -2006,7 +2108,7 @@
 			var bimboCounter:Number = 0;
 			if (hasVagina()) {
 				bimboCounter += 2; 
-				if (vaginas[0].vaginalWetness >= VaginaClass.WETNESS_SLICK) 
+				if (vaginas[0].vaginalWetness >= Vagina.WETNESS_SLICK) 
 					bimboCounter++;
 			}
 			if (hasCock()) 
@@ -2096,16 +2198,29 @@
 			return false;
 		}
 
+		/**
+		 * Attempt to stretch the players cunt. The chance for stretching is based on how close the cock size is to the players vagina capacity.
+		 * In case of a stretching an appropriate message will be displayed. If the player was a virgin, the appropriate message will be displayed.
+		 * If display is disabled, no messages will be displayed.
+		 * 
+		 * @param	cArea the area of the cock, will be checked againt vagina capacity
+		 * @param	display if true, output messages else do not display anything
+		 * @param	spacingsF add spaces at the front of the text?
+		 * @param	spacingsB add spaces at the back of the text?
+		 * @return true if a vagina stretch was performed
+		 */
 		public function cuntChange(cArea:Number, display:Boolean, spacingsF:Boolean = false, spacingsB:Boolean = true):Boolean {
 			if (vaginas.length==0) return false;
 			var wasVirgin:Boolean = vaginas[0].virgin;
 			var stretched:Boolean = cuntChangeNoDisplay(cArea);
 			var devirgined:Boolean = wasVirgin && !vaginas[0].virgin;
-			if (devirgined){
+			
+			if (display && devirgined){
 				if (spacingsF) outputText("  ");
 				outputText("<b>Your hymen is torn, robbing you of your virginity.</b>");
 				if (spacingsB) outputText("  ");
 			}
+			
 			//STRETCH SUCCESSFUL - begin flavor text if outputting it!
 			if (display && stretched) {
 				//Virgins get different formatting
@@ -2115,12 +2230,12 @@
 				}
 				//Non virgins as usual
 				else if (spacingsF) outputText("  ");
-				if (vaginas[0].vaginalLooseness == VaginaClass.LOOSENESS_LEVEL_CLOWN_CAR) outputText("<b>Your " + Appearance.vaginaDescript(this,0)+ " is stretched painfully wide, large enough to accommodate most beasts and demons.</b>");
-				if (vaginas[0].vaginalLooseness == VaginaClass.LOOSENESS_GAPING_WIDE) outputText("<b>Your " + Appearance.vaginaDescript(this,0) + " is stretched so wide that it gapes continually.</b>");
-				if (vaginas[0].vaginalLooseness == VaginaClass.LOOSENESS_GAPING) outputText("<b>Your " + Appearance.vaginaDescript(this,0) + " painfully stretches, the lips now wide enough to gape slightly.</b>");
-				if (vaginas[0].vaginalLooseness == VaginaClass.LOOSENESS_LOOSE) outputText("<b>Your " + Appearance.vaginaDescript(this,0) + " is now very loose.</b>");
-				if (vaginas[0].vaginalLooseness == VaginaClass.LOOSENESS_NORMAL) outputText("<b>Your " + Appearance.vaginaDescript(this,0) + " is now a little loose.</b>");
-				if (vaginas[0].vaginalLooseness == VaginaClass.LOOSENESS_TIGHT) outputText("<b>Your " + Appearance.vaginaDescript(this,0) + " is stretched out to a more normal size.</b>");
+				if (vaginas[0].vaginalLooseness == Vagina.LOOSENESS_LEVEL_CLOWN_CAR) outputText("<b>Your " + Appearance.vaginaDescript(this,0)+ " is stretched painfully wide, large enough to accommodate most beasts and demons.</b>");
+				if (vaginas[0].vaginalLooseness == Vagina.LOOSENESS_GAPING_WIDE) outputText("<b>Your " + Appearance.vaginaDescript(this,0) + " is stretched so wide that it gapes continually.</b>");
+				if (vaginas[0].vaginalLooseness == Vagina.LOOSENESS_GAPING) outputText("<b>Your " + Appearance.vaginaDescript(this,0) + " painfully stretches, the lips now wide enough to gape slightly.</b>");
+				if (vaginas[0].vaginalLooseness == Vagina.LOOSENESS_LOOSE) outputText("<b>Your " + Appearance.vaginaDescript(this,0) + " is now very loose.</b>");
+				if (vaginas[0].vaginalLooseness == Vagina.LOOSENESS_NORMAL) outputText("<b>Your " + Appearance.vaginaDescript(this,0) + " is now a little loose.</b>");
+				if (vaginas[0].vaginalLooseness == Vagina.LOOSENESS_TIGHT) outputText("<b>Your " + Appearance.vaginaDescript(this,0) + " is stretched out to a more normal size.</b>");
 				if (spacingsB) outputText("  ");
 			}
 			return stretched;
@@ -2176,7 +2291,7 @@
 				if (oldHunger >= 90) kGAMECLASS.awardAchievement("Glutton ", kACHIEVEMENTS.REALISTIC_GLUTTON);
 				if (hunger > oldHunger) kGAMECLASS.mainView.statsView.showStatUp("hunger");
 				game.dynStats("lus", 0, "scale", false);
-				kGAMECLASS.statScreenRefresh();
+				kGAMECLASS.output.statScreenRefresh();
 			}
 		}
 		
@@ -2247,12 +2362,15 @@
 			//PUT SOME CAPS ON DAT' SHIT
 			if (raw > 50) raw = 50;
 			if (raw < -50) raw = -50;
+			if (flags[kFLAGS.ADDICTIONS_ENABLED] <= 0) { //Disables addiction if set to OFF.
+				flags[kFLAGS.MINOTAUR_CUM_ADDICTION_STATE] = 1;
+				raw = 0; 
+			}
 			flags[kFLAGS.MINOTAUR_CUM_ADDICTION_TRACKER] += raw;
 			//Recheck to make sure shit didn't break
 			if (hasPerk(PerkLib.MinotaurCumResistance)) flags[kFLAGS.MINOTAUR_CUM_ADDICTION_TRACKER] = 0; //Never get addicted!
 			if (flags[kFLAGS.MINOTAUR_CUM_ADDICTION_TRACKER] > 120) flags[kFLAGS.MINOTAUR_CUM_ADDICTION_TRACKER] = 120;
 			if (flags[kFLAGS.MINOTAUR_CUM_ADDICTION_TRACKER] < 0) flags[kFLAGS.MINOTAUR_CUM_ADDICTION_TRACKER] = 0;
-
 		}
 		
 		public function hasSpells():Boolean
@@ -2344,7 +2462,7 @@
 			kGAMECLASS.dynStats("lus", 0, "scale", false); //Force display fatigue up/down by invoking zero lust change.
 			if (fatigue > maxFatigue()) fatigue = maxFatigue();
 			if (fatigue < 0) fatigue = 0;
-			kGAMECLASS.statScreenRefresh();
+			kGAMECLASS.output.statScreenRefresh();
 		}
 		
 		public function armorDescript(nakedText:String = "gear"):String
@@ -2785,8 +2903,8 @@
 				if (findPerk(PerkLib.Sensitive) >= 0 && dsens >= 0) dsens*= 1+ perk(findPerk(PerkLib.Sensitive)).value1;
 			}
 			super.modStats(dstr, dtou, dspe, dinte, dlib, dsens, dlust, dcor, false, max);
-			game.showUpDown();
-			game.statScreenRefresh();
+			game.output.showUpDown();
+			kGAMECLASS.output.statScreenRefresh();
 		}
 
 
@@ -2810,11 +2928,6 @@
 			var maxTou:Number = 100;
 			var maxSpe:Number = 100;
 			var maxInt:Number = 100;
-			//Apply New Game+
-			maxStr += ascensionFactor();
-			maxTou += ascensionFactor();
-			maxSpe += ascensionFactor();
-			maxInt += ascensionFactor();
 			/* [INTERMOD: xianxia]
 			var maxWis:int = 100;
 			var maxLib:int = 100;
@@ -2865,6 +2978,163 @@
 					maxSpe = UmasShop.NEEDLEWORK_DEFENSE_SPEED_CAP;
 				}
 			}
+			if (flags[kFLAGS.LEGACY_RACIAL_STATS_ENABLED] === 1) {
+				//Alter max stats depending on race
+				if (impScore() >= 4) {
+					maxSpe += 10;
+					maxInt -= 5;
+				}
+				if (sheepScore() >= 4) {
+					maxSpe += 10;
+					maxInt -= 10;
+					maxTou += 10;
+				}
+				if (wolfScore() >= 4) {
+					maxSpe -= 10;
+					maxInt += 5;
+					maxTou += 10;
+					maxStr += 5;
+				}
+				if (minoScore() >= 4) {
+					maxStr += 20;
+					maxTou += 10;
+					maxInt -= 10;
+				}
+				if (lizardScore() >= 4) {
+					maxInt += 10;
+					if (isBasilisk()) {
+						// Needs more balancing, especially other races, since dracolisks are quite OP right now!
+						maxTou += 5;
+						maxInt += 5;
+					}
+				}
+				if (ferretScore() >= 8) {
+					maxStr += 15;
+					maxSpe += 25;
+				} else if (ferretScore() >= 4) {
+					maxStr += 5;
+					maxSpe += 15;
+				}
+				if (redPandaScore() >= 8) {
+					maxInt += 10;
+					maxSpe += 25;
+					maxStr += 5;
+				} else if (redPandaScore() >= 4) {
+					maxInt += 5;
+					maxSpe += 15;
+				}
+				if (cockatriceScore() >= 8) {
+					maxStr += 5;
+					maxSpe += 25;
+					maxInt += 15;
+				} else if (cockatriceScore() >= 6) {
+					maxSpe += 20;
+					maxInt += 5;
+				} else if (cockatriceScore() >= 4) {
+					maxStr -= 5;
+					maxSpe += 10;
+					maxInt += 5;
+				}
+				if (dragonScore() >= 4) {
+					maxStr += 5;
+					maxTou += 10;
+					maxInt += 10;
+				}
+				if (dogScore() >= 4) {
+					maxSpe += 10;
+					maxInt -= 10;
+				}
+				if (foxScore() >= 4) {
+					maxStr -= 10;
+					maxSpe += 5;
+					maxInt += 5;
+				}
+				if (catScore() >= 4) {
+					maxSpe += 5;
+				}
+				if (bunnyScore() >= 4) {
+					maxSpe += 10;
+				}
+				if (raccoonScore() >= 4) {
+					maxSpe += 15;
+				}
+				if (horseScore() >= 4 && !isTaur() && !isNaga()) {
+					maxSpe += 15;
+					maxTou += 10;
+					maxInt -= 10;
+				}
+				if (gooScore() >= 3) {
+					maxTou += 10;
+					maxSpe -= 10;
+				}
+				if (kitsuneScore() >= 4) {
+					if (tail.type == Tail.FOX) {
+						if (tail.venom == 1) {
+							maxStr -= 2;
+							maxSpe += 2;
+							maxInt += 1;
+						}
+						else if (tail.venom >= 2 && tail.venom < 9) {
+							maxStr -= tail.venom + 1;
+							maxSpe += tail.venom + 1;
+							maxInt += (tail.venom/2) + 0.5;
+						}
+						else if (tail.venom >= 9) {
+							maxStr -= 10;
+							maxSpe += 10;
+							maxInt += 5;
+						}
+					}
+				}
+				if (beeScore() >= 4) {
+					maxSpe += 5;
+					maxTou += 5;
+				}
+				if (spiderScore() >= 4) {
+					maxInt += 15;
+					maxTou += 5;
+					maxStr -= 10;
+				}
+				if (sharkScore() >= 4) {
+					maxStr += 10;
+					maxSpe += 5;
+					maxInt -= 5;
+				}
+				if (harpyScore() >= 4) {
+					maxSpe += 15;
+					maxTou -= 10;
+				}
+				if (sirenScore() >= 4) {
+					maxStr += 5;
+					maxSpe += 20;
+					maxTou -= 5;
+				}
+				if (demonScore() >= 4) {
+					maxSpe += 5;
+					maxInt += 5;
+				}
+				if (rhinoScore() >= 4) {
+					maxStr += 15;
+					maxTou += 15;
+					maxSpe -= 10;
+					maxInt -= 10;
+				}
+				if (satyrScore() >= 4) {
+					maxStr += 5;
+					maxSpe += 5;
+				}
+				if (salamanderScore() >= 4) {
+					maxStr += 5;
+					maxTou += 5;
+				}
+				if (isNaga()) maxSpe += 10;
+				if (isTaur() || isDrider()) maxSpe += 20;
+			}
+			//Apply New Game+
+			maxStr *= 1 + ascensionFactor(0.25);
+			maxTou *= 1 + ascensionFactor(0.25);
+			maxSpe *= 1 + ascensionFactor(0.25);
+			maxInt *= 1 + ascensionFactor(0.25);
 			//Might
 			if (hasStatusEffect(StatusEffects.Might)) {
 				maxStr += statusEffectv1(StatusEffects.Might);
@@ -2893,17 +3163,17 @@
 		}
 		
 		public function minotaurAddicted():Boolean {
-			return !hasPerk(PerkLib.MinotaurCumResistance) && (hasPerk(PerkLib.MinotaurCumAddict) || flags[kFLAGS.MINOTAUR_CUM_ADDICTION_STATE] >= 1);
+			return flags[kFLAGS.ADDICTIONS_ENABLED] > 0 && !hasPerk(PerkLib.MinotaurCumResistance) && (hasPerk(PerkLib.MinotaurCumAddict) || flags[kFLAGS.MINOTAUR_CUM_ADDICTION_STATE] >= 1);
 		}
 		public function minotaurNeed():Boolean {
-			return !hasPerk(PerkLib.MinotaurCumResistance) && flags[kFLAGS.MINOTAUR_CUM_ADDICTION_STATE] > 1;
+			return flags[kFLAGS.ADDICTIONS_ENABLED] > 0 && !hasPerk(PerkLib.MinotaurCumResistance) && flags[kFLAGS.MINOTAUR_CUM_ADDICTION_STATE] > 1;
 		}
 
 		public function clearStatuses():void
 		{
 			if (kGAMECLASS.monster.hasStatusEffect(StatusEffects.TwuWuv)) {
 				inte += kGAMECLASS.monster.statusEffectv1(StatusEffects.TwuWuv);
-				kGAMECLASS.statScreenRefresh();
+				kGAMECLASS.output.statScreenRefresh();
 				kGAMECLASS.mainView.statsView.showStatUp( 'inte' );
 			}
 			if (hasStatusEffect(StatusEffects.Disarmed)) {
@@ -2917,7 +3187,7 @@
 					flags[kFLAGS.BONUS_ITEM_AFTER_COMBAT_ID] = flags[kFLAGS.PLAYER_DISARMED_WEAPON_ID];
 				}
 			}
-			for (var a:/*StatusEffectClass*/Array=statusEffects.slice(),n:int=a.length,i:int=0;i<n;i++) {
+			for (var a:/*StatusEffect*/Array=statusEffects.slice(),n:int=a.length,i:int=0;i<n;i++) {
 				// Using a copy of array in case effects are removed/added in handler
 				if (statusEffects.indexOf(a[i])>=0) a[i].onCombatEnd();
 			}
@@ -2929,7 +3199,7 @@
 				return false;
 			}
 			//From here we can be sure the player has enough of the item in inventory
-			var slot:ItemSlotClass;
+			var slot:ItemSlot;
 			while (amount > 0) {
 				slot = getLowestSlot(itype); //Always draw from the least filled slots first
 				if (slot.quantity > amount) {
@@ -2944,7 +3214,7 @@
 			return true;
 /*			
 			var consumed:Boolean = false;
-			var slot:ItemSlotClass;
+			var slot:ItemSlot;
 			while (amount > 0)
 			{
 				if (!hasItem(itype,1))
@@ -2970,10 +3240,10 @@
 */
 		}
 
-		public function getLowestSlot(itype:ItemType):ItemSlotClass
+		public function getLowestSlot(itype:ItemType):ItemSlot
 		{
-			var minslot:ItemSlotClass = null;
-			for each (var slot:ItemSlotClass in itemSlots) {
+			var minslot:ItemSlot = null;
+			for each (var slot:ItemSlot in itemSlots) {
 				if (slot.itype == itype) {
 					if (minslot == null || slot.quantity < minslot.quantity) {
 						minslot = slot;
@@ -2989,7 +3259,7 @@
 		
 		public function itemCount(itype:ItemType):int {
 			var count:int = 0;
-			for each (var itemSlot:ItemSlotClass in itemSlots){
+			for each (var itemSlot:ItemSlot in itemSlots){
 				if (itemSlot.itype == itype) count += itemSlot.quantity;
 			}
 			return count;
@@ -3004,7 +3274,7 @@
 			return -1;
 		}
 
-		public function itemSlot(idx:int):ItemSlotClass
+		public function itemSlot(idx:int):ItemSlot
 		{
 			return itemSlots[idx];
 		}
@@ -3241,13 +3511,13 @@
 			return totalGrowth;
 		}
 		
-		// Attempts to put the player in heat (or deeper in heat).
-		// Returns true if successful, false if not.
-		// The player cannot go into heat if she is already pregnant or is a he.
-		// 
-		// First parameter: boolean indicating if function should output standard text.
-		// Second parameter: intensity, an integer multiplier that can increase the 
-		// duration and intensity. Defaults to 1.
+		/**
+		 * Attempts to put the player in heat (or deeper in heat).
+		 * The player cannot go into heat if she is already pregnant or is a he.
+		 * @param	output if true, output standard text
+		 * @param	intensity multiplier that can increase the duration and intensity. Defaults to 1.
+		 * @return true if successful
+		 */
 		public function goIntoHeat(output:Boolean, intensity:int = 1):Boolean {
 			if (!hasVagina() || pregnancyIncubation != 0) {
 				// No vagina or already pregnant, can't go into heat.
@@ -3259,7 +3529,7 @@
 				if (output) {
 					outputText("\n\nYour mind clouds as your " + vaginaDescript(0) + " moistens.  Despite already being in heat, the desire to copulate constantly grows even larger.");
 				}
-				const effect:StatusEffectClass = statusEffectByType(StatusEffects.Heat);
+				const effect:StatusEffect = statusEffectByType(StatusEffects.Heat);
 				effect.value1 += 5 * intensity;
 				effect.value2 += 5 * intensity;
 				effect.value3 += 48 * intensity;
@@ -3348,6 +3618,187 @@
 
 			if (underBodyProps != null)
 				underBody.setProps(underBodyProps);
+		}
+		
+		override public function set HP(value:Number):void {
+			super.HP = value;
+			game.mainView.statsView.refreshStats(game);
+		}
+		override public function set lust(value:Number):void {
+			super.lust = value;
+			game.mainView.statsView.refreshStats(game);
+		}
+		override public function set fatigue(value:Number):void {
+			super.fatigue = value;
+			game.mainView.statsView.refreshStats(game);
+		}
+		
+		/**
+		 * Alters player's HP.
+		 * @param	changeNum The amount to damage (negative) or heal (positive).
+		 * @param	display Show the damage or heal taken.
+		 * @return  effective delta
+		 */
+		public function HPChange(changeNum:Number, display:Boolean):Number
+		{
+			var before:Number = HP;
+			
+			if (changeNum === 0) {
+				return 0;
+			}
+			
+			if (changeNum > 0) {
+				if (findPerk(PerkLib.HistoryHealer) >= 0) {
+					changeNum *= 1.2; //Increase by 20%!
+				}
+				
+				if (armor.name === "skimpy nurse's outfit") {
+					changeNum *= 1.1; //Increase by 10%!
+				}
+				
+				if (HP + int(changeNum) > maxHP()) {
+					if (HP >= maxHP()) {
+						if (display) {
+							HPChangeNotify(changeNum);
+						}
+						
+						return HP - before;
+					}
+					
+					if (display) {
+						HPChangeNotify(changeNum);
+					}
+					
+					restoreHP();
+				}
+				else
+				{
+					if (display) {
+						HPChangeNotify(changeNum);
+					}
+					
+					HP += int(changeNum);
+					kGAMECLASS.mainView.statsView.showStatUp( 'hp' );
+				}
+			}
+			//Negative HP
+			else
+			{
+				if (HP + changeNum <= 0) {
+					if (display) {
+						HPChangeNotify(changeNum);
+					}
+					
+					HP = 0;
+					kGAMECLASS.mainView.statsView.showStatDown( 'hp' );
+				}
+				else {
+					if (display) {
+						HPChangeNotify(changeNum);
+					}
+					
+					HP += changeNum;
+					kGAMECLASS.mainView.statsView.showStatDown( 'hp' );
+				}
+			}
+			
+			dynStats("lust", 0, "scale", false); //Workaround to showing the arrow.
+			kGAMECLASS.output.statScreenRefresh();
+			return HP - before;
+		}
+
+		public function HPChangeNotify(changeNum:Number):void {
+			if (changeNum === 0) {
+				if (HP >= maxHP()) {
+					outputText("You're as healthy as you can be.\n");
+				}
+			} else if (changeNum > 0) {
+				if (HP >= maxHP()) {
+					outputText("Your HP maxes out at " + maxHP() + ".\n");
+				} else {
+					outputText("You gain <b><font color=\"#008000\">" + int(changeNum) + "</font></b> HP.\n");
+				}
+			} else {
+				if (HP <= 0) {
+					outputText("You take <b><font color=\"#800000\">" + int(changeNum*-1) + "</font></b> damage, dropping your HP to 0.\n");
+				} else {
+					outputText("You take <b><font color=\"#800000\">" + int(changeNum*-1) + "</font></b> damage.\n");
+				}
+			}
+		}
+		
+		override public function serialize(relativeRootObject:*):void 
+		{
+			super.serialize(relativeRootObject);
+			
+			relativeRootObject.itemSlots = SerializationUtils.serializeVector(this.itemSlots as Vector.<*>);
+		}
+		
+		override public function deserialize(relativeRootObject:*):void 
+		{
+			super.deserialize(relativeRootObject);
+			
+			// reset vagina to human if it is an unsupported type
+			if (hasVagina() && vaginaType() !== Vagina.BLACK_SAND_TRAP && vaginaType() !== Vagina.HUMAN) {
+				LOGGER.warn("Player vagina type is {0}, resetting to human {1}.", vaginaType(), Vagina.HUMAN);
+				vaginaType(Vagina.HUMAN);
+			}
+			
+			// Force the creation of the default breast row onto the player if it's no longer present
+			if (breastRows.length === 0) {
+				LOGGER.warn("Player has no breast row, this is an invalid state. Creating breast row...");
+				createBreastRow();
+			}
+			
+			this.itemSlots.length = 0;
+			SerializationUtils.deserializeVector(this.itemSlots as Vector.<*>, relativeRootObject.itemSlots, ItemSlot);
+		}
+		
+		override public function upgradeSerializationVersion(relativeRootObject:*, serializedDataVersion:int):void 
+		{
+			switch (serializedDataVersion) {
+				case 0:
+					upgradeLegacyItemSlots(relativeRootObject);
+					
+				default:
+					/*
+					 * The default block is left empty intentionally,
+					 * this switch case operates by using fall through behavior.
+					 */
+			}
+		}
+		
+		private function upgradeLegacyItemSlots(relativeRootObject:*):void
+		{
+			LOGGER.info("Upgrading legacy item slots...");
+			var slots:Vector.<ItemSlot> = new Vector.<classes.ItemSlot>();
+			
+			var slotname:String = "itemSlot";
+			
+			for (var i:int = 1; i < 11; i++) {
+				var slot:String = slotname + i;
+				
+				slots.push(legacyItemSlotFromSave(relativeRootObject, slot));
+			}
+			
+			relativeRootObject.itemSlots = SerializationUtils.serializeVector(slots as Vector.<*>);
+			LOGGER.info("Finished upgrading legacy item slots!");
+		}
+		
+		private function legacyItemSlotFromSave(relativeRootObject:*, slotName:String):ItemSlot
+		{
+			var itemSlot:ItemSlot = new ItemSlot();
+			
+			if (relativeRootObject[slotName] !== undefined) {
+				SerializationUtils.deserialize(relativeRootObject[slotName], itemSlot);
+			}
+			
+			return itemSlot;
+		}
+		
+		override public function currentSerializationVerison():int 
+		{
+			return SERIALIZATION_VERSION;
 		}
 	}
 }

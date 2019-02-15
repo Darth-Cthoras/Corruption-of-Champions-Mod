@@ -5,6 +5,7 @@ package classes.Scenes.Areas.Forest
 	import classes.internals.*;
 	import classes.GlobalFlags.kACHIEVEMENTS;
 	import classes.GlobalFlags.kFLAGS;
+	import classes.GlobalFlags.kGAMECLASS;
 
 	public class TentacleBeast extends Monster
 	{
@@ -54,6 +55,7 @@ package classes.Scenes.Areas.Forest
 			if (hpVictory) {
 				outputText("The creature lets out an ear-piercing screech as it collapses upon itself. Its green coloring quickly fades to brown as the life drains from it, leaving you victorious.");
 				game.awardAchievement("Tentacle Beast Slayer", kACHIEVEMENTS.GENERAL_TENTACLE_BEAST_SLAYER);
+				flags[kFLAGS.TENTACLE_BEASTS_KILLED]++;
 			} else {
 				outputText("The tentacle beast's mass begins quivering and sighing, the tentacles wrapping around each other and feverishly caressing each other.  It seems the beast has given up on fighting.");
 			}
@@ -64,7 +66,7 @@ package classes.Scenes.Areas.Forest
 			else {
 				if (!hpVictory && player.gender > 0 && flags[kFLAGS.SFW_MODE] <= 0) {
 					outputText("  Perhaps you could use it to sate yourself?");
-					game.doYesNo(game.forest.tentacleBeastScene.tentacleVictoryRape,game.combat.cleanupAfterCombat);
+					kGAMECLASS.output.doYesNo(game.forest.tentacleBeastScene.tentacleVictoryRape,game.combat.cleanupAfterCombat);
 				} else {
 					game.combat.cleanupAfterCombat();
 				}
@@ -107,6 +109,7 @@ package classes.Scenes.Areas.Forest
 			this.short = "tentacle beast";
 			this.imageName = "tentaclebeast";
 			this.long = "You see the massive, shambling form of the tentacle beast before you.  Appearing as a large shrub, it shifts its bulbous mass and reveals a collection of thorny tendrils and cephalopodic limbs.";
+			this.race = "Abomination";
 			// this.plural = false;
 			this.createCock(40,1.5);
 			this.createCock(60,1.5);
@@ -120,8 +123,8 @@ package classes.Scenes.Areas.Forest
 			this.pronoun2 = "it";
 			this.pronoun3 = "its";
 			this.createBreastRow(0,0);
-			this.ass.analLooseness = AssClass.LOOSENESS_TIGHT;
-			this.ass.analWetness = AssClass.WETNESS_SLIME_DROOLING;
+			this.ass.analLooseness = Ass.LOOSENESS_TIGHT;
+			this.ass.analWetness = Ass.WETNESS_SLIME_DROOLING;
 			this.tallness = rand(9) + 70;
 			this.hips.rating = Hips.RATING_BOYISH;
 			this.butt.rating = Butt.RATING_BUTTLESS;

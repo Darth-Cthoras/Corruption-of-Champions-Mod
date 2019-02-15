@@ -135,6 +135,7 @@ package classes.Scenes.Places.Farm
 			this.short = "Kelt";
 			this.imageName = "kelt";
 			this.long = "Kelt has changed for the worse since your first meeting.  Gone is his muscular, barrel chest.  In its place is a softer frame, capped with tiny boobs - remnants of your last treatment.  His jaw is fairly square and chiselled (though less than before).  From the waist down, he has the body of a horse, complete with a fairly large pair of balls and a decent-sized dong.  Both are smaller than they used to be, however.  He has his bow strung and out, clearly intent on defending himself from your less than gentle touches."+(breakLevel2?"Kelt is looking less and less like the burly centaur from before, and more and more like a woman.  He looks more like an odd, androgynous hybrid than the beautiful woman you had turned him into.  He currently sports roughly B-cup breasts and a smallish, miniature horse-cock.  There's barely any hair on his human body, aside from a long mane of hair.  Each treatment seems to be more effective than the last, and you can't wait to see what happens after you tame him THIS time.":"");
+			this.race = "Centaur";
 			// this.plural = false;
 			this.createCock(breakLevel2?12:24,3.5,CockTypesEnum.HORSE);
 			this.balls = 2;
@@ -142,8 +143,8 @@ package classes.Scenes.Places.Farm
 			this.cumMultiplier = 1.5;
 			this.hoursSinceCum = player.ballSize * 10;
 			this.createBreastRow(Appearance.breastCupInverse(breakLevel2?"B":"A"));
-			this.ass.analLooseness = AssClass.LOOSENESS_NORMAL;
-			this.ass.analWetness = AssClass.WETNESS_DRY;
+			this.ass.analLooseness = Ass.LOOSENESS_NORMAL;
+			this.ass.analWetness = Ass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,50,0,0,0);
 			this.tallness = 84;
 			this.hips.rating = Hips.RATING_AVERAGE;

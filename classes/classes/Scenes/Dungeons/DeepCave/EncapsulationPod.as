@@ -201,12 +201,18 @@ package classes.Scenes.Dungeons.DeepCave
 			return _long;
 		}
 
+		override public function getAscensionHP(hp:Number):Number
+		{
+			return hp * (1 + player.ascensionFactor(1.00)); // +100% per NG+-level
+		}
+
 		public function EncapsulationPod()
 		{
 			this.a = "the ";
 			this.short = "pod";
 			this.imageName = "pod";
 			this.long = "";
+			this.race = "Abomination";
 			// this.plural = false;
 			initGenderless();
 			createBreastRow(0,0);

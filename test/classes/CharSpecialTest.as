@@ -1,4 +1,5 @@
 package classes{
+	import classes.GlobalFlags.kFLAGS;
     import org.flexunit.asserts.*;
 	import org.hamcrest.assertThat;
 	import org.hamcrest.core.*;
@@ -15,6 +16,7 @@ package classes{
     public class CharSpecialTest {
 		private static const CHAR_NAME_INDEX:int = 0;
 		private static const CHAR_FUNCTION_INDEX:int = 1;
+		private static const CHAR_CUSTOMIZE_INDEX:int = 2;
 		
         private var cut:CharSpecial;
 		private var player : Player;
@@ -28,6 +30,12 @@ package classes{
 			
 			fail("No special character found with the name: " + name);
 			return null;
+		}
+		
+		private function createCharByName(name:String):void {
+			var func:Function = findCharFunction(name);
+			
+			func();
 		}
 		
 		[BeforeClass]
@@ -47,10 +55,11 @@ package classes{
 		
 		private function resetPlayer() : void {
 			kGAMECLASS.player = new Player();
+			kGAMECLASS.flags[kFLAGS.HISTORY_PERK_SELECTED] = 1;
 			this.player = kGAMECLASS.player;
 		}
 		
-		[Test(descrition="Execute every custom character function to see what breaks")]
+		[Test(description="Execute every custom character function to see what breaks")]
 		public function testCheckForRuntimeErrors():void {
 			var failedCharInit:Vector.<String> = new Vector.<String>();
 			
@@ -71,6 +80,33 @@ package classes{
 			
 			if (failedCharInit.length != 0) {	
 				fail("The following char creations failed: " + failedCharInit.join());
+			}
+		}
+     
+		[Test(description="Execute every custom character function to see where history perks are missing")]
+		public function testAllForHistoryPerk():void
+		{
+			var noHistoryPerk:Vector.<String> = new Vector.<String>();
+
+			for (var index:int = 1; index < cut.customs.length; index++) {
+					// reset the player, as the init functions will change the instance state
+					resetPlayer();
+
+					var charCreation:Function = cut.customs[index][CHAR_FUNCTION_INDEX];
+					var charNotCustomizable:Boolean = cut.customs[index][CHAR_CUSTOMIZE_INDEX];
+
+					try {
+						if (charCreation !== null) {
+							charCreation();
+							if (!player.hasHistoryPerk() && kGAMECLASS.flags[kFLAGS.HISTORY_PERK_SELECTED] !== 0 && charNotCustomizable) {
+								noHistoryPerk.push(cut.customs[index][CHAR_NAME_INDEX]);
+							}
+						}
+					} catch (error:Error) {}
+			}
+			
+			if (noHistoryPerk.length > 0) {
+				fail("The following chars had no history perk: " + noHistoryPerk.join());
 			}
 		}
      
@@ -220,6 +256,13 @@ package classes{
 		}
 		
 		[Test]
+		public function leahHpRestored():void {
+			createCharByName(CharSpecial.LEAH_NAME);
+			
+			assertThat(player.HP, equalTo(80));
+		}
+		
+		[Test]
 		public function testKattiBreastFuckable() : void {
 			var func : Function = findCharFunction(CharSpecial.KATTI_NAME);
 			
@@ -291,6 +334,13 @@ package classes{
 			assertThat(player.breastRows[3].nipplesPerBreast, equalTo(4));
 		}
 		
+		[Test]
+		public function nixiHpRestored(): void {
+			createCharByName(CharSpecial.NIXI_NAME);
+			
+			assertThat(player.HP, equalTo(80));
+		}
+		
 				
 		[Test]
 		public function testLukazIsMale() : void {
@@ -302,6 +352,13 @@ package classes{
 		}
 		
 		[Test]
+		public function lukazHPRestored():void {
+			createCharByName(CharSpecial.LUKAZ_NAME);
+			
+			assertThat(player.HP, equalTo(84));
+		}
+		
+		[Test]
 		public function testMaraClitLength() : void {
 			var func : Function = findCharFunction(CharSpecial.MARA_NAME);
 			
@@ -309,5 +366,26 @@ package classes{
 			
 			assertThat(player.getClitLength(), equalTo(0.5));
 		}
-    }
+		
+		[Test]
+		public function vahdunbriiHpRestored(): void {
+			createCharByName(CharSpecial.VAHDUNBRII_NAME);
+			
+			assertThat(player.HP, equalTo(80));
+		}
+		
+		[Test]
+		public function etisHpRestored(): void {
+			createCharByName(CharSpecial.ETIS_NAME);
+			
+			assertThat(player.HP, equalTo(50));
+		}
+		
+		[Test]
+		public function chimeraHpRestored(): void {
+			createCharByName(CharSpecial.CHIMERA_NAME);
+			
+			assertThat(player.HP, equalTo(50));
+		}
+	}
 }

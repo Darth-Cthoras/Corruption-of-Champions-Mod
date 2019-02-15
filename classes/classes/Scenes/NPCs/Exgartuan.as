@@ -454,7 +454,7 @@ public function exgartuanBored():void {
 				outputText("Exgartuan wakes, making your " + player.allBreastsDescript() + " wobble pleasantly.  The need to have them groped and fondled slowly grows with the demoness's wakefulness.  She barks out, \"<i>Oi, bitch!  Touch your titties!</i>\"\n\nYou sigh.");
 				break;
 			case 3:
-				outputText("Suddenly your " + player.chestDesc() + " feel as if they trying to force their way off your chest.  The strange motions are accompanied by some loud moaning, as if they are stretching awake.  Looks like the delightful peace and quiet has ended.");
+				outputText("Suddenly your " + player.chestDesc() + " feel as if they're trying to force their way off your chest.  The strange motions are accompanied by some loud moaning, as if they are stretching awake.  Looks like the delightful peace and quiet has ended.");
 				break;
 			case 4:
 				outputText("Your arms suddenly hug against your " + player.chestDesc() + " of their own accord, the squeeze filling you with a hint of warmth.  The demoness is awake and filling you with longing to be touched and teased.");
@@ -914,8 +914,8 @@ private function exgartuanSleepSurprise():void {
 			//(no balls)
 			if (player.balls == 0) {
 				outputText("The ");
-				if (player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_WET) outputText("puffy");
-				else if (player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_DROOLING) outputText("glistening");
+				if (player.vaginas[0].vaginalWetness < Vagina.WETNESS_WET) outputText("puffy");
+				else if (player.vaginas[0].vaginalWetness < Vagina.WETNESS_DROOLING) outputText("glistening");
 				else outputText("dripping");
 				outputText(" skin of your outer lips is engorged and ready, but there's no pleasure to be had for your greedy gash.  Cool night air washes over the exposed ");
 				if (player.hasScales()) outputText("scales");
@@ -928,8 +928,8 @@ private function exgartuanSleepSurprise():void {
 			//(Herms + Balls)
 			else {
 				outputText("The ");
-				if (player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_WET) outputText("puffy");
-				else if (player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_DROOLING) outputText("glistening");
+				if (player.vaginas[0].vaginalWetness < Vagina.WETNESS_WET) outputText("puffy");
+				else if (player.vaginas[0].vaginalWetness < Vagina.WETNESS_DROOLING) outputText("glistening");
 				else outputText("dripping");
 				outputText(" skin of your outer lips is engorged and ready, but with your hands so focused on your " + player.cockDescript(0) + ", there's little for your " + player.vaginaDescript(0) + " to feel.  The closest it gets to pleasure is the sensation of your " + player.sackDescript() + " slapping against it with the steady rhythm of your masturbation.  If only you had taken care of yourself earlier!  You might have had enough control over your rebellious tool to let a hand attend to your OTHER needs.\n\n");
 			}
@@ -941,7 +941,7 @@ private function exgartuanSleepSurprise():void {
 		outputText("  Liquid-hot pressure slides over the underside of your " + player.cockDescript(0) + ", licking wetly at the pulsating, need-filled demon-prick.  Your rogue tongue's attentions have the desired effect, and the cries of your pleasure are muffled by your own thick flesh and its rapidly distending urethra.\n\n");
 		
 		outputText("If someone were watching");
-		if (flags[kFLAGS.JOJO_STATUS] >= 5 && !player.hasStatusEffect(StatusEffects.NoJojo) && flags[kFLAGS.JOJO_DEAD_OR_GONE] == 0) outputText(", and judging by Jojo's high pitched whines, he certainly is,");
+		if (jojoScene.campCorruptJojo()) outputText(", and judging by Jojo's high pitched whines, he certainly is,");
 		outputText(" they'd see dick-flesh bulging with a heavy load as it's pumped into your lips.  The fully-inflated cum-tube distends your mouth, stretching your jaw painfully, and dumps its creamy cargo into its willing receptacle.  Your belly burbles as it adjusts to the ");
 		temp = player.cumQ();
 		if (temp < 50) outputText("surprisingly light");
@@ -964,7 +964,7 @@ private function exgartuanSleepSurprise():void {
 		}
 		outputText("\n\n");
 		
-		if (flags[kFLAGS.JOJO_STATUS] >= 5 && !player.hasStatusEffect(StatusEffects.NoJojo) && flags[kFLAGS.JOJO_DEAD_OR_GONE] == 0) {
+		if (jojoScene.campCorruptJojo()) {
 			outputText("The splatter of mouse-cum erupting in the wood reaches your ears, bringing a wistful smile to your face.  That slutty mouse is such a peeping tom!  ");
 		}
 		outputText("Your eyes slowly roll back down while Exgartuan deflates, leaving a trail of pleased, white submission ");

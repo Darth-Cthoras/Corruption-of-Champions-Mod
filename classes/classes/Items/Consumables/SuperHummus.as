@@ -4,7 +4,7 @@ package classes.Items.Consumables
 	import classes.Items.Consumable;
 	import classes.Items.ConsumableLib;
 	import classes.StatusEffects;
-	import classes.BreastRowClass;
+	import classes.BreastRow;
 	
 	/**
 	 * Reset player character.
@@ -43,8 +43,7 @@ package classes.Items.Consumables
 			else {
 				outputText("\n\nYou cry out as the world spins around you.  You're aware of your entire body sliding and slipping, changing and morphing, but in the sea of sensation you have no idea exactly what's changing.  You nearly black out, and then it's over.  Maybe you had best have a look at yourself and see what changed?");
 			}
-			player.arms.type = Arms.HUMAN;
-			mutations.updateClaws();
+			player.arms.restore();
 			player.eyes.type = Eyes.HUMAN;
 			player.antennae.type = Antennae.NONE;
 			player.face.type = Face.HUMAN;
@@ -102,7 +101,7 @@ package classes.Items.Consumables
 			if (player.ass.analLooseness > 1) player.ass.analLooseness = 1;
 			if (player.ass.analWetness > 1) player.ass.analWetness = 1;
 			//Clear breasts
-			player.breastRows = new Vector.<BreastRowClass>();
+			player.breastRows = new Vector.<BreastRow>();
 			player.createBreastRow();
 			player.nippleLength = .25;
 			//Girls and herms get bewbs back

@@ -41,6 +41,7 @@
 			this.short = "green slime";
 			this.imageName = "greenslime";
 			this.long = "The green slime has a normally featureless face that sits on top of wide shoulders that sprout into thick, strong arms.  Its torso fades into an indistinct column that melds into the lump of ooze on the ground that serves as a makeshift form of locomotion.";
+			this.race = "Slime";
 			// this.plural = false;
 			this.createCock(18, 2, CockTypesEnum.HUMAN);
 			this.cumMultiplier = 3;
@@ -49,8 +50,8 @@
 			this.pronoun2 = "it";
 			this.pronoun3 = "its";
 			createBreastRow(0);
-			this.ass.analLooseness = AssClass.LOOSENESS_STRETCHED;
-			this.ass.analWetness = AssClass.WETNESS_SLIME_DROOLING;
+			this.ass.analLooseness = Ass.LOOSENESS_STRETCHED;
+			this.ass.analWetness = Ass.WETNESS_SLIME_DROOLING;
 			this.tallness = rand(8) + 80;
 			this.hips.rating = Hips.RATING_AMPLE;
 			this.butt.rating = Butt.RATING_LARGE;

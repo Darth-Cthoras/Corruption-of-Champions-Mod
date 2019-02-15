@@ -49,10 +49,7 @@ package classes.Scenes.Monsters
 				}
 			}
 			flags[kFLAGS.TIMES_ENCOUNTERED_GOBLIN_ELDER]++;
-			if (flags[kFLAGS.CODEX_ENTRY_GOBLINS] <= 0) {
-				flags[kFLAGS.CODEX_ENTRY_GOBLINS] = 1;
-				outputText("\n\n<b>New codex entry unlocked: Goblins!</b>")
-			}
+			unlockCodexEntry("Goblins", kFLAGS.CODEX_ENTRY_GOBLINS);
 			menu();
 			addButton(0, "Fight", startFight);
 			if (flags[kFLAGS.GOBLIN_ELDER_TALK_COUNTER] < 2) addButton(1, "Talk", talkToGoblinElder);
@@ -368,9 +365,9 @@ package classes.Scenes.Monsters
 				outputText("You pick up the goblin, sitting her onto your knee and restraining both her arms behind her back with your left hand.  You tear a piece of supple leather off of her slutty garments and use it to bind her arms there.  She looks up at you, her eyes wide and frightened at the thought of being at the mercy of a larger creature.  In spite of it all, she seems more than a little turned on, if the juices staining your knee are any indication.  You look down at her and remark, \"<i>So the little skank has a submissive streak huh?</i>\"\n\n");
 				outputText("She blushes red and the flow of feminine fluid thickens as she nods.  You know she'll probably enjoy whatever sexual act you could perform with her, so you may as well surprise her.  A cruel idea forms in the back of your mind – getting revenge for her attempts to drug you.  You easily rip the pouches from her belt and pull out a few random bottles.  The goblin, understanding your intent, begins struggling to free herself, but you easily restrain the smaller woman and force the drugs into her mouth, one after the another.  When she tries to spit them out, you massage her throat, triggering her instinct to swallow.\n\n");
 				outputText("By the third bottle she's given up on struggling and is instead trying to grind her cunt into your knee.  Her mouth is open wide and her entire face is flushed reddish-purple with desire.  You finish force-feeding her the remaining bottles and shove her, catching her ankles to hold her over your leg with her ass in the air.  The scent of her arousal and the vapors from all the drugs and aphrodisiacs give you a bit of a 'contact high', at least in the sense that your " + player.vaginaDescript(0) + " ");
-				if (player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_WET) outputText("grows puffy and moist");
-				else if (player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_DROOLING) outputText("drips with feminine moisture");
-				else if (player.vaginas[0].vaginalWetness < VaginaClass.WETNESS_SLAVERING) outputText("slowly begins to soak your thighs");
+				if (player.vaginas[0].vaginalWetness < Vagina.WETNESS_WET) outputText("grows puffy and moist");
+				else if (player.vaginas[0].vaginalWetness < Vagina.WETNESS_DROOLING) outputText("drips with feminine moisture");
+				else if (player.vaginas[0].vaginalWetness < Vagina.WETNESS_SLAVERING) outputText("slowly begins to soak your thighs");
 				else outputText("drools with need, puddling under you");
 				outputText(".  Your arousal can wait.  This slut needs to be punished.\n\n");
 				outputText("*<b>THWACK</b>!* Your hand smacks her nicely rounded ass.  You pull back, feeling drops of wetness thanks to her prominent pussy-lips.  The little bitch's cunt is so inflamed with need that she's practically squirting from a simple spank.  You swat her again, watching her entire body tense and feeling her fluids splatter you.\n\n");
@@ -378,9 +375,9 @@ package classes.Scenes.Monsters
 				outputText("The goblin squeals, though in delight or pain you can't be sure.  You start spanking her harder and harder, turning her ass from green to red with the repeated abuse.  Her entire body begins convulsing and squirting, splattering your arm with her honey.  She got off on it!  Well, after that kind of show, she's going to get you off too - or else!\n\n");
 				outputText("You pull her off your leg and shove her face into your " + player.vaginaDescript(0) + ".  She thrashes against you, too lost to her own plessure to realize what's going on.  Forcefully you put her plump little lips on your box and grind, letting her tongue slip into your folds.  Her eyes are little white slits, her pupils rolled up out of view, but there's enough of something in there that her tongue recognizes the taste and starts licking.  You tremble; it feels WAY better than it should.  Perhaps some of her potions have left a residue on her lips and tongue, but you don't care.\n\n");
 				outputText("You cum on the drugged green bitch, ");
-				if (player.vaginas[0].vaginalWetness > VaginaClass.WETNESS_DROOLING) outputText("splattering her with your fluids");
-				else if (player.vaginas[0].vaginalWetness > VaginaClass.WETNESS_SLICK) outputText("coating her face with the proof of your pleasure");
-				else if (player.vaginas[0].vaginalWetness > VaginaClass.WETNESS_WET) outputText("leaving her sticky with your nether-juices");
+				if (player.vaginas[0].vaginalWetness > Vagina.WETNESS_DROOLING) outputText("splattering her with your fluids");
+				else if (player.vaginas[0].vaginalWetness > Vagina.WETNESS_SLICK) outputText("coating her face with the proof of your pleasure");
+				else if (player.vaginas[0].vaginalWetness > Vagina.WETNESS_WET) outputText("leaving her sticky with your nether-juices");
 				else outputText("leaving the taste of pussy on her tongue");
 				outputText(".  ");
 				if (player.biggestLactation() >= 3.5) outputText("Milk explodes from your nipples, soaking the petite slut.  ");
@@ -447,8 +444,8 @@ package classes.Scenes.Monsters
 			outputText("\"<i>Alright, whore.  You wanted my babies?  Here.  They.  CUM!</i>\" you yell.  However, ");
 			if (player.hasVagina()) {
 				outputText("while your " + player.vaginaDescript(0) + " ");
-				if (player.vaginas[0].vaginalWetness <= VaginaClass.WETNESS_SLICK) outputText("juices ");
-				else if (player.vaginas[0].vaginalWetness <= VaginaClass.WETNESS_DROOLING) outputText("floods ");
+				if (player.vaginas[0].vaginalWetness <= Vagina.WETNESS_SLICK) outputText("juices ");
+				else if (player.vaginas[0].vaginalWetness <= Vagina.WETNESS_DROOLING) outputText("floods ");
 				else outputText("explodes ");
 				if (player.cockTotal() > 1) outputText("and the rest of your " + player.multiCockDescriptLight() + " drench her, ");
 			}
@@ -955,7 +952,7 @@ package classes.Scenes.Monsters
 			else outputText("\"<i>Yes!  Here it comes!</i>\"  Priscilla yells, a look of mania in her eyes.  You close your eyes, anticipating the tentacles, coming for you and for Priscilla.  ");
 			outputText("You suppress a scream as the beast pushes itself deep into your caverns as far as it could, kissing your cervix, before jettisoning out of your entrance, and busting into your hole again and again.  ");
 			if (player.hasCock()) outputText("your " + player.cockDescript(0) + " instantly goes erect, the pain was excruciating, but exciting.  ");
-			outputText("\n\n\"<i>Yes!  Yes!</i>\"  Priscilla screams, going wild as her tentacle was sliding in and out of her, and thrust deeper and rougher in side of her.  You could easily see her stomach distend to take the tentacle, it bulged out through her as if she was bubblegum being blown into.  You try to hang on, and then, you felt a painful swat, on your ass!  You scream out, taking note of the tentacle’s fourth tentacle, swiping at you, then at Priscilla.  Tears started streaming freely from your eyes, but yet, the tentacles plowing you, as well as Priscilla’s ecstatic roar, started to really turn you on, as pain turned to pleasure.  Just when you couldn’t take it anymore, the swatting tentacle stopped spanking you and Priscilla, and thrust itself into your " + player.assholeDescript + " just when your pussy was fully stuffed.  You couldn’t even cry out in pain, just whimper as your body spasms, ");
+			outputText("\n\n\"<i>Yes!  Yes!</i>\"  Priscilla screams, going wild as her tentacle was sliding in and out of her, and thrust deeper and rougher in side of her.  You could easily see her stomach distend to take the tentacle, it bulged out through her as if she was bubblegum being blown into.  You try to hang on, and then, you felt a painful swat, on your ass!  You scream out, taking note of the tentacle’s fourth tentacle, swiping at you, then at Priscilla.  Tears started streaming freely from your eyes, but yet, the tentacles plowing you, as well as Priscilla’s ecstatic roar, started to really turn you on, as pain turned to pleasure.  Just when you couldn’t take it anymore, the swatting tentacle stopped spanking you and Priscilla, and thrust itself into your " + player.assholeDescript() + " just when your pussy was fully stuffed.  You couldn’t even cry out in pain, just whimper as your body spasms, ");
 			if (player.hasCock()) outputText("your " + player.cockDescript(0) + " starts cumming everywhere, shooting your nut on to the tentacles and all over Priscilla’s face, "); 
 			outputText("being overtaken by the orgasm.  \"<i>Me next!  Me next!</i>\"  Priscilla cries watching you take the the tentacles crazy assault on your holes pushing deep and hard inside of you.  Oddly enough it did not cum, after you finally went limp, exhausted, the beasts’ tentacles pulled out of you, and started ravishing Priscilla.  You dimly watched as Priscilla received both tentacle in her ass, and and all three tore threw her in breakneck speed.\n\n");
 			outputText("\"<i>Right there!  Right there!  Yes!  Yes!</i>\"  Priscilla squealed, as she and the tentacle beast fulfilled their innermost desires.  Priscilla, to have her walls broken down and gangbanged with no way to fight back, and the tentacle beast, letting loose all of its frustration on the goblin who summoned it here.  It wasn’t much longer as with a cry, Priscilla screamed an orgasmic pitch, and her pussy juices squirted everywhere, on the tentacles, on the beast, on you... Still struggling to stay awake, the tentacle beast dropped you and Priscilla to the ground gently, and pulled out of the babbling Priscilla, and all four tentacles pointed out at you both before the tentacle beast did finally cum.  What felt like loads and loads of cream coated you and Priscilla both, caking you in sticky love.\n\n");
@@ -1071,3 +1068,4 @@ package classes.Scenes.Monsters
 		}
 	}
 }
+

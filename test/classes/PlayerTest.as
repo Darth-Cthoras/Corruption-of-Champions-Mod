@@ -4,6 +4,7 @@ package classes
 	import classes.CoC;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.GlobalFlags.kGAMECLASS;
+	import classes.Items.ConsumableLib;
 	import classes.PerkLib;
 	import classes.Player;
 	import classes.helper.StageLocator;
@@ -15,9 +16,16 @@ package classes
 	import org.hamcrest.number.*;
 	import org.hamcrest.object.*;
 	import org.hamcrest.text.*;
+	import classes.internals.SerializationUtils;
+	import org.hamcrest.assertThat;
+	import org.hamcrest.object.equalTo;
+	import org.hamcrest.object.hasProperty;
+	import classes.Items.ArmorLib;
 
 	public class PlayerTest 
 	{
+		private static const HP_OVER_HEAL:Number = 1000;
+		private static const PLAYER_MAX_HP:Number = 250;
 		private const MAX_SUPPORTED_VAGINAS:Number = 2;
 		private const MAX_SUPPORTED_BREAST_ROWS:Number = 10;
 
@@ -27,6 +35,10 @@ package classes
 		private var wolfPlayer:Player;
 		private var dogPlayer:Player;
 		private var mutantPlayer:Player;
+		private var cut:DummyPlayer;
+		
+		private var deserialized: Player;
+		private var serializedClass: *;
 
 		private function createVaginas(numberOfVaginas:Number, instance:Player):void
 		{
@@ -95,6 +107,24 @@ package classes
 			if (!instance.hasStatusEffect(stype))
 				instance.createStatusEffect(stype, 1, 1, 1, 1);
 		}
+		
+		private function buildLegacySaveSlots(serializedClass:*):void
+		{
+			var slotname:String = "itemSlot";
+			
+			for (var i:int = 1; i < 11; i++) {
+				var slot:String = slotname + i;
+				
+				serializedClass[slot] = [];
+				serializedClass[slot].quantity = 0;
+				serializedClass[slot].id = ItemType.NOTHING.id;
+				serializedClass[slot].damage = 0;
+				serializedClass[slot].unlocked = true;
+			}
+			
+			serializedClass[slotname + 2].id = new ConsumableLib().W_FRUIT.id;
+			serializedClass[slotname + 2].quantity = 5;
+		}
 
 		[BeforeClass]
 		public static function setUpClass():void
@@ -120,8 +150,7 @@ package classes
 			impPlayer.skin.type = Skin.PLAIN;
 			impPlayer.skin.tone = "red";
 			impPlayer.horns.type = Horns.IMP;
-			impPlayer.arms.type = Arms.PREDATOR;
-			impPlayer.claws.type = Claws.IMP;
+			impPlayer.arms.setType(Arms.PREDATOR, Claws.IMP);
 
 			minoPlayer = new Player();
 			minoPlayer.face.type = Face.COW_MINOTAUR;
@@ -156,6 +185,7 @@ package classes
 			dogPlayer.face.type = Face.DOG;
 			dogPlayer.ears.type = Ears.DOG;
 			dogPlayer.tail.type = Tail.DOG;
+			dogPlayer.arms.setType(Arms.DOG);
 			dogPlayer.lowerBody.type = LowerBody.DOG;
 			dogPlayer.skin.type = Skin.FUR;
 
@@ -165,8 +195,18 @@ package classes
 			mutantPlayer.createCock();
 			mutantPlayer.createCock();
 			mutantPlayer.createVagina();
-		}
+			
+			cut = new DummyPlayer();
+			cut.HP = 1;
+			cut.tou = 100;
+			
+			deserialized = new Player();
+			serializedClass = [];
 
+			SerializationUtils.serialize(serializedClass, cut);
+			SerializationUtils.deserialize(serializedClass, deserialized);
+		}
+		
 		[Test]
 		public function testRedPandaScore():void
 		{
@@ -331,6 +371,7 @@ package classes
 			ferretPlayer.ears.type = Ears.FERRET;
 			ferretPlayer.tail.type = Tail.FERRET;
 			ferretPlayer.lowerBody.type = LowerBody.FERRET;
+			ferretPlayer.arms.type = Arms.FERRET;
 			ferretPlayer.skin.type = Skin.FUR;
 
 			assertThat(ferretPlayer.ferretScore(), greaterThan(0));
@@ -422,6 +463,7 @@ package classes
 			foxPlayer.ears.type = Ears.FOX;
 			foxPlayer.tail.type = Tail.FOX;
 			foxPlayer.lowerBody.type = LowerBody.FOX;
+			foxPlayer.arms.setType(Arms.FOX);
 			foxPlayer.skin.type = Skin.FUR;
 
 			assertThat(foxPlayer.foxScore(), greaterThan(0));
@@ -434,10 +476,12 @@ package classes
 			var catPlayer:Player = new Player();
 			createBreastRows(3, catPlayer);
 			createCock(CockTypesEnum.CAT, catPlayer);
-			catPlayer.face.type = Face.CAT;
+			catPlayer.face.setType(Face.CAT);
+			catPlayer.tongue.type = Tongue.CAT;
 			catPlayer.ears.type = Ears.CAT;
 			catPlayer.tail.type = Tail.CAT;
 			catPlayer.lowerBody.type = LowerBody.CAT;
+			catPlayer.arms.setType(Arms.CAT);
 			catPlayer.skin.type = Skin.FUR;
 
 			assertThat(catPlayer.catScore(), greaterThan(0));
@@ -452,8 +496,7 @@ package classes
 			lizardPlayer.tail.type = Tail.LIZARD;
 			lizardPlayer.lowerBody.type = LowerBody.LIZARD;
 			lizardPlayer.horns.type = Horns.DRACONIC_X4_12_INCH_LONG;
-			lizardPlayer.arms.type = Arms.PREDATOR;
-			lizardPlayer.claws.type = Claws.LIZARD;
+			lizardPlayer.arms.setType(Arms.PREDATOR, Claws.LIZARD);
 			lizardPlayer.tongue.type = Tongue.LIZARD;
 			createCock(CockTypesEnum.LIZARD, lizardPlayer);
 			createCock(CockTypesEnum.LIZARD, lizardPlayer);
@@ -524,8 +567,7 @@ package classes
 			dragonPlayer.lowerBody.type = LowerBody.DRAGON;
 			dragonPlayer.skin.type = Skin.DRAGON_SCALES;
 			dragonPlayer.horns.type = Horns.DRACONIC_X4_12_INCH_LONG;
-			dragonPlayer.arms.type = Arms.PREDATOR;
-			dragonPlayer.claws.type = Claws.DRAGON;
+			dragonPlayer.arms.setType(Arms.PREDATOR, Claws.DRAGON);
 			dragonPlayer.eyes.type = Eyes.DRAGON;
 			dragonPlayer.neck.modify(Infinity, Neck.DRACONIC);
 			dragonPlayer.rearBody.type = RearBody.DRACONIC_SPIKES;
@@ -801,7 +843,7 @@ package classes
 			var bimboPlayer:Player = new Player();
 			createPerk(PerkLib.BimboBrains, bimboPlayer);
 			createPerk(PerkLib.BimboBody, bimboPlayer);
-			bimboPlayer.createVagina(true, VaginaClass.WETNESS_SLICK);
+			bimboPlayer.createVagina(true, Vagina.WETNESS_SLICK);
 			bimboPlayer.createBreastRow(10);
 			bimboPlayer.setArmor(kGAMECLASS.armors.BIMBOSK);
 			kGAMECLASS.flags[kFLAGS.BIMBOSKIRT_MINIMUM_LUST] = 30;
@@ -814,5 +856,238 @@ package classes
 
 			assertThat(bimboPlayer.bimboScore(), greaterThan(0));
 		}
+		
+		[Test]
+		public function hpChangeNotifyNoChange(): void {
+			cut.HPChangeNotify(0);
+			
+			assertThat(cut.collectedOutput, emptyArray());
+		}
+		
+		[Test]
+		public function hpChangeNotifyNoChangeOverMaxHp(): void {
+			cut.HP = HP_OVER_HEAL;
+			
+			cut.HPChangeNotify(0);
+			
+			assertThat(cut.collectedOutput, hasItem(startsWith("You're as healthy as you can be.")));
+		}
+		
+		[Test]
+		public function hpChangeNotifyHeal(): void {
+			cut.HPChangeNotify(1);
+			
+			assertThat(cut.collectedOutput, hasItem(startsWith("You gain")));
+		}
+		
+		[Test]
+		public function hpChangeNotifyHealOverMaxHp(): void {
+			cut.HP = HP_OVER_HEAL;
+			
+			cut.HPChangeNotify(1);
+			
+			assertThat(cut.collectedOutput, hasItem(startsWith("Your HP maxes out at")));
+		}
+		
+		[Test]
+		public function hpChangeNotifyDamage(): void {
+			cut.HPChangeNotify(-1);
+			
+			assertThat(cut.collectedOutput, hasItem(containsString("damage.")));
+		}
+		
+		[Test]
+		public function hpChangeNotifyDamageHpBelowZero(): void {
+			cut.HP = -1;
+			
+			cut.HPChangeNotify(-1);
+			
+			assertThat(cut.collectedOutput, hasItem(containsString("damage, dropping your HP to 0.")));
+		}
+		
+		[Test]
+		public function hpChangeZeroNoDelta(): void {
+			assertThat(cut.HPChange(0, false), equalTo(0));
+		}
+		
+		[Test]
+		public function hpChangeHealerBoost(): void {
+			cut.createPerk(PerkLib.HistoryHealer, 0, 0, 0, 0);
+			
+			assertThat(cut.HPChange(100, false), equalTo(120));
+		}
+		
+		[Test]
+		public function hpChangeNurseOutfitBoost(): void {
+			cut.setArmor(new ArmorLib().NURSECL);
+			
+			assertThat(cut.HPChange(100, false), equalTo(110));
+		}
+		
+		[Test]
+		public function hpChangeOverHeal(): void {
+			assertThat(cut.HPChange(HP_OVER_HEAL, false), equalTo(249));
+		}
+		
+		[Test]
+		public function hpChangeOverHealPlayerHp(): void {
+			cut.HPChange(HP_OVER_HEAL, false);
+			
+			assertThat(cut.HP, equalTo(PLAYER_MAX_HP));
+		}
+		
+		[Test]
+		public function hpChangeOverHealDisplayHpChange(): void {
+			cut.HPChange(HP_OVER_HEAL, true);
+			
+			assertThat(cut.calls, arrayWithSize(1));
+			assertThat(cut.calls, hasItem(equalTo(HP_OVER_HEAL)));
+		}
+		
+		[Test]
+		public function hpChangePlayerHpOverMaxDelta(): void {
+			cut.HP = HP_OVER_HEAL;
+			
+			assertThat(cut.HPChange(HP_OVER_HEAL, false), equalTo(0));
+		}
+		
+		[Test]
+		public function hpChangePlayerHpOverMaxPlayerHp(): void {
+			cut.HP = HP_OVER_HEAL;
+			
+			cut.HPChange(HP_OVER_HEAL, false);
+			
+			assertThat(cut.HP, equalTo(1000));
+		}
+		
+		[Test]
+		public function hpChangePlayerHpOverMaxDisplayHpChange(): void {
+			cut.HP = HP_OVER_HEAL;
+			
+			cut.HPChange(HP_OVER_HEAL, true);
+			
+			assertThat(cut.calls, arrayWithSize(1));
+			assertThat(cut.calls, hasItem(equalTo(HP_OVER_HEAL)));
+		}
+		
+		[Test]
+		public function hpChangeHealDisplayHpChange(): void {
+			cut.HPChange(1, true);
+			
+			assertThat(cut.calls, arrayWithSize(1));
+			assertThat(cut.calls, hasItem(equalTo(1)));
+		}
+		
+		[Test]
+		public function hpChangeHealPlayerHP(): void {
+			cut.HPChange(1, true);
+			
+			assertThat(cut.HP, equalTo(2));
+		}
+		
+		[Test]
+		public function hpChangeDamageDisplayHpChange(): void {
+			cut.HP = 50;
+			
+			cut.HPChange(-1, true);
+			
+			assertThat(cut.calls, arrayWithSize(1));
+			assertThat(cut.calls, hasItem(equalTo(-1)));
+		}
+		
+		[Test]
+		public function hpChangeDamagePlayerHp(): void {
+			cut.HP = 50;
+			
+			cut.HPChange(-1, false);
+			
+			assertThat(cut.HP, equalTo(49));
+		}
+		
+		[Test]
+		public function hpChangeDamageBelowZeroDisplayHpChange(): void {
+			cut.HPChange(-HP_OVER_HEAL, true);
+			
+			assertThat(cut.calls, arrayWithSize(1));
+			assertThat(cut.calls, hasItem(equalTo(-HP_OVER_HEAL)));
+		}
+		
+		[Test]
+		public function hpChangeDamageBelowZeroPlayerHp(): void {
+			cut.HPChange(-HP_OVER_HEAL, false);
+			
+			assertThat(cut.HP, equalTo(0));
+		}
+		
+		[Test]
+		public function serializeItemslots():void
+		{
+			assertThat(serializedClass, hasProperty("itemSlots"));
+		}
+
+		[Test]
+		public function deserializeItemslots():void
+		{
+			assertThat(deserialized.itemSlots.length, equalTo(10));
+		}
+		
+		[Test]
+		public function upgradeLegacyItemSlots():void
+		{
+			delete serializedClass["itemSlots"];
+			delete serializedClass["serializationVersion"];
+			
+			buildLegacySaveSlots(serializedClass);
+			SerializationUtils.deserialize(serializedClass, deserialized);
+			
+			assertThat(deserialized.itemSlot(1).itype.id, equalTo(new ConsumableLib().W_FRUIT.id));
+		}
+		
+		[Test(description="Vanilla only has slots 1 to 5")]
+		public function upgradeLegacyItemSlotsFromVanilla():void
+		{
+			delete serializedClass["itemSlots"];
+			delete serializedClass["serializationVersion"];
+			
+			buildLegacySaveSlots(serializedClass);
+			
+			delete serializedClass["itemSlot6"];
+			delete serializedClass["itemSlot7"];
+			delete serializedClass["itemSlot8"];
+			delete serializedClass["itemSlot9"];
+			delete serializedClass["itemSlot10"];
+			
+			SerializationUtils.deserialize(serializedClass, deserialized);
+			
+			assertThat(deserialized.itemSlot(9).itype.id, equalTo(ItemType.NOTHING.id));
+		}
+	}
+}
+
+import classes.Player;
+
+/**
+ * Yes, i'm a lazy git.
+ */
+class DummyPlayer extends Player {
+	public var calls:Vector.<Number> = new Vector.<Number>();
+	public var collectedOutput:Vector.<String> = new Vector.<String>();
+
+	/**
+	 * Intercept calls to HPChangeNotify so we can sense them in tests.
+	 * 
+	 * @param	changeNum the value of the HP change?
+	 */
+	override public function HPChangeNotify(changeNum:Number):void {
+		calls.push(changeNum);
+		super.HPChangeNotify(changeNum);
+	}
+	
+	/**
+	 * Redirect output to a vector instead of displaying it on the GUI.
+	 * @param	text to store
+	 */
+	override protected function outputText(text:String):void {
+		collectedOutput.push(text);
 	}
 }

@@ -11,15 +11,19 @@ package classes.Scenes.Places{
 	use namespace kGAMECLASS;
 
 	public class Farm extends BaseContent{
-	public var keltScene:KeltScene = new KeltScene();
-	public var kelly:Kelly = new Kelly();
-	private function get marbleScene():MarbleScene {
-		return kGAMECLASS.marbleScene;
+	public var keltScene:KeltScene;
+	public var kelly:Kelly;
+	public var farmCorruption:FarmCorruption;
+
+	public function Farm(output:GuiOutput){
+		keltScene = new KeltScene(output);
+		kelly = new Kelly();
+		farmCorruption = new FarmCorruption();
 	}
-	public var farmCorruption:FarmCorruption = new FarmCorruption();
-
-	public function Farm(){
-
+	
+	private function get marbleScene():MarbleScene
+	{
+		return kGAMECLASS.marbleScene;
 	}
 //const FARM_DISABLED:int = 464;
 
@@ -109,10 +113,13 @@ public function farmExploreEncounter():void {
 		var cockMilk:Number = 0;
 		var marble:Number = 0;
 		if (player.hasStatusEffect(StatusEffects.Kelt) && !player.hasStatusEffect(StatusEffects.KeltOff) && flags[kFLAGS.KELT_KILLED] <= 0) {
-			if (flags[kFLAGS.KELT_BREAK_LEVEL] >= 4) addButton(1,"Kelly",kelly.breakingKeltOptions);
+			if (flags[kFLAGS.KELT_BREAK_LEVEL] >= 4) {
+				if (flags[kFLAGS.WHITNEY_FLIPPED_OUT_OVER_KELLY] == 1) addButton(0,"Kelly",kelly.breakingKeltOptions);
+				else addButton(3,"Kelly",kelly.breakingKeltOptions);
+			}
 			else addButton(3,"Kelt",kelly.breakingKeltOptions);
 		}
-		if (flags[kFLAGS.WHITNEY_FLIPPED_OUT_OVER_KELLY] == 0 || flags[kFLAGS.WHITNEY_GONE] > 0) {
+		if (flags[kFLAGS.WHITNEY_FLIPPED_OUT_OVER_KELLY] != 1 || flags[kFLAGS.WHITNEY_GONE] > 0) {
 			addButton(0, "Explore", exploreFarm).hint("Take a good hike around the extensive farm. Maybe you'll find anything of interest around here.");
 			addButton(1, "Talk", talkWhitney).hint("Strike up a conversation with Whitney the dog farmer.").disableIf(flags[kFLAGS.WHITNEY_GONE] > 0, "Whitney is dead so you cannot talk to her.");
 			addButton(2, "Work", workFarm).hint("Ask Whitney if she could use a hand. She would probably be grateful for that.").disableIf(player.fatigueLeft() < 20, "You are too tired to lend a helping hand.").disableIf(flags[kFLAGS.WHITNEY_GONE] > 0, "Whitney is dead so you cannot offer to help her.");
@@ -434,7 +441,7 @@ public function workFarm():void {
 		outputText("  The first thing that hits you is the smell, a mingling of sweat, milk, droppings, and rotting hay. There are also probably some cows in Whitney's herd ready for breeding.\n\n");
 		outputText("Opening the door to one of the empty stalls, Whitney says, \"<i>I don't get to them as often as I should. Anything you can do would help.</i>\"\n\n");
 		outputText("You steel yourself, ignore your ");
-		if (InCollection(player.face.type, Face.DOG, Face.FOX, Face.CAT)) outputText("sensitive ");
+		if (InCollection(player.face.type, Face.DOG, Face.FOX, Face.CAT, Face.CATGIRL)) outputText("sensitive ");
 		outputText("nose, and set to work.");
 		//[Lust increase based on libido, degree of cow/mino features] 
 		if (player.cowScore() + player.minoScore() > 0) dynStats("lus", player.cowScore() + player.minoScore());
@@ -452,7 +459,7 @@ public function workFarm():void {
 	// crops collecting, payment one canine pepper, train tou and spe
 	spriteSelect(SpriteDb.s_whitney);
 	outputText("You ask Whitney if she could use help with anything and she points towards the pepper fields, \"<i>Ya mind gathering up some peppers for an hour or two?  I'm gonna need a few for supper tonight.  I'll even let you keep the best one!</i>\"\n\n");
-	outputText("You nod and borrow a basket, and set off towards the fields.  The next two hours are a blur of sweat and hard work as you prowl between the rows of plants, picking as many ripe red peppers as you can find.  When you finish, you drop the basket by Whitney's door, but not before taking your pepper.\n");
+	outputText("You nod and borrow a basket, and set off towards the fields.  The next two hours are a blur of sweat and hard work as you prowl between the rows of plants, picking as many ripe red peppers as you can find.  When you finish, you drop the basket by Whitney's door, but not before taking your pepper.\n\n");
 	//always +1 spe/tou till 25, then 50% chance.
 	if (player.spe100 <= 25 || rand(2) == 0) dynStats("spe", 1);
 	if (player.tou100 <= 25 || rand(2) == 0) dynStats("tou", 1);

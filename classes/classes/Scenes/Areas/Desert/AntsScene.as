@@ -2115,7 +2115,7 @@ package classes.Scenes.Areas.Desert
 				outputText("\n\nSensing that she is nearing an orgasm, you pull back and wrestle out from betwixt her legs.  Finally free, you see she's sprawled out on the bed, her massive abdomen hanging off to the side.  Settling yourself over the top of her, you slide your " + player.clitDescript() + " along her nose, intent on getting your scent entrenched in her body, wanting to make her crave your pussy, something that occurs as she takes a long whiff of air and moans like a whore in heat.");
 
 				//If PC has loose pussy:
-				if (player.vaginas[0].vaginalLooseness >= VaginaClass.LOOSENESS_GAPING) outputText("\n\nYour loose pussy lips cause your juices to drip onto Phylla's face as you hover over her, allowing her to lather in the wetness of your arousal.");
+				if (player.vaginas[0].vaginalLooseness >= Vagina.LOOSENESS_GAPING) outputText("\n\nYour loose pussy lips cause your juices to drip onto Phylla's face as you hover over her, allowing her to lather in the wetness of your arousal.");
 
 				outputText("\n\n\"<i>I think you need to lick my pussy for a bit, my queen,</i>\" you tell her, thinking that you wouldn't want her getting off before she's tended to your needs.  You playfully smile down at her.");
 			}
@@ -2825,7 +2825,7 @@ package classes.Scenes.Areas.Desert
 				else {
 					outputText("\n\nPhylla quickly gets into position, although at first she looks uncertain of if what's she done is correct.");
 					//If PC corruption over 75:
-					if (player.cor < 75) outputText("  Little does poor Phylla know, you're going to just use her as a baby maker to ease the tension of your own sacks.");
+					if (player.cor > 75) outputText("  Little does poor Phylla know, you're going to just use her as a baby maker to ease the tension of your own sacks.");
 				}
 				outputText("\n\nYou help pose her in the right position; angling her pussy towards you as you clamber along the bed.  Finally coming to rest on top of Phylla, you take her soft face in your hands and kiss her. You hold her body firmly under yours as you work your ovipositor against her vagina.");
 

@@ -1019,7 +1019,7 @@ package classes.Scenes.Places
 			for (var i:int = 0; i < 10; i++) {
 				player.prisonItemSlots.push(player.itemSlot(i).itype.id);
 				player.prisonItemSlots.push(player.itemSlot(i).quantity);
-				//player.prisonItemSlots.push(new ItemSlotClass());
+				//player.prisonItemSlots.push(new ItemSlot());
 				//player.prisonItemSlots[i].setItemAndQty(player.itemSlot(i).itype, player.itemSlot(i).quantity);
 				//trace(player.prisonItemSlots[i].itype);
 				player.itemSlot(i).emptySlot();
@@ -1120,6 +1120,7 @@ package classes.Scenes.Places
 				player.esteem = 50;
 				player.will = 80;
 			}
+			awardAchievement("Prisoner", kACHIEVEMENTS.GENERAL_PRISONER, true);
 			inventory.takeItem(consumables.P_BREAD, camp.returnToCampUseOneHour);
 			return false;
 		}
@@ -2926,7 +2927,7 @@ package classes.Scenes.Places
 		
 		public function prisonItemBreadHeatEffect(bonusResist:Number = 0):void
 		{
-			if ((!(player.race() == "human") || player.catScore() > 1 || player.dogScore() > 1 || player.foxScore() > 1 || player.horseScore() > 1 || player.minoScore() > 1 || player.cowScore() > 4 || player.bunnyScore() > 1 || player.kangaScore() > 1) && rand(player.obey) > 20 + bonusResist)
+			if ((!(player.race == "human") || player.catScore() > 1 || player.dogScore() > 1 || player.foxScore() > 1 || player.horseScore() > 1 || player.minoScore() > 1 || player.cowScore() > 4 || player.bunnyScore() > 1 || player.kangaScore() > 1) && rand(player.obey) > 20 + bonusResist)
 			{
 				outputText("\n\nAs you eat, the submissive nature of the act stirs an animalistic response in your mutated body. ");
 				if (player.hasVagina())

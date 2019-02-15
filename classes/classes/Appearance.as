@@ -21,6 +21,10 @@ package classes {
 			else return "hair";
 		}
 
+		public static function hairOrFurColor(i_creature:Creature):String {
+			return i_creature.isFluffy() ? i_creature.skin.furColor : i_creature.hair.color;
+		}
+
 		public static function hairDescription(i_creature:Creature):String {
 			var description:String = "";
 			var options:Array;
@@ -69,6 +73,13 @@ package classes {
 						"untameable woolen hair",
 					];
 					return description + randomChoice(options);
+				case Hair.LEAF:
+					options = [
+						"leafy hair",
+						"grassy hair",
+						"pine needle hair",
+					];
+					return description + randomChoice(options);
 				default:
 					//Move along.
 			}
@@ -86,12 +97,7 @@ package classes {
 				description += "mane";
 				return description;
 			}
-			//if medium length refer to as locks sometimes
-			//CUT - locks is plural and screws up tense.
-			/*if (creature.hair.length >= 3 && creature.hair.length < 16 && rand(2) === 0) {
-			 descript += "locks of hair";
-			 return descript;
-			 }*/
+
 			//If nothing else used, use hair!
 			if (i_creature.hair.type === Hair.FEATHER) description += "feather-";
 			else if (i_creature.hair.type === Hair.GHOST) description += "transparent ";
@@ -346,28 +352,6 @@ package classes {
 				else description += "nipple";
 			}
 			return description;
-			/*OLD
-			 if (creature.breastRows[rowNum].lactationMultiplier >= 1.5 && creature.breastRows[rowNum].lactationMultiplier < 1.75) {
-			 if (creature.breastRows[rowNum].milkFullness > 75) return "over-full leaking teat";
-			 if (rand(2) === 0) return "milky teat";
-			 else return "milk spout";
-			 }
-			 if (creature.breastRows[rowNum].lactationMultiplier >= 1.75) {
-			 if (creature.breastRows[rowNum].milkFullness > 75) return "over-full leaking teat";
-			 if (rand(2) === 0) return "milk-drooling teat";
-			 else return "drippy cow-teat";
-			 }
-			 if (creature.lust > 75) {
-			 if (rand(2) === 0) return "painfully hard nipple";
-			 else return "over-stimulated nipple";
-			 }
-			 if (creature.lust > 50) {
-			 if (rand(2) === 0) return "erect nipple";
-			 else return "hard nipple";
-			 }
-			 if (creature.breastRows[rowNum].milkFullness > 75) return "milky over-full nipple";
-			 return "nipple";
-			 */
 		}
 
 		public static function hipDescription(i_character:Character):String {
@@ -596,149 +580,6 @@ package classes {
 			if (girth <= 3.5) return randomChoice("fat", "distended", "wide");
 			return randomChoice("inhumanly distended", "monstrously thick", "bloated");
 		}
-		
-/* Old Version
-		public static function cockAdjective(i_creature:Creature, i_cockIndex:Number = -1):String
-		{
-			var description:String = "";
-			var multi:Boolean = false;
-			var options:Array;
-
-			//If used for multiple cocks, set multi flag
-			if (i_cockIndex < 0) {
-				//Since we have multi dicks lets talk about the biggest!
-				i_cockIndex = i_creature.biggestCockIndex();
-				multi = true;
-			}
-			//Pierced - 1/5 chance
-			if (!multi && rand(5) === 0 && i_creature.cocks[i_cockIndex].pierced > 0) {
-				description += "pierced";
-			}
-			else if (!multi && rand(5) === 0 && i_creature.cocks[i_cockIndex].sock !== "") {
-				options = ["sock-sheathed",
-					"garment-wrapped",
-					"smartly dressed",
-					"cloth-shrouded",
-					"fabric swaddled",
-					"covered"];
-				description += randomChoice(options);
-			}
-			//Goo - 1/4 chance
-			else if (i_creature.hasGooSkin() && rand(4) === 0) {
-				options = ["goopey",
-					"gooey",
-					"slimy"];
-				description += randomChoice(options);
-			}
-			//Length 1/3 chance
-			else if (rand(3) === 0) {
-				if (i_creature.cocks[i_cockIndex].cockLength < 3) {
-					options = ["little",
-						"toy-sized",
-						"mini",
-						"budding",
-						"tiny"];
-					description += randomChoice(options);
-				}
-				else if (i_creature.cocks[i_cockIndex].cockLength < 5) {
-					description += randomChoice("short", "small");
-				}
-				else if (i_creature.cocks[i_cockIndex].cockLength < 7) {
-					description += randomChoice("fair-sized", "nice");
-				}
-				else if (i_creature.cocks[i_cockIndex].cockLength < 11) {
-					options = ["sizable"];
-
-					if (i_creature.cocks[i_cockIndex].cockType === CockTypesEnum.HORSE) {
-						options.push("pony-sized", "colt-like");
-					}
-					else
-						options.push("long", "lengthy");
-
-					description += randomChoice(options);
-				}
-				else if (i_creature.cocks[i_cockIndex].cockLength < 14) {
-					options = ["huge", "foot-long"];
-					if (i_creature.cocks[i_cockIndex].cockType === CockTypesEnum.DOG)
-						options.push("mastiff-like");
-					else
-						options.push("cucumber-length");
-					description += randomChoice(options);
-				}
-				else if (i_creature.cocks[i_cockIndex].cockLength < 18) {
-					description += randomChoice("massive", "knee-length", "forearm-length");
-				}
-				else if (i_creature.cocks[i_cockIndex].cockLength < 30) {
-					description += randomChoice("enormous", "giant", "arm-like");
-				}
-				else {
-					if (i_creature.cocks[i_cockIndex].cockType === CockTypesEnum.TENTACLE && rand(2) === 0)
-						description += "coiled ";
-					else {
-						options = ["towering",
-							"freakish",
-							"monstrous",
-							"massive"];
-						description += randomChoice(options);
-					}
-				}
-			}
-			//Hornyness 1/2
-			else if (i_creature.lust > 75 && rand(2) === 0) {
-				//Uber horny like a baws!
-				if (i_creature.lust > 90) {
-					//Weak as shit cum
-					if (i_creature.cumQ() < 50) {
-						description += randomChoice("throbbing", "pulsating");
-					}
-					//lots of cum? drippy.
-					else if (i_creature.cumQ() < 200) {
-						description += randomChoice("dribbling", "leaking", "drooling");
-					}
-					//Tons of cum
-					else {
-						description += randomChoice("very drippy", "pre-gushing", "cum-bubbling", "pre-slicked", "pre-drooling");
-					}
-				}
-				//A little less lusty, but still lusty.
-				else if (i_creature.lust > 75) {
-					if (i_creature.cumQ() < 50) {
-						description += randomChoice("turgid", "blood-engorged", "rock-hard", "stiff", "eager");
-					}
-					//A little drippy
-					else if (i_creature.cumQ() < 200) {
-						description += randomChoice("turgid", "blood-engorged", "rock-hard", "stiff", "eager", "fluid-beading", "slowly-oozing");
-					}
-					//uber drippy
-					else {
-						description += randomChoice("dribbling", "drooling", "fluid-leaking", "leaking");
-					}
-				}
-			}
-			//Girth - fallback
-			else {
-				if (i_creature.cocks[i_cockIndex].cockThickness <= .75) {
-					description += randomChoice("thin", "slender", "narrow");
-				}
-				else if (i_creature.cocks[i_cockIndex].cockThickness <= 1.2) {
-					description += "ample";
-				}
-				else if (i_creature.cocks[i_cockIndex].cockThickness <= 1.4) {
-					description += randomChoice("ample", "big");
-				}
-				else if (i_creature.cocks[i_cockIndex].cockThickness <= 2) {
-					description += randomChoice("broad", "meaty", "girthy");
-				}
-				else if (i_creature.cocks[i_cockIndex].cockThickness <= 3.5) {
-					description += randomChoice("fat", "distended", "wide");
-				}
-				else if (i_creature.cocks[i_cockIndex].cockThickness > 3.5) {
-					description += randomChoice("inhumanly distended", "monstrously thick", "bloated");
-				}
-			}
-			return description;
-		}
-*/
 
 		//Cock adjectives for single cock
 		private static function cockAdjectives(i_cockLength:Number, i_cockThickness:Number, i_cockType:CockTypesEnum, i_creature:Creature):String
@@ -810,15 +651,7 @@ package classes {
 				}
 				descripts = 1;
 			}
-			//Length/Thickness done.  Moving on to special animal characters/lust stuff.
-			/*Animal Fillers - turned off due to duplication in noun segment
-			 else if (type === 1 && descripts === 0 && rand(2) === 0) {
-			 if (rand(2) === 0) descript += "flared ";
-			 else descript += "musky ";
-			 }
-			 else if (type === 2 && descripts === 0 && rand(2) === 0) {
-			 descript += "musky ";
-			 }*/
+
 			//FINAL FALLBACKS - lust descriptors
 			//Lust stuff
 			else if (i_creature.lust100 > 90) {
@@ -867,13 +700,6 @@ package classes {
 
 		public static function cockMultiNoun(cockType:CockTypesEnum):String
 		{
-			/*
-			if (cockType is int) {
-				trace("Someone is still calling cockNoun with an integer cock type");
-				trace("Fix this shit already, dammit!");
-				cockType = CockTypesEnum.ParseConstantByIndex(cockType);
-			}
-			*/
 			var options:Array;
 			var description:String = "";
 			if (cockType === CockTypesEnum.HUMAN) {
@@ -1161,9 +987,6 @@ package classes {
 				"ball",
 				"ball"];
 
-			// I don't know how this was ever supposed to work.
-			//if (i_creature.balls === 4 && i_plural) options.push("quads", "quads", "quads");
-
 			description += randomChoice(options);
 			if (i_plural) description += "s";
 
@@ -1197,14 +1020,6 @@ package classes {
 
 			return description;
 		}
-
-/* Moved to Creature.as
-		public static function sheathDescript(i_character:Character):String
-		{
-			if (i_character.hasSheath()) return "sheath";
-			else return "base";
-		}
-*/
 
 		public static function vaginaDescript(i_creature:Creature, i_vaginaIndex:Number = 0, forceDesc:Boolean=false):String
 		{
@@ -1719,7 +1534,6 @@ package classes {
 						"bottom"];
 			
 			description += randomChoice(options);
-			//if (rando === 2) desc += "cheeks";
 			return description;
 		}
 
@@ -1804,12 +1618,12 @@ package classes {
 			
 			// 66% Wetness Descript
 			var ANAL_WETNESS_DESCRIPTORS:Object = new Object(); 
-			ANAL_WETNESS_DESCRIPTORS[AssClass.WETNESS_DRY] = "";
-			ANAL_WETNESS_DESCRIPTORS[AssClass.WETNESS_NORMAL] = "";
-			ANAL_WETNESS_DESCRIPTORS[AssClass.WETNESS_MOIST] = "moist ";
-			ANAL_WETNESS_DESCRIPTORS[AssClass.WETNESS_SLIMY] = "slimy ";
-			ANAL_WETNESS_DESCRIPTORS[AssClass.WETNESS_DROOLING] = "drooling ";
-			ANAL_WETNESS_DESCRIPTORS[AssClass.WETNESS_SLIME_DROOLING] = "slime-drooling ";
+			ANAL_WETNESS_DESCRIPTORS[Ass.WETNESS_DRY] = "";
+			ANAL_WETNESS_DESCRIPTORS[Ass.WETNESS_NORMAL] = "";
+			ANAL_WETNESS_DESCRIPTORS[Ass.WETNESS_MOIST] = "moist ";
+			ANAL_WETNESS_DESCRIPTORS[Ass.WETNESS_SLIMY] = "slimy ";
+			ANAL_WETNESS_DESCRIPTORS[Ass.WETNESS_DROOLING] = "drooling ";
+			ANAL_WETNESS_DESCRIPTORS[Ass.WETNESS_SLIME_DROOLING] = "slime-drooling ";
 			
 			if (forceDesc || rand(3) <= 1)
 			{
@@ -1817,12 +1631,12 @@ package classes {
 			}
 			
 			var ANAL_TIGHTNESS_DESCRIPTORS:Object = new Object();
-			ANAL_TIGHTNESS_DESCRIPTORS[AssClass.LOOSENESS_VIRGIN] = "virgin ";
-			ANAL_TIGHTNESS_DESCRIPTORS[AssClass.LOOSENESS_TIGHT] = "tight ";
-			ANAL_TIGHTNESS_DESCRIPTORS[AssClass.LOOSENESS_NORMAL] = "loose ";
-			ANAL_TIGHTNESS_DESCRIPTORS[AssClass.LOOSENESS_LOOSE] = "roomy ";
-			ANAL_TIGHTNESS_DESCRIPTORS[AssClass.LOOSENESS_STRETCHED] = "stretched ";
-			ANAL_TIGHTNESS_DESCRIPTORS[AssClass.LOOSENESS_GAPING] = "gaping ";
+			ANAL_TIGHTNESS_DESCRIPTORS[Ass.LOOSENESS_VIRGIN] = "virgin ";
+			ANAL_TIGHTNESS_DESCRIPTORS[Ass.LOOSENESS_TIGHT] = "tight ";
+			ANAL_TIGHTNESS_DESCRIPTORS[Ass.LOOSENESS_NORMAL] = "loose ";
+			ANAL_TIGHTNESS_DESCRIPTORS[Ass.LOOSENESS_LOOSE] = "roomy ";
+			ANAL_TIGHTNESS_DESCRIPTORS[Ass.LOOSENESS_STRETCHED] = "stretched ";
+			ANAL_TIGHTNESS_DESCRIPTORS[Ass.LOOSENESS_GAPING] = "gaping ";
 			
 			//25% tightness description
 			if (forceDesc || rand(4) === 0 || (i_creature.ass.analLooseness <= 1 && rand(4) <= 2) || i_creature.ass.analLooseness === 0) 
@@ -1867,6 +1681,8 @@ package classes {
 					return "gooey";
 
 				case Skin.PLAIN:
+				case Skin.BARK:
+					return "bark";
 				default:
 					return includePlain ? "skinny" : "";
 			}
@@ -1884,7 +1700,7 @@ package classes {
 					if (text !== "")
 						comma = ", ";
 
-					switch (i_creature.claws.type) {
+					switch (i_creature.arms.claws.type) {
 						case Claws.NORMAL:
 							break;
 
@@ -1901,7 +1717,7 @@ package classes {
 						case Claws.SALAMANDER:
 						case Claws.CAT:
 						case Claws.DOG:
-						case Claws.RAPTOR:
+						case Claws.FOX:
 						case Claws.IMP:
 						case Claws.RED_PANDA:
 						default:
@@ -2114,6 +1930,7 @@ package classes {
 					[Face.SHARK_TEETH, "shark"],
 					[Face.SNAKE_FANGS, "snake"],
 					[Face.CAT, "cat"],
+					[Face.CATGIRL, "cat"],
 					[Face.LIZARD, "lizard"],
 					[Face.BUNNY, "bunny"],
 					[Face.KANGAROO, "kangaroo"],
@@ -2143,6 +1960,7 @@ package classes {
 					[Tongue.DRACONIC, "draconic"],
 					[Tongue.ECHIDNA, "echidna"],
 					[Tongue.LIZARD, "lizard"],
+					[Tongue.CAT, "cat"],
 				]
 		);
 		public static const DEFAULT_EYES_NAMES:Object = createMapFromPairs(
@@ -2156,6 +1974,7 @@ package classes {
 					[Eyes.BASILISK, "basilisk"],
 					[Eyes.SPIDER, "spider"],
 					[Eyes.COCKATRICE, "cockatrice"],
+					[Eyes.CAT, "cat"],
 				]
 		);
 		public static const DEFAULT_EARS_NAMES:Object = createMapFromPairs(
@@ -2347,42 +2166,42 @@ package classes {
 		);
 		public static const DEFAULT_VAGINA_TYPE_NAMES:Object = createMapFromPairs(
 				[
-					[VaginaClass.HUMAN, "human"],
-					[VaginaClass.EQUINE, "equine"],
-					[VaginaClass.BLACK_SAND_TRAP, "black sandtrap"],
+					[Vagina.HUMAN, "human"],
+					[Vagina.EQUINE, "equine"],
+					[Vagina.BLACK_SAND_TRAP, "black sandtrap"],
 				]
 		);
 		public static const DEFAULT_VAGINA_WETNESS_SCALES:Array = [
-			[VaginaClass.WETNESS_DRY, "dry"],
-			[VaginaClass.WETNESS_NORMAL, "normal"],
-			[VaginaClass.WETNESS_WET, "wet"],
-			[VaginaClass.WETNESS_SLICK, "slick"],
-			[VaginaClass.WETNESS_DROOLING, "drooling"],
-			[VaginaClass.WETNESS_SLAVERING, "slavering"],
+			[Vagina.WETNESS_DRY, "dry"],
+			[Vagina.WETNESS_NORMAL, "normal"],
+			[Vagina.WETNESS_WET, "wet"],
+			[Vagina.WETNESS_SLICK, "slick"],
+			[Vagina.WETNESS_DROOLING, "drooling"],
+			[Vagina.WETNESS_SLAVERING, "slavering"],
 		];
 		public static const DEFAULT_VAGINA_LOOSENESS_SCALES:Array = [
-			[VaginaClass.LOOSENESS_TIGHT, "tight"],
-			[VaginaClass.LOOSENESS_NORMAL, "normal"],
-			[VaginaClass.LOOSENESS_LOOSE, "loose"],
-			[VaginaClass.LOOSENESS_GAPING, "gaping"],
-			[VaginaClass.LOOSENESS_GAPING_WIDE, "gaping wide"],
-			[VaginaClass.LOOSENESS_LEVEL_CLOWN_CAR, "clown-car level"],
+			[Vagina.LOOSENESS_TIGHT, "tight"],
+			[Vagina.LOOSENESS_NORMAL, "normal"],
+			[Vagina.LOOSENESS_LOOSE, "loose"],
+			[Vagina.LOOSENESS_GAPING, "gaping"],
+			[Vagina.LOOSENESS_GAPING_WIDE, "gaping wide"],
+			[Vagina.LOOSENESS_LEVEL_CLOWN_CAR, "clown-car level"],
 		];
 		public static const DEFAULT_ANAL_WETNESS_SCALES:Array = [
-			[AssClass.WETNESS_DRY, "dry"],
-			[AssClass.WETNESS_NORMAL, "normal"],
-			[AssClass.WETNESS_MOIST, "moist"],
-			[AssClass.WETNESS_SLIMY, "slimy"],
-			[AssClass.WETNESS_DROOLING, "drooling"],
-			[AssClass.WETNESS_SLIME_DROOLING, "slime-drooling"],
+			[Ass.WETNESS_DRY, "dry"],
+			[Ass.WETNESS_NORMAL, "normal"],
+			[Ass.WETNESS_MOIST, "moist"],
+			[Ass.WETNESS_SLIMY, "slimy"],
+			[Ass.WETNESS_DROOLING, "drooling"],
+			[Ass.WETNESS_SLIME_DROOLING, "slime-drooling"],
 		];
 		public static const DEFAULT_ANAL_LOOSENESS_SCALES:Array = [
-			[AssClass.LOOSENESS_VIRGIN, "virgin"],
-			[AssClass.LOOSENESS_TIGHT, "tight"],
-			[AssClass.LOOSENESS_NORMAL, "normal"],
-			[AssClass.LOOSENESS_LOOSE, "loose"],
-			[AssClass.LOOSENESS_STRETCHED, "stretched"],
-			[AssClass.LOOSENESS_GAPING, "gaping"],
+			[Ass.LOOSENESS_VIRGIN, "virgin"],
+			[Ass.LOOSENESS_TIGHT, "tight"],
+			[Ass.LOOSENESS_NORMAL, "normal"],
+			[Ass.LOOSENESS_LOOSE, "loose"],
+			[Ass.LOOSENESS_STRETCHED, "stretched"],
+			[Ass.LOOSENESS_GAPING, "gaping"],
 		];
 		public static const DEFAULT_HIP_RATING_SCALES:Array = [
 			[Hips.RATING_BOYISH, "boyish"],
@@ -2469,7 +2288,6 @@ package classes {
 			var storage:String = "";
 			if (creature.breastRows.length === 0) return "unremarkable chest muscles ";
 			if (creature.breastRows.length === 2) {
-				//if (creature.totalBreasts() === 4) storage += "quartet of ";
 				storage += "two rows of ";
 			}
 			if (creature.breastRows.length === 3) {
@@ -2493,7 +2311,6 @@ package classes {
 		{
 			if (i_creature.tail.type === Tail.NONE)
 			{
-				//trace("WARNING: Creature has no tails to describe.");
 				return "<b>!Creature has no tails to describe!</b>";
 			}
 			
@@ -2527,7 +2344,6 @@ package classes {
 		{
 			if (i_creature.tail.type === Tail.NONE)
 			{
-				//trace("WARNING: Creature has no tails to describe.");
 				return "<b>!Creature has no tails to describe!</b>";
 			}
 			
@@ -2582,7 +2398,6 @@ package classes {
 				else descript += "breasts";
 			}
 			if (temp14 === 3) {
-				//if (creature.breastRows[temp142].breastRating > 6) descript += "rack";
 				descript += "breasts";
 			}
 			if (temp14 === 4) descript += "tits";
@@ -2643,14 +2458,6 @@ package classes {
 			}
 			return descript;
 		}
-		
-/* Moved to Creature.as
-		public static function chestDesc(creature:Creature):String
-		{
-			if (creature.biggestTitSize() < 1) return "chest";
-			else return biggestBreastSizeDescript(creature);
-		}
-*/
 
 		public static function assholeOrPussy(creature:Creature):String
 		{
@@ -2828,7 +2635,6 @@ package classes {
 			var descripted:Boolean = false;
 			//Count cocks & Prep average totals
 			while (currCock <= totCock - 1) {
-				//trace("Counting cocks!");
 				if (creature.cocks[currCock].cockType === CockTypesEnum.HUMAN) {
 					normalCocks++;
 					normalCockKey = currCock;

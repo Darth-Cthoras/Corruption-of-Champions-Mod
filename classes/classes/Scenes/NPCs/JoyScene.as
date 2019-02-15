@@ -527,7 +527,7 @@ package classes.Scenes.NPCs
 			outputText("You decide to ask Joy what she thinks about you.");
 			outputText("\n\nJoy blinks and looks at you puzzled. \"<i>What do I, like, think of you? Okay...</i>\" She narrows her eyes, studying you intensely.\n\n");
 			//Race check
-			switch(player.race()) {
+			switch(player.race) {
 				case "human":
 					outputText("\"<i>Well, you're a human. I haven't seen one of your kind in, like, many, many years. I think the demons got 'em all, or at least they got most of 'em. They try to round up every human who comes through, like, the portals, too. Still, I think there's some of you still hidden around.</i>\"");
 					break;
@@ -1352,7 +1352,7 @@ package classes.Scenes.NPCs
 			if (refillAmount > (120 - player.hunger)) refillAmount = (120 - player.hunger); //Constrain max weight gain to +2.
 			player.refillHunger(refillAmount);
 			player.changeFatigue(-40);
-			HPChange(50 + player.maxHP() / 5, false);
+			player.HPChange(50 + player.maxHP() / 5, false);
 			dynStats("lus", 20 + (player.lib / 5));
 			//Libido reduction
 			dynStats("lib", -1);
@@ -2233,7 +2233,7 @@ package classes.Scenes.NPCs
 			outputText("\n\nYou barely register Joy's comment though, the feeling of your breasts being slowly drained of their milk feels so nice, you can't help but fall asleep...");
 			player.knockUpForce(); //Clear pregnancy
 			player.cuntChange(60, true,true,false);
-			if (player.vaginas[0].vaginalWetness == VaginaClass.WETNESS_DRY) player.vaginas[0].vaginalWetness++;
+			if (player.vaginas[0].vaginalWetness == Vagina.WETNESS_DRY) player.vaginas[0].vaginalWetness++;
 			player.orgasm('Vaginal');
 			dynStats("str", -1,"tou", -2, "spe", 3, "lib", 1, "sen", .5);
 			flags[kFLAGS.JOY_TWINS_BIRTHED]++;

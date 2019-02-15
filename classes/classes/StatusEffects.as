@@ -234,7 +234,6 @@ import classes.StatusEffects.CombatStatusEffect;
 		public static const Platoon:StatusEffectType = mk("platoon");
 		public static const QueenBind:StatusEffectType = mk("QueenBind");
 		// @aimozg HA HA HA
-		public static const GiantBoulder:StatusEffectType = mk("Giant Boulder");
 		public static const Round:StatusEffectType = mk("Round");
 		public static const round:StatusEffectType = mk("round");
 		public static const RunDisabled:StatusEffectType = mk("Run Disabled");
@@ -253,6 +252,10 @@ import classes.StatusEffects.CombatStatusEffect;
 		public static const Vala:StatusEffectType = mk("vala");
 		public static const Vapula:StatusEffectType = mk("Vapula");
 		public static const WhipReady:StatusEffectType = mk("Whip Ready");
+		public static const AikoLustPrank:StatusEffectType = mk("Aiko sex prank");
+		public static const AikoHyper:StatusEffectType = mk("Aiko hyper attacks");
+		public static const AikoArcaneArcher:StatusEffectType = mk("Aiko archer attacks");
+		public static const YamataCanon:StatusEffectType = mk("Yamata Foxfire Canon");
 
 		//Plantgirl
 		public static const happy:StatusEffectType = mk("happy");
@@ -283,6 +286,7 @@ import classes.StatusEffects.CombatStatusEffect;
 		public static const Disarmed:StatusEffectType        = mk("Disarmed", CombatStatusEffect);
 		public static const DriderKiss:StatusEffectType      = mk("Drider Kiss", CombatStatusEffect);
 		public static const FirstAttack:StatusEffectType     = mk("FirstAttack", CombatStatusEffect);
+		public static const GiantBoulder:StatusEffectType    = mk("Giant Boulder", CombatStatusEffect);
 		public static const GiantGrabbed:StatusEffectType    = mk("Giant Grabbed", CombatStatusEffect);
 		public static const GiantStrLoss:StatusEffectType    = GiantStrLossDebuff.TYPE;
 		public static const GnollSpear:StatusEffectType      = GnollSpearDebuff.TYPE;
@@ -338,12 +342,14 @@ import classes.StatusEffects.CombatStatusEffect;
 		public static const MinotaurKingsTouch:StatusEffectType = mk("Minotaur Kings Touch", CombatStatusEffect);
 		public static const PigbysHands:StatusEffectType = mk("Pigbys Hands", CombatStatusEffect);
 		public static const WhipSilence:StatusEffectType = mk("Whip-Silence", CombatStatusEffect);
+		public static const AikoLightningArrow:StatusEffectType = mk("Aiko archer attacks", CombatStatusEffect);
+		public static const YamataEntwine:StatusEffectType = mk("Yamata Entwine", CombatStatusEffect);
 		/**
 		 * Creates status affect
 		 */
 		private static function mk(id:String, clazz:Class = null, arity: int = 1):StatusEffectType
 		{
-			return new StatusEffectType(id,clazz ? clazz : StatusEffectClass,arity);
+			return new StatusEffectType(id,clazz ? clazz : StatusEffect,arity);
 		}
 	}
 }

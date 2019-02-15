@@ -26,15 +26,9 @@ package classes.Items.Consumables
 			
 			if (player.hasReptileScales() && player.hasDragonWings() && player.tongue.type === Tongue.DRACONIC)
 				tfSource = "catTransformation-dragonne";
-			changes = 0;
-			changeLimit = 1;
 			var temp2:Number = 0;
 			var temp3:Number = 0;
-			if (rand(2) === 0) changeLimit++;
-			if (rand(2) === 0) changeLimit++;
-			if (rand(3) === 0) changeLimit++;
-			if (player.findPerk(PerkLib.HistoryAlchemist) >= 0) changeLimit++;
-			if (player.findPerk(PerkLib.TransformationResistance) >= 0) changeLimit--;
+			mutations.initTransformation([2, 2, 3]);
 			//Text go!
 			clearOutput();
 			outputText("You take a bite of the fruit and gulp it down. It's thick and juicy and has an almost overpowering sweetness. Nevertheless, it is delicious and you certainly could use a meal.  You devour the fruit, stopping only when the hard, nubby pit is left; which you toss aside.");
@@ -55,14 +49,12 @@ package classes.Items.Consumables
 					outputText("\n\nYou pause mid-step and crouch. Your leg muscles have cramped up like crazy. After a few moments, the pain passes and you feel like you could chase anything down.");
 					dynStats("spe", .5);
 				}
-				//[removed:1.4.10]//changes++;
 			}
 			//Strength raises to 40
 			if (player.str100 < 40 && rand(3) === 0 && changes < changeLimit) {
 				if (rand(2) === 0) outputText("\n\nYour muscles feel taut, like a coiled spring, and a bit more on edge.");
 				else outputText("\n\nYou arch your back as your muscles clench painfully.  The cramp passes swiftly, leaving you feeling like you've gotten a bit stronger.");
 				dynStats("str", 1);
-				//[removed:1.4.10]//changes++;
 			}
 			//Strength ALWAYS drops if over 60
 			//Does not add to change total
@@ -96,7 +88,6 @@ package classes.Items.Consumables
 				//High intelligence
 				else outputText("\n\nYou start to feel a bit dizzy, but the sensation quickly passes.  Thinking hard on it, you mentally brush away the fuzziness that seems to permeate your brain and determine that this fruit may have actually made you dumber.  It would be best not to eat too much of it.");
 				dynStats("int", -1);
-				//[removed:1.4.10]//changes++;
 			}
 			//Libido gain
 			if (player.lib100 < 80 && changes < changeLimit && rand(4) === 0) {
@@ -115,7 +106,6 @@ package classes.Items.Consumables
 					outputText("turned on.");
 				}
 				dynStats("lib", 1, "sen", .25);
-				//[removed:1.4.10]//changes++;
 			}
 			
 			//Sexual changes would go here if I wasn't a tard.
@@ -190,7 +180,6 @@ package classes.Items.Consumables
 				}
 				else outputText("Then, it disappears back into your sheath.");
 				player.cocks[i].cockType = CockTypesEnum.CAT;
-				player.cocks[i].knotMultiplier = 1;
 				changes++;
 			}
 			//Cat penorz shrink
@@ -249,6 +238,23 @@ package classes.Items.Consumables
 				mutations.updateOvipositionPerk(tfSource);
 			}
 			//Body type changes.  Teh rarest of the rare.
+			// Catgirl-face -> cat-morph-face
+			if (player.face.type === Face.CATGIRL &&
+				player.tongue.type === Tongue.CAT &&
+				player.ears.type === Ears.CAT &&
+				player.tail.type === Tail.CAT &&
+				player.lowerBody.type === LowerBody.CAT &&
+				player.arms.type === Arms.CAT &&
+				(player.hasFur() || (player.hasReptileScales() && player.dragonneScore() >= 4)) &&
+				rand(5) === 0 && changes < changeLimit
+			) {
+				outputText("\n\nMind-numbing pain courses through you as you feel your facial bones rearranging."
+				          +" You clutch at your face in agony as your skin crawls and shifts, your visage reshaping to replace your facial"
+				          +" characteristics with those of a feline along with a muzzle, a cute cat-nose and whiskers.");
+				outputText("\n<b>You now have a cat-face.</b>");
+				player.face.type = Face.CAT;
+				changes++;
+			}
 			//DA EARZ
 			if (player.ears.type !== Ears.CAT && rand(5) === 0 && changes < changeLimit) {
 				//human to cat:
@@ -302,14 +308,46 @@ package classes.Items.Consumables
 				outputText("You reach down to scratch your arm absent-mindedly and pull your fingers away to find strands of " + player.skin.furColor + " fur. Wait, fur?  What just happened?! You spend a moment examining yourself and discover that <b>you are now covered in glossy, soft fur.</b>");
 				changes++;
 			}
+			// Fix old cat faces without cat-eyes.
+			if (player.hasCatFace() && !player.hasCatEyes() && rand(3) === 0 && changes < changeLimit) {
+				outputText("\n\nFor a moment your sight shifts as the ambient light suddenly turns extremely bright, almost blinding you."
+				          +" You walk around disoriented until the luminosity fades back to normal."
+				          +" You run to a puddle of water to check your reflection and quickly notice your pupils have become cat-like.");
+				outputText("\n<b>You now have cat-eyes!</b>");
+				player.eyes.setType(Eyes.CAT);
+				changes++;
+			}
 			//CAT-FACE!  FULL ON FURRY!  RAGE AWAY NEKOZ
-			if (player.tail.type === Tail.CAT && player.ears.type === Ears.CAT && rand(5) === 0 && changes < changeLimit && player.lowerBody.type === LowerBody.CAT && (player.hasFur() || (player.hasReptileScales() && player.dragonneScore() >= 4)) && player.face.type !== Face.CAT) {
+			if (player.tail.type === Tail.CAT && player.ears.type === Ears.CAT && player.lowerBody.type === LowerBody.CAT && !player.hasCatFace() && rand(5) === 0 && changes < changeLimit) {
 				//Gain cat face, replace old face
-				temp = rand(3);
-				if (temp === 0) outputText("\n\nYour face is wracked with pain. You throw back your head and scream in agony as you feel your cheekbones breaking and shifting, reforming into something... different. You find a puddle to view your reflection and discover <b>your face is now a cross between human and feline features.</b>");
-				else if (temp === 1) outputText("\n\nMind-numbing pain courses through you as you feel your facial bones rearranging.  You clutch at your face in agony as your skin crawls and shifts, your visage reshaping to replace your facial characteristics with those of a feline. <b>You now have an anthropomorphic cat-face.</b>");
-				else outputText("\n\nYour face is wracked with pain. You throw back your head and scream in agony as you feel your cheekbones breaking and shifting, reforming into something else. <b>Your facial features rearrange to take on many feline aspects.</b>");
-				player.face.type = Face.CAT;
+				outputText("\n\nYou feel your canines changing, elongating into sharp dagger-like teeth capable of causing severe injuries."
+				          +" Funnily, your face remained relatively human even after the change. You purr at the change, giving you a cute look."
+				          +"[if (hasCatEyes == false)\nFor a moment your sight shifts as the ambient light suddenly turns extremely bright,"
+				          +" almost blinding you. You walk around disoriented until the luminosity fades back to normal."
+				          +" You run to a puddle of water to check your reflection and quickly notice your pupils have become cat-like.]");
+				outputText("\n<b>You now have the face of a cat-" + player.mf("boy", "girl") + "!</b>");
+				player.face.setType(Face.CATGIRL);
+				changes++;
+			}
+			// Cat-tongue
+			if (player.hasCatFace() && player.tongue.type !== Tongue.CAT && rand(5) === 0 && changes < changeLimit) {
+				outputText("\n\nYour tongue suddenly feel weird. You try to stick it out to see whats going on and discover it changed to look"
+				          +" similar to the tongue of a cat. At least you will be able to groom yourself properly with <b>your new cat tongue</b>.");
+				player.tongue.type = Tongue.CAT;
+				changes++;
+			}
+			//Arms
+			if (player.arms.type !== Arms.CAT && player.isFurry() && player.tail.type === Tail.CAT && player.lowerBody.type === LowerBody.CAT && rand(4) === 0 && changes < changeLimit)
+			{
+				outputText("\n\nWeakness overcomes your arms, and no matter what you do, you can’t muster the strength to raise or move them."
+				          +" Did the fruit have some drug-like effects? Sitting on the ground, you wait for the limpness to end."
+				          +" As you do so, you realize that the bones at your hands are changing, as well as the muscles on your arms."
+				          +" They’re soon covered, from the shoulders to the tip of your digits, on a layer of soft,"
+				          +" fluffy [if (hasFurryUnderBody)[underBody.furColor]|[furColor]] fur. Your hands gain pink,"
+				          +" padded paws where your palms were once, and your nails become long, thin, curved claws,"
+				          +" sharp enough to tear flesh and nimble enough to make climbing and exploring easier."
+				          +" <b>Your arms have become like those of a cat!</b>");
+				player.arms.setType(Arms.CAT);
 				changes++;
 			}
 			// Remove gills
@@ -319,7 +357,7 @@ package classes.Items.Consumables
 			//FAILSAFE CHANGE
 			if (changes === 0) {
 				outputText("\n\nInhuman vitality spreads through your body, invigorating you!\n");
-				game.HPChange(50, true);
+				player.HPChange(50, true);
 				dynStats("lus", 3);
 			}
 			if (changes < changeLimit) {

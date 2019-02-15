@@ -1,15 +1,16 @@
 package classes.Perks 
 {
-	import classes.PerkClass;
+	import classes.Perk;
 	import classes.PerkType;
 	import classes.GlobalFlags.kGAMECLASS;
+	import classes.CharCreation;
 	
 	public class AscensionWisdomPerk extends PerkType
 	{
 		
-		override public function desc(params:PerkClass = null):String
+		override public function desc(params:Perk = null):String
 		{
-			return "(Rank: " + params.value1 + "/" + kGAMECLASS.charCreation.MAX_WISDOM_LEVEL + ") Increases experience gained in battles by " + params.value1 * 10 + "%.";
+			return "(Rank: " + params.value1 + "/" + CharCreation.MAX_WISDOM_LEVEL + ") Increases experience gained in battles by " + params.value1 * 10 + "%.";
 		}
 
 		public function AscensionWisdomPerk() 

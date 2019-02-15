@@ -5,18 +5,25 @@ package classes.Scenes.Areas.HighMountains {
 	import classes.*;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.Items.ArmorLib;
+	import classes.Scenes.Monsters.StareMonster;
+	import classes.Scenes.Monsters.pregnancies.PlayerCockatricePregnancy;
+	import classes.Scenes.PregnancyProgression;
+	import classes.internals.GuiOutput;
 	import classes.lists.BreastCup;
 
 	public class CockatriceScene extends BaseContent {
-		public function CockatriceScene() {}
+		public function CockatriceScene(pregnancyProgression:PregnancyProgression, output:GuiOutput) {
+			new PlayerCockatricePregnancy(pregnancyProgression, output);
+		}
 
 		//Intros and Fight Texts.
 		public function greeting():void {
-			var cockatrice:Cockatrice = new Cockatrice();
+			var cockatrice:Cockatrice;
 			//spriteSelect(75);
 			clearOutput();
 			credits.authorText = "MissBlackthorne";
 			if (flags[kFLAGS.TIMES_ENCOUNTERED_COCKATRICES] == 0) { //First encounter:
+				cockatrice = new Cockatrice();
 				outputText("As you follow the trails in the high mountains, the rocky terrain becomes less stable, the path devolving into a series of loose crags with gravel like sediment surrounding large boulders and rough stepping stone-like structures. "
 				          +"As you cling to the rock face trying to step from one rock to another you see something in the distance. "
 				          +"A figure, perched on one of the outcroppings with surprising ease.\n\n");
@@ -50,11 +57,15 @@ package classes.Scenes.Areas.HighMountains {
 				          +"It jumps from rock to rock with ease, quickly closing in on you with a squawking shout. "
 				          +"You ready your [weapon] as the creature shows no sign of slowing. Looks like you have a fight on your hands!");
 				//(spd loss)
-				Basilisk.speedReduce(player, 5);
+				StareMonster.speedReduce(player, 5);
 			}
 			else { //Standard encounter:
-				if (rand(100) < 40) //40% chance of wings
-					cockatrice.wingify();
+				if (rand(100) < 40) {
+					//40% chance of wings
+					cockatrice = new WingedCockatrice();
+				} else {
+					cockatrice = new Cockatrice();
+				}
 				outputText(images.showImage("monster-cockatrice"));
 				outputText("As you once again climb high in the mountains, you spend some time catching your breath on a rocky plateau to avoid the loose gravelly ground. "
 				          +"You see a brightly coloured creature in the distance, ");
@@ -64,10 +75,7 @@ package classes.Scenes.Areas.HighMountains {
 				          +"It approaches squawking with excitement, not slowing in the slightest as it reaches the plateau. "
 				          +"You now see it clearly, it's a cockatrice, and you know it won’t or can’t halt in such an excitable state. Looks like you’ll have to fight!");
 			}
-			if (flags[kFLAGS.CODEX_ENTRY_COCKATRICES] <= 0) {
-				flags[kFLAGS.CODEX_ENTRY_COCKATRICES] = 1;
-				outputText("\n\n<b>New codex entry unlocked: Cockatrices!</b>")
-			}
+			unlockCodexEntry("Cockatrices", kFLAGS.CODEX_ENTRY_COCKATRICES);
 			startCombat(cockatrice);
 			flags[kFLAGS.TIMES_ENCOUNTERED_COCKATRICES]++;
 		}
@@ -139,7 +147,7 @@ package classes.Scenes.Areas.HighMountains {
 			outputText("You begin to rise up his length, the bumps rubbing firmly against your clit with each inch that leaves you. "
 			          +"As you reach the tip you slam your hips back down, relishing the feeling of his length rapidly stretching you as the tip pokes your womb. "
 			          +"You keep this pace as you break the kiss, the regular ascent and rapid descent making lewd ");
-			if (player.vaginas[0].vaginalWetness >= VaginaClass.WETNESS_WET) outputText("squelching");
+			if (player.vaginas[0].vaginalWetness >= Vagina.WETNESS_WET) outputText("squelching");
 			else outputText("slapping");
 			outputText(" noises as you get closer to your peak. As you ride him the cockatrice suddenly lunges his forward, trapping one of you [nipples] in his mouth."
 			          +" He sucks hungrily as he feels your walls tightening around him, eager to bring you to a climax. His hand goes to ");
@@ -195,10 +203,10 @@ package classes.Scenes.Areas.HighMountains {
 			          +"You rock your hips a couple more times, spreading his pre over your entrance before pushing down.\n\n");
 			outputText(images.showImage("cockatrice-ridehim-anal"));
 			outputText("As his thick tip slides into your pucker ");
-			if (player.ass.analLooseness <= AssClass.LOOSENESS_TIGHT) outputText("stretching your tight passage open ");
+			if (player.ass.analLooseness <= Ass.LOOSENESS_TIGHT) outputText("stretching your tight passage open ");
 			outputText("you can’t help but moan. "
 			          +"The nubs along his shaft each rub against your sensitive pucker as you slowly take his whole length, and you can’t help but ");
-			if (player.ass.analLooseness <= AssClass.LOOSENESS_TIGHT) outputText("feel full.");
+			if (player.ass.analLooseness <= Ass.LOOSENESS_TIGHT) outputText("feel full.");
 			else outputText("enjoy his size in your practised asshole.");
 			outputText(" His hands come to rest on your ass, squeezing your cheeks lightly as he leans forward and draws you into an open mouthed kiss."
 			          +" He gently rocks his hips, making sure he’s snuggly inside you before he urges you to move with a gentle lift.\n\n");
@@ -593,7 +601,7 @@ package classes.Scenes.Areas.HighMountains {
 		public function cockatriceLossAnal():void {
 			clearOutput();
 			credits.authorText = "MissBlackthorne";
-			outputText("You fall to the ground [if (hp < 1)utterly exhausted|too aroused to continue]. "
+			outputText("You fall to the ground [if (hp <= 1)utterly exhausted|too aroused to continue]. "
 			          +"The Cockatrice, knowing that he’s won, approaches you slowly, eyes roving over your body hungrily. "
 			          +"[if (hasArmor) He makes short work of your [armor], tossing it aside with little care.] "
 			          +"With a sudden lunge he pins you to the ground, your wrists held under his scaled hands and your [if (isNaga)coils trapped beneath|[if (isGoo)mound trapped beneath|legs spread around]] his curved hips. "
@@ -625,7 +633,7 @@ package classes.Scenes.Areas.HighMountains {
 		public function cockatriceLossVaginal():void {
 			clearOutput();
 			credits.authorText = "MissBlackthorne";
-			outputText("You fall to the ground [if (hp < 1)utterly exhausted|too aroused to continue]. "
+			outputText("You fall to the ground [if (hp <= 1)utterly exhausted|too aroused to continue]. "
 			          +"The Cockatrice, knowing that he’s won, approaches you slowly, eyes roving over your body hungrily. "
 			          +"[if (hasArmor)He makes short work of your [armor], tossing it aside with little care.] "
 			          +"With a sudden lunge he pins you to the ground, your wrists held under his scaled hands and your [if (isNaga)coils trapped beneath|[if (isGoo)mound trapped beneath|legs spread around]] his curved hips. "
@@ -694,7 +702,7 @@ package classes.Scenes.Areas.HighMountains {
 		public function cockatriceLossOral():void {
 			clearOutput();
 			credits.authorText = "MissBlackthorne";
-			outputText("You fall to the ground [if (hp < 1)utterly exhausted|too aroused to continue]. "
+			outputText("You fall to the ground [if (hp <= 1)utterly exhausted|too aroused to continue]. "
 			          +"The cockatrice stalks over to you, eyeing you up as he strokes his rapidly emerging cock. "
 			          +"His casual approach has you mesmerised, such calm confidence something you didn't expect from the  hyperactive reptile. "
 			          +"He cups your chin, looking into your eyes, letting you get lost in that electric blue gaze as he gently hums. "

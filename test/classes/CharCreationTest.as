@@ -77,24 +77,44 @@ package classes{
 		public function isAWoman_checkClitLength():void {
 			cut.isAWoman();
 			
-			assertThat(player.getClitLength(), equalTo(VaginaClass.DEFAULT_CLIT_LENGTH));
+			assertThat(player.getClitLength(), equalTo(Vagina.DEFAULT_CLIT_LENGTH));
 		}
 		
 		[Test]
 		public function isAHerm_checkClitLength():void {
 			cut.isAHerm();
 			
-			assertThat(player.getClitLength(), equalTo(VaginaClass.DEFAULT_CLIT_LENGTH));
+			assertThat(player.getClitLength(), equalTo(Vagina.DEFAULT_CLIT_LENGTH));
+		}
+		
+		[Test]
+		public function hpSetToMaxHpDuringNewGame(): void {
+			cut.newGameGo();
+			
+			assertThat(kGAMECLASS.player.HP, equalTo(95));
+		}
+		
+		[Test]
+		public function hpSetToMaxUsingToughPerk():void {
+			cut.testSetEndowment(PerkLib.Tough);
+			
+			assertThat(kGAMECLASS.player.HP, equalTo(60));
 		}
     }
 }
 
 import classes.CharCreation;
+import classes.PerkType;
+
 /**
  * This is to allow the testing of functions without making them public in the actual class.
  */
 class CharCreationForTest extends CharCreation {
 	public function testReincarnate():void {
 		reincarnate();
+	}
+	
+	public function testSetEndowment(choice:PerkType):void {
+		setEndowment(choice);
 	}
 }

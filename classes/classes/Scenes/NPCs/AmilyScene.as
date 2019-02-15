@@ -7,6 +7,8 @@ package classes.Scenes.NPCs
 	import classes.BodyParts.*;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.GlobalFlags.kGAMECLASS;
+	import classes.Scenes.NPCs.pregnancies.PlayerAmilyPregnancy;
+	import classes.Scenes.PregnancyProgression;
 	import classes.display.SpriteDb;
 	import classes.internals.*;
 	import classes.lists.BreastCup;
@@ -96,12 +98,14 @@ package classes.Scenes.NPCs
 
 		public var pregnancy:PregnancyStore;
 
-		public function AmilyScene()
+		public function AmilyScene(pregnancyProgression:PregnancyProgression, output:GuiOutput)
 		{
 			pregnancy = new PregnancyStore(kFLAGS.AMILY_PREGNANCY_TYPE, kFLAGS.AMILY_INCUBATION, kFLAGS.AMILY_BUTT_PREGNANCY_TYPE, kFLAGS.AMILY_OVIPOSITED_COUNTDOWN);
 			pregnancy.addPregnancyEventSet(PregnancyStore.PREGNANCY_PLAYER, 150, 120, 100, 96, 90, 72, 48);
 												//Event: 0 (= not pregnant),  1,   2,   3,  4,  5,  6,  7,  8 (< 48)
 			CoC.timeAwareClassAdd(this);
+			
+			new PlayerAmilyPregnancy(pregnancyProgression, output);
 		}
 
 		//Implementation of TimeAwareInterface
@@ -4656,7 +4660,7 @@ package classes.Scenes.NPCs
 
 			outputText("\"<i>Torturing myself you say? I think you're right. Maybe I should see if ");
 			//[(if Jojo's corrupt)
-			if (flags[kFLAGS.JOJO_STATUS] >= 5 && flags[kFLAGS.JOJO_DEAD_OR_GONE] == 0) outputText("Jojo wants to play,");
+			if (getGame().jojoScene.isJojoCorrupted() && flags[kFLAGS.JOJO_DEAD_OR_GONE] == 0) outputText("Jojo wants to play,");
 			//(else)
 			else outputText("I can't find someone else to play with,");
 			outputText("</i>\" you say, nonchalantly attempting to pull away from her. \"<i>No!</i>\" Amily screams; her legs tighten about your waist with such force that she actually lifts herself off of the ground in her eagerness to plant herself firmly against your crotch, rubbing her slavering pussy against you. \"<i>Mine! My fuck! Mine!</i>\" she squeaks indignantly. You laugh at how far you've pushed your little mouse slave.  Sliding your " + player.cockDescript(0) + " against her pussy, you bend down and grope her breasts roughly, drawing a desperate moan from her; slowly you get closer to her ears, then whisper, \"<i>Go ahead,</i>\" while humping against her to further excite her.\n\n");

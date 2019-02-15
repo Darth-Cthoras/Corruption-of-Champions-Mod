@@ -5,13 +5,11 @@ package classes.Scenes.NPCs
 	import classes.BodyParts.Hips;
 	import classes.GlobalFlags.kFLAGS;
 	import classes.internals.ChainedDrop;
-	import classes.display.SpriteDb;
 	import classes.internals.*;
 
 	public class Kiha extends Monster
 	{
 		private function kihaTimeWaster():void {
-			game.spriteSelect(SpriteDb.s_kiha);
 			outputText("She supports the axe on a shoulder, cracking her neck and arching her back to stretch herself, giving you an unintended show.  ");
 			player.takeLustDamage(5, true);
 			combatRoundOver();
@@ -19,7 +17,6 @@ package classes.Scenes.NPCs
 
 		//This could be silly mode worthy! Should Expand? oh ok
 		private function sillyModeKihaAttack():void {
-			game.spriteSelect(SpriteDb.s_kiha);
 			outputText("Before you can stop to think, the dragon-woman steps back - throwing her axe into the air before she starts sprinting towards you. In seconds she's reached a hair's distance between her lithe form and your own, her fist recoiling and time seemingly stopping to allow you to note the powerful energy seeping from her arms.  ");
 			//Miss:
 			if (player.spe - spe > 0 && int(Math.random()*(((player.spe-spe)/4) +80)) > 80) {
@@ -44,7 +41,6 @@ package classes.Scenes.NPCs
 		}
 
 		private function kihaFirePunch():void {
-			game.spriteSelect(SpriteDb.s_kiha);
 			outputText("The draconic girl throws her trusty weapon into the sodden ground, using the distraction to build up balls of flame around her fists.  She runs towards you, launching herself in your direction with a flurry of punches.\n");
 
 			//Dodged
@@ -76,7 +72,6 @@ package classes.Scenes.NPCs
 
 		//Fire breath
 		private function kihaFireBreath():void {
-			game.spriteSelect(SpriteDb.s_kiha);
 			outputText("Kiha throws her arms back and roars, exhaling a swirling tornado of fire directly at you!\n");
 			//Miss:
 			//Determine if evaded
@@ -179,12 +174,13 @@ package classes.Scenes.NPCs
 				this.long += "Damp patch forms in her silk " + (game.flags[kFLAGS.KIHA_UNDERGARMENTS] == 1 ? "panties" : "loincloth") + ", regardless of her state of arousal.  Despite her near nudity, Kiha stands with the confidence and poise of a trained fighter.";
 			else 
 				this.long += "Her vagina constantly glistens with moisture, regardless of her state of arousal.  Despite her nudity, Kiha stands with the confidence and poise of a trained fighter.";
+			this.race = "Dragon-Morph";
 			// this.plural = false;
-			this.createVagina(false, VaginaClass.WETNESS_DROOLING, VaginaClass.LOOSENESS_NORMAL);
+			this.createVagina(false, Vagina.WETNESS_DROOLING, Vagina.LOOSENESS_NORMAL);
 			this.createStatusEffect(StatusEffects.BonusVCapacity, 40, 0, 0, 0);
 			createBreastRow(Appearance.breastCupInverse("D"));
-			this.ass.analLooseness = AssClass.LOOSENESS_LOOSE;
-			this.ass.analWetness = AssClass.WETNESS_DRY;
+			this.ass.analLooseness = Ass.LOOSENESS_LOOSE;
+			this.ass.analWetness = Ass.WETNESS_DRY;
 			this.createStatusEffect(StatusEffects.BonusACapacity,40,0,0,0);
 			this.tallness = 6*12+1;
 			this.hips.rating = Hips.RATING_AMPLE;

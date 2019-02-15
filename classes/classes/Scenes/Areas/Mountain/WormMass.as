@@ -77,6 +77,12 @@ package classes.Scenes.Areas.Mountain
 			game.mountain.wormsScene.infest1();
 		}
 		
+		override public function defeated(hpVictory:Boolean):void
+		{
+			if (hpVictory) flags[kFLAGS.WORMS_MASS_KILLED]++;
+			game.combat.finishCombat();
+		}
+		
 		override public function maxHP():Number
 		{
 			return 40 + (player.newGamePlusMod() * 20);
@@ -89,14 +95,15 @@ package classes.Scenes.Areas.Mountain
 			this.short = "worms";
 			this.imageName = "worms";
 			this.long = "Before you stands the horrid mass of worms. It has shifted itself and now takes the shape of a humanoid composed completely of the worms in the colony. Its vaguely human shape lumbers towards you in a clearly aggressive manner.";
+			this.race = "Abomination";
 			this.plural = true;
 			initGenderless();
 			this.pronoun1 = "they";
 			this.pronoun2 = "them";
 			this.pronoun3 = "their";
 			this.createBreastRow(0,0);
-			this.ass.analLooseness = AssClass.LOOSENESS_VIRGIN;
-			this.ass.analWetness = AssClass.WETNESS_DRY;
+			this.ass.analLooseness = Ass.LOOSENESS_VIRGIN;
+			this.ass.analWetness = Ass.WETNESS_DRY;
 			this.tallness = 1;
 			this.hips.rating = Hips.RATING_SLENDER;
 			this.butt.rating = Butt.RATING_BUTTLESS;

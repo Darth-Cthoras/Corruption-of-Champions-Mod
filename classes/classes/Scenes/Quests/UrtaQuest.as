@@ -1,4 +1,4 @@
-﻿package classes.Scenes.Quests{
+package classes.Scenes.Quests{
 	import classes.*;
 	import classes.BodyParts.*;
 	import classes.GlobalFlags.kFLAGS;
@@ -38,16 +38,6 @@
 //You play as Urta, which copies everyone about you into this new variable. Very clumsy.
 //TODO: Figure out this whole thing. You play as Urta but the whole quest saves you state into this variable and swaps back and forth
 //whenever you "leave" the quest
-public var urtaQItems1:ItemSlotClass = new ItemSlotClass();
-public var urtaQItems2:ItemSlotClass = new ItemSlotClass();
-public var urtaQItems3:ItemSlotClass = new ItemSlotClass();
-public var urtaQItems4:ItemSlotClass = new ItemSlotClass();
-public var urtaQItems5:ItemSlotClass = new ItemSlotClass();
-public var urtaQItems6:ItemSlotClass = new ItemSlotClass();
-public var urtaQItems7:ItemSlotClass = new ItemSlotClass();
-public var urtaQItems8:ItemSlotClass = new ItemSlotClass();
-public var urtaQItems9:ItemSlotClass = new ItemSlotClass();
-public var urtaQItems10:ItemSlotClass = new ItemSlotClass();
 
 public function urtaBusy():Boolean {
 	return (telAdre.edryn.pregnancy.type == PregnancyStore.PREGNANCY_TAOTH || flags[kFLAGS.URTA_QUEST_STATUS] == -1);
@@ -180,16 +170,6 @@ public function infertilityQuestions():void {
 
 private function resetToPC():void {
 	player = player2;
-	player.itemSlot1 = urtaQItems1;
-	player.itemSlot2 = urtaQItems2;
-	player.itemSlot3 = urtaQItems3;
-	player.itemSlot4 = urtaQItems4;
-	player.itemSlot5 = urtaQItems5;
-	player.itemSlot6 = urtaQItems6;
-	player.itemSlot7 = urtaQItems7;
-	player.itemSlot8 = urtaQItems8;
-	player.itemSlot9 = urtaQItems9;
-	player.itemSlot10 = urtaQItems10;
 
 	// See called method comment.
 	player.fixFuckingCockTypesEnum();
@@ -202,26 +182,7 @@ public function startUrtaQuest():void {
 	clearOutput();
 	//trace("Cloning PC's items")
 	// *SERIALIZE* out the players current Player object + items
-	urtaQItems1 = player.itemSlot1;
-	urtaQItems2 = player.itemSlot2;
-	urtaQItems3 = player.itemSlot3;
-	urtaQItems4 = player.itemSlot4;
-	urtaQItems5 = player.itemSlot5;
-	urtaQItems6 = player.itemSlot6;
-	urtaQItems7 = player.itemSlot7;
-	urtaQItems8 = player.itemSlot8;
-	urtaQItems9 = player.itemSlot9;
-	urtaQItems10 = player.itemSlot10;
-	player.itemSlot1 = new ItemSlotClass();
-	player.itemSlot2 = new ItemSlotClass();
-	player.itemSlot3 = new ItemSlotClass();
-	player.itemSlot4 = new ItemSlotClass();
-	player.itemSlot5 = new ItemSlotClass();
-	player.itemSlot6 = new ItemSlotClass();
-	player.itemSlot7 = new ItemSlotClass();
-	player.itemSlot8 = new ItemSlotClass();
-	player.itemSlot9 = new ItemSlotClass();
-	player.itemSlot10 = new ItemSlotClass();
+
 	player2 = player;
 
 	player = new Player();
@@ -257,8 +218,8 @@ public function startUrtaQuest():void {
 	player.ass.analLooseness = 2;
 	player.createStatusEffect(StatusEffects.BonusVCapacity,58,0,0,0);
 	player.createVagina();
-	player.vaginas[0].vaginalWetness = VaginaClass.WETNESS_DROOLING;
-	player.vaginas[0].vaginalLooseness = VaginaClass.LOOSENESS_NORMAL;
+	player.vaginas[0].vaginalWetness = Vagina.WETNESS_DROOLING;
+	player.vaginas[0].vaginalLooseness = Vagina.LOOSENESS_NORMAL;
 	player.setClitLength(1);
 	player.str = 75;
 	player.tou = 80;
@@ -273,11 +234,11 @@ public function startUrtaQuest():void {
 	player.level = 15;
 	player.teaseLevel = 4;
 	//Apply new game plus modifier.
-	player.level += (player.newGamePlusMod() * 30);
-	player.str += (player.newGamePlusMod() * 25);
-	player.tou += (player.newGamePlusMod() * 25);
-	player.spe += (player.newGamePlusMod() * 25);
-	player.inte += (player.newGamePlusMod() * 25);
+	player.level += player.ascensionFactor(30);
+	player.str *= 1 + player.ascensionFactor(0.25);
+	player.tou *= 1 + player.ascensionFactor(0.25);
+	player.spe *= 1 + player.ascensionFactor(0.25);
+	player.inte *= 1 + player.ascensionFactor(0.25);
 	player.HP = player.maxHP();
 	player.fatigue = 0;
 
@@ -1153,7 +1114,7 @@ private function urtaSecondWind():void {
 		return;
 	}
 	monster.createStatusEffect(StatusEffects.UrtaSecondWinded,0,0,0,0);
-	HPChange(Math.round(player.maxHP()/2),false);
+	player.HPChange(Math.round(player.maxHP()/2),false);
 	player.changeFatigue(-50);
 	dynStats("lus", -50);
 	outputText("Closing your eyes for a moment, you focus all of your willpower on pushing yourself to your absolute limits, forcing your lusts down and drawing on reserves of energy you didn't know you had!\n\n");
@@ -2100,7 +2061,7 @@ private function urtaSleepsArmored():void {
 	outputText("\n\nIt takes a while to get back to sleep, but when you do, you sleep comfortably, knowing your armor will protect you.");
 	outputText("\n\nA quick and messy fap in the morning takes care of the tension that built up overnight.  The ground happily drinks away the evidence of your lust.");
 	//{Recover less HP/fatigue or something}
-	HPChange(.5 * player.maxHP(),false);
+	player.HPChange(.5 * player.maxHP(),false);
 	player.changeFatigue(-50);
 	player.orgasm('Dick');
 	menu();
@@ -2111,7 +2072,7 @@ private function urtaSleepsNaked():void {
 	//NOT PLANNED AS A FIGHT
 	clearOutput();
 	outputText("You bed down for the night, languidly removing your armor and stretching in the pale moonlight.  The cool air feels wonderful on your skin, particularly after being bound up in that restricting armor all day.  You yawn and wrap yourself up in a blanket, swifly falling asleep in the soft grasses at the edges of the plains, comforted by the gentle hooting of the owls in the woods to the west.");
-	HPChange(player.maxHP(),false);
+	player.HPChange(player.maxHP(),false);
 	player.changeFatigue(-100);
 	dynStats("lus", 10);
 	menu();

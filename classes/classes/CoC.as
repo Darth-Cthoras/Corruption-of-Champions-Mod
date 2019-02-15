@@ -8,7 +8,7 @@
 package classes
 {
 	// BREAKING ALL THE RULES.
-	import classes.AssClass;
+	import classes.Ass;
 	import classes.CoC_Settings;
 	import classes.Cock;
 	import classes.Creature;
@@ -17,10 +17,10 @@ package classes
 	import classes.GlobalFlags.kGAMECLASS;
 	import classes.ImageManager;
 	import classes.InputManager;
-	import classes.ItemSlotClass;
+	import classes.ItemSlot;
 	import classes.Items.*;
 	import classes.Parser.Parser;
-	import classes.PerkClass;
+	import classes.Perk;
 	import classes.PerkLib;
 	import classes.Player;
 	import classes.Scenes.*;
@@ -40,7 +40,11 @@ package classes
 	import classes.Scenes.Dungeons.HelDungeon.*;
 	import classes.Scenes.Explore.*;
 	import classes.Scenes.Monsters.*;
+	import classes.Scenes.Monsters.pregnancies.PlayerBunnyPregnancy;
+	import classes.Scenes.Monsters.pregnancies.PlayerCentaurPregnancy;
 	import classes.Scenes.NPCs.*;
+	import classes.Scenes.NPCs.pregnancies.PlayerBenoitPregnancy;
+	import classes.Scenes.NPCs.pregnancies.PlayerOviElixirPregnancy;
 	import classes.Scenes.Places.*;
 	import classes.Scenes.Places.TelAdre.*;
 	import classes.Scenes.Quests.*;
@@ -50,15 +54,13 @@ package classes
 	import classes.Scenes.Seasonal.Thanksgiving;
 	import classes.Scenes.Seasonal.Valentines;
 	import classes.Scenes.Seasonal.XmasBase;
-	import classes.StatusEffectClass;
-	import classes.VaginaClass;
-	import classes.content.*;
+	import classes.StatusEffect;
+	import classes.Vagina;
 	import classes.display.SpriteDb;
 	import classes.internals.*;
 	import classes.internals.Utils;
 	import classes.Time;
 	import coc.view.MainView;
-	import fl.data.DataProvider;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
@@ -78,7 +80,7 @@ package classes
 	/*
 	   One very important thing to know about descriptions in this game is that many words are based on hidden integer values.
 	   These integers are compared to tables or queried directly to get the words used for particular parts of descriptions. For instance,
-	   AssClass below has variables for wetness, looseness, fullness, and virginity. You'll often find little tables like this
+	   Ass below has variables for wetness, looseness, fullness, and virginity. You'll often find little tables like this
 	   scattered through the code:
 	   butt looseness
 	   0 - virgin
@@ -111,7 +113,7 @@ package classes
 	
 	[SWF(width = "1000", height = "800", backgroundColor = "0x000000", pageTitle = "Corruption of Champions")]
 	
-	public class CoC extends MovieClip
+	public class CoC extends MovieClip implements GuiInput
 	{
 		{
 			/*
@@ -191,28 +193,28 @@ package classes
 		public var achievementList:Achievements = new Achievements();
 		public var camp:Camp = new Camp(campInitialize);
 		public var dreams:Dreams = new Dreams();
-		public var dungeons:DungeonCore = new DungeonCore();
+		public var dungeons:DungeonCore;
 		public var equipmentUpgrade:ItemUpgrade = new ItemUpgrade();
 		public var followerInteractions:FollowerInteractions = new FollowerInteractions();
 		public var inventory:Inventory = new Inventory(saves);
 		public var masturbation:Masturbation = new Masturbation();
-		public var pregnancyProgress:PregnancyProgression = new PregnancyProgression();
+		public var pregnancyProgress:PregnancyProgression;
 		public var bimboProgress:BimboProgression = new BimboProgression();
 		
 		// Scenes/Areas/
 		public var commonEncounters:CommonEncounters = new CommonEncounters(); // Common dependencies go first
 		
-		public var bog:Bog = new Bog();
-		public var desert:Desert = new Desert();
-		public var forest:Forest = new Forest();
-		public var deepWoods:DeepWoods = new DeepWoods(forest);
+		public var bog:Bog;
+		public var desert:Desert;
+		public var forest:Forest;
+		public var deepWoods:DeepWoods;
 		public var glacialRift:GlacialRift = new GlacialRift();
-		public var highMountains:HighMountains = new HighMountains();
-		public var lake:Lake = new Lake();
-		public var mountain:Mountain = new Mountain();
-		public var plains:Plains = new Plains();
-		public var swamp:Swamp = new Swamp();
-		public var volcanicCrag:VolcanicCrag = new VolcanicCrag();
+		public var highMountains:HighMountains;
+		public var lake:Lake;
+		public var mountain:Mountain;
+		public var plains:Plains;
+		public var swamp:Swamp;
+		public var volcanicCrag:VolcanicCrag;
 		
 		public var exploration:Exploration = new Exploration(); //Goes last in order to get it working.
 		// Scenes/Combat/
@@ -226,20 +228,34 @@ package classes
 		public var giacomoShop:Giacomo = new Giacomo();
 		// Scenes/Monsters/
 		public var goblinScene:GoblinScene = new GoblinScene();
-		public var goblinAssassinScene:GoblinAssassinScene = new GoblinAssassinScene();
-		public var goblinWarriorScene:GoblinWarriorScene = new GoblinWarriorScene();
-		public var goblinShamanScene:GoblinShamanScene = new GoblinShamanScene();
+		public var goblinSpecialScene:GoblinSpecialScene = new GoblinSpecialScene();
 		public var goblinElderScene:PriscillaScene = new PriscillaScene();
-		public var impScene:ImpScene = new ImpScene();
+		public var impScene:ImpScene;
 		public var mimicScene:MimicScene = new MimicScene();
 		public var succubusScene:SuccubusScene = new SuccubusScene();
+		
+		/**
+		 * DO NOT REMOVE OR COMMENT OUT!
+		 * 
+		 * This definition causes the class to be compiled,
+		 * so breaking changes will cause the build to fail.
+		 */
+		private var plantGirlScene:PlantGirlScene;
+		/**
+		 * DO NOT REMOVE OR COMMENT OUT!
+		 * 
+		 * This definition causes the class to be compiled,
+		 * so breaking changes will cause the build to fail.
+		 */
+		private var goblinQueen:GoblinQueen;
+
 		// Scenes/NPC/
-		public var amilyScene:AmilyScene = new AmilyScene();
-		public var anemoneScene:AnemoneScene = new AnemoneScene();
+		public var amilyScene:AmilyScene;
+		public var anemoneScene:AnemoneScene;
 		public var arianScene:ArianScene = new ArianScene();
 		public var ceraphScene:CeraphScene = new CeraphScene();
 		public var ceraphFollowerScene:CeraphFollowerScene = new CeraphFollowerScene();
-		public var emberScene:EmberScene = new EmberScene();
+		public var emberScene:EmberScene;
 		public var exgartuan:Exgartuan = new Exgartuan();
 		public var helFollower:HelFollower = new HelFollower();
 		public var helScene:HelScene = new HelScene();
@@ -247,13 +263,13 @@ package classes
 		public var holliScene:HolliScene = new HolliScene();
 		public var isabellaScene:IsabellaScene = new IsabellaScene();
 		public var isabellaFollowerScene:IsabellaFollowerScene = new IsabellaFollowerScene();
-		public var izmaScene:IzmaScene = new IzmaScene();
-		public var jojoScene:JojoScene = new JojoScene();
+		public var izmaScene:IzmaScene;
+		public var jojoScene:JojoScene;
 		public var joyScene:JoyScene = new JoyScene();
 		public var kihaFollower:KihaFollower = new KihaFollower();
 		public var kihaScene:KihaScene = new KihaScene();
 		public var latexGirl:LatexGirl = new LatexGirl();
-		public var marbleScene:MarbleScene = new MarbleScene();
+		public var marbleScene:MarbleScene;
 		public var marblePurification:MarblePurification = new MarblePurification();
 		public var milkWaifu:MilkWaifu = new MilkWaifu();
 		public var raphael:Raphael = new Raphael();
@@ -264,20 +280,21 @@ package classes
 		public var sophieBimbo:SophieBimbo = new SophieBimbo();
 		public var sophieFollowerScene:SophieFollowerScene = new SophieFollowerScene();
 		public var sophieScene:SophieScene = new SophieScene();
-		public var urta:Urta = new Urta();
+		public var urta:UrtaScene = new UrtaScene();
 		public var urtaHeatRut:UrtaHeatRut = new UrtaHeatRut();
-		public var urtaPregs:UrtaPregs = new UrtaPregs();
+		public var urtaPregs:UrtaPregs;
 		public var valeria:Valeria = new Valeria();
 		public var vapula:Vapula = new Vapula();
 		// Scenes/Places/
 		public var bazaar:Bazaar = new Bazaar();
 		public var boat:Boat = new Boat();
-		public var farm:Farm = new Farm();
+		public var farm:Farm;
 		public var owca:Owca = new Owca();
-		public var telAdre:TelAdre = new TelAdre();
+		public var telAdre:TelAdre;
 		public var ingnam:Ingnam = new Ingnam();
 		public var prison:Prison = new Prison();
 		public var townRuins:TownRuins = new TownRuins();
+		public var betaZone:BetaZone = new BetaZone();
 		// Scenes/Seasonal/
 		public var aprilFools:AprilFools = new AprilFools();
 		public var fera:Fera = new Fera();
@@ -301,7 +318,6 @@ package classes
 		public var bindings:Bindings = new Bindings();
 		public var output:Output = Output.init();
 		public var credits:Credits = Credits.init();
-		public var measurements:Measurements = Measurements.init();
 		/****
 		   This is used purely for bodges while we get things cleaned up.
 		   Hopefully, anything you stick to this object can be removed eventually.
@@ -437,6 +453,44 @@ package classes
 			// let the logging begin!
 			Log.addTarget(traceTarget);
 		}
+
+		/**
+		 * Create scenes that use the new pregnancy system. This method is public to allow for simple testing.
+		 * @param pregnancyProgress Pregnancy progression to use for scenes, which they use to register themself
+		 */
+		public function createScenes(pregnancyProgression:PregnancyProgression): void {
+			dungeons = new DungeonCore(pregnancyProgression);
+			
+			bog = new Bog(pregnancyProgression, output);
+			mountain = new Mountain(pregnancyProgression, output);
+			highMountains = new HighMountains(pregnancyProgression, output);
+			volcanicCrag = new VolcanicCrag(pregnancyProgression, output);
+			swamp = new Swamp(pregnancyProgression, output);
+			plains = new Plains(pregnancyProgression, output);
+			forest = new Forest(pregnancyProgression, output);
+			deepWoods = new DeepWoods(forest);
+			desert = new Desert(pregnancyProgression, output);
+			
+			telAdre = new TelAdre(pregnancyProgression);
+			farm = new Farm(output);
+			
+			impScene = new ImpScene(pregnancyProgression, output);
+			anemoneScene = new AnemoneScene(pregnancyProgression, output);
+			marbleScene = new MarbleScene(pregnancyProgression, output);
+			jojoScene = new JojoScene(pregnancyProgression, output);
+			amilyScene = new AmilyScene(pregnancyProgression, output);
+			izmaScene = new IzmaScene(pregnancyProgression, output);
+			lake = new Lake(pregnancyProgression, output);
+
+			// not assigned to a variable as it is self-registering, PregnancyProgress will keep a reference to the instance
+			new PlayerCentaurPregnancy(pregnancyProgression, output);
+			new PlayerBunnyPregnancy(pregnancyProgression, output, mutations);
+			new PlayerBenoitPregnancy(pregnancyProgression, output);
+			new PlayerOviElixirPregnancy(pregnancyProgression, output);
+			
+			emberScene = new EmberScene(pregnancyProgression);
+			urtaPregs = new UrtaPregs(pregnancyProgression);
+		}
 		
 		/**
 		 * Create the main game instance.
@@ -459,6 +513,9 @@ package classes
 			
 			// Cheatmode.
 			kGAMECLASS = this;
+			
+			this.pregnancyProgress = new PregnancyProgression();
+			createScenes(pregnancyProgress);
 			
 			useables = new UseableLib();
 			
@@ -495,7 +552,7 @@ package classes
 			this.mainView.onStatsClick = playerInfo.displayStats;
 			this.mainView.onBottomButtonClick = function(i:int):void
 			{
-				output.record("<br>[" + button(i).labelText + "]<br>");
+				output.record("<br>[" + output.button(i).labelText + "]<br>");
 			};
 			
 			// Set up all the messy global stuff:
@@ -513,8 +570,8 @@ package classes
 			 * Debug, Version, etc
 			 */
 			debug = false; //DEBUG, used all over the place
-			ver = "1.0.2_mod_1.4.12b"; //Version NUMBER
-			version = ver + " (<b>Interface Prettiness!</b>)"; //Version TEXT
+			ver = "1.0.2_mod_1.4.15"; //Version NUMBER
+			version = ver + " (<b>Tooltips & Achievements Bonanza!</b>)"; //Version TEXT
 			
 			//Indicates if building for mobile?
 			mobile = false;
@@ -613,23 +670,23 @@ package classes
 			
 			// ******************************************************************************************
 			
-			mainView.aCb.dataProvider = new DataProvider([{label: "TEMP", perk: new PerkClass(PerkLib.Acclimation)}]);
-			mainView.aCb.addEventListener(Event.CHANGE, playerInfo.changeHandler);
+			mainView.aCb.items = [{label: "TEMP", perk: new Perk(PerkLib.Acclimation)}];
+			mainView.aCb.addEventListener(Event.SELECT, playerInfo.changeHandler);
 			
 			//Register the classes we need to be able to serialize and reconstitute so
 			// they'll get reconstituted into the correct class when deserialized
-			registerClassAlias("AssClass", AssClass);
+			registerClassAlias("Ass", Ass);
 			registerClassAlias("Character", Character);
 			registerClassAlias("Cock", Cock);
 			registerClassAlias("CockTypesEnum", CockTypesEnum);
 			registerClassAlias("Enum", Enum);
 			registerClassAlias("Creature", Creature);
-			registerClassAlias("ItemSlotClass", ItemSlotClass);
-			registerClassAlias("KeyItemClass", KeyItemClass);
+			registerClassAlias("ItemSlot", ItemSlot);
+			registerClassAlias("KeyItem", KeyItem);
 			registerClassAlias("Monster", Monster);
 			registerClassAlias("Player", Player);
-			registerClassAlias("StatusEffectClass", StatusEffectClass);
-			registerClassAlias("VaginaClass", VaginaClass);
+			registerClassAlias("StatusEffect", StatusEffect);
+			registerClassAlias("Vagina", Vagina);
 			
 			//Hide sprites
 			mainView.hideSprite();
@@ -703,6 +760,16 @@ package classes
 					mainViewManager.hideSprite();
 				}
 			}
+		}
+		
+		// TODO remove once that GuiInput interface has been sorted
+		public function addButton(pos:int, text:String = "", func1:Function = null, arg1:* = -9000, arg2:* = -9000, arg3:* = -9000, toolTipText:String = "", toolTipHeader:String = ""):CoCButton {
+			return output.addButton(pos, text, func1, arg1, arg2, arg3, toolTipText, toolTipHeader);
+		}
+		
+		// TODO remove once that GuiInput interface has been sorted
+		public function menu(): void {
+			output.menu();
 		}
 	}
 }

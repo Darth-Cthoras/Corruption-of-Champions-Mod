@@ -17,9 +17,8 @@ import classes.GlobalFlags.kGAMECLASS;
 import coc.view.UIUtils;
 import flash.text.TextFormat;
 
-import fl.controls.ComboBox;
-import fl.controls.ScrollBarDirection;
-import fl.controls.UIScrollBar;
+import com.bit101.components.ComboBox;
+import com.bit101.components.TextFieldVScroll;
 
 import flash.display.Sprite;
 import flash.events.Event;
@@ -83,6 +82,15 @@ public class MainView extends Block {
 		ButtonBackground9,
 	];
 
+	/*
+	 * Feature switches
+	 */
+	
+	/*
+	 * Feature switch for sliding monster stat window.
+	 * Was disabled due to main text view issues.
+	 */
+	private static const FEATURE_ANIMATED_MONSTER_STATS: Boolean = false;
 
 	// Menu button names.
 	public static const MENU_NEW_MAIN:String   = 'newGame';
@@ -141,7 +149,7 @@ public class MainView extends Block {
 	internal static const BOTTOM_W:Number         = TEXTZONE_W;
 	internal static const BOTTOM_HGAP:Number      = (BOTTOM_W - BTN_W * BOTTOM_COLS) / (2 * BOTTOM_COLS);
 	internal static const BOTTOM_Y:Number         = SCREEN_H - BOTTOM_H;
-	internal static const MONSTER_X:Number        = TEXTZONE_X + MainView.TEXTZONE_W + GAP;
+	internal static const MONSTER_X:Number        = TEXTZONE_X + TEXTZONE_W + GAP;
 	internal static const MONSTER_Y:Number        = TEXTZONE_Y;
 	internal static const MONSTER_W:Number        = 200;
 	internal static const MONSTER_H:Number        = TEXTZONE_H;
@@ -177,7 +185,7 @@ public class MainView extends Block {
 	public var levelButton:CoCButton;
 	public var perksButton:CoCButton;
 	public var appearanceButton:CoCButton;
-	public var scrollBar:UIScrollBar;
+	public var scrollBar:TextFieldVScroll;
 
 	protected var callbacks:Object = {};
 	protected var options:Object;
@@ -285,11 +293,10 @@ public class MainView extends Block {
 				font: 'Arial'
 			}
 		});
-		scrollBar = new UIScrollBar();
+		scrollBar = new TextFieldVScroll(mainText);
 		UIUtils.setProperties(scrollBar,{
 			name: "scrollBar",
 			direction: "vertical",
-			scrollTarget: mainText,
 			x: mainText.x + mainText.width,
 			y: mainText.y,
 			height: mainText.height,
@@ -386,11 +393,10 @@ public class MainView extends Block {
 		this.sideBarDecoration = getElementByName("statsBarMarker") as Sprite;
 
 		this.aCb               = new ComboBox();
-		this.aCb.dropdownWidth = 200;
 		this.aCb.width         = 200;
 		this.aCb.scaleY        = 1.1;
 		this.aCb.move(-1250, -1550);
-		this.aCb.prompt = "Choose a perk";
+		this.aCb.defaultLabel = "Choose a perk";
 		this.addChild(this.aCb);
 
 		this.hideSprite();
@@ -523,9 +529,9 @@ public class MainView extends Block {
 
 		button = event.target as CoCButton;
 
-		if (button && button.visible && button.toolTipText) {
-			this.toolTipView.header = button.toolTipHeader;
-			this.toolTipView.text   = button.toolTipText;
+		if (button && button.visible && button.toolTipTextInstance) {
+			this.toolTipView.header = button.toolTipHeaderInstance;
+			this.toolTipView.text   = button.toolTipTextInstance;
 			this.toolTipView.showForButton(button);
 		}
 		else {
@@ -658,7 +664,7 @@ public class MainView extends Block {
 
 		if (label) {
 			button.labelText     = label;
-			button.toolTipHeader = label;
+			button.toolTipHeaderInstance = label;
 		}
 
 		if (callback != null) {
@@ -738,7 +744,7 @@ public class MainView extends Block {
 
 	public function clearOutputText():void {
 		this.mainText.htmlText = '';
-		this.scrollBar.update();
+		this.scrollBar.draw();
 	}
 
 	/**
@@ -746,7 +752,7 @@ public class MainView extends Block {
 	 */
 	public function appendOutputText(text:String):void {
 		this.mainText.htmlText += text;
-		this.scrollBar.update();
+		this.scrollBar.draw();
 	}
 
 	/**
@@ -756,7 +762,7 @@ public class MainView extends Block {
 		// Commenting out for now, because this is annoying to see flooding the trace.
 		// trace("MainView#setOutputText(): This is never called in the main outputText() function.  Possible bugs that were patched over by updating text manually?");
 		this.mainText.htmlText = text;
-		this.scrollBar.update();
+		this.scrollBar.draw();
 	}
 
 	public function hideSprite():void {
@@ -773,7 +779,7 @@ public class MainView extends Block {
 //		this.eventTestInput.type       = TextFieldType.INPUT;
 		this.eventTestInput.visible    = true;
 
-		this.scrollBar.scrollTarget = this.eventTestInput;
+		this.scrollBar.value = this.eventTestInput.y;
 
 	}
 
@@ -789,20 +795,20 @@ public class MainView extends Block {
 //		this.eventTestInput.type       = TextFieldType.DYNAMIC;
 		this.eventTestInput.visible    = false;
 
-		this.scrollBar.scrollTarget = this.mainText;
+		this.scrollBar.value = this.mainText.y;
 
 	}
 	
 	public function showMainText():void {
 		this.setTextBackground();
 		this.mainText.visible = true;
-		this.scrollBar.visible = true;
+		this.scrollBar.activated = true;
 	}
 	public function hideMainText():void {
 		this.clearTextBackground();
 		this.resetTextFormat();
 		this.mainText.visible = false;
-		this.scrollBar.visible = false;
+		this.scrollBar.activated = false;
 	}
 	public function resetTextFormat():void {
 		var normalFormat:TextFormat = new TextFormat();
@@ -832,7 +838,6 @@ public class MainView extends Block {
 		this.nameBox.width = 165
 		this.nameBox.text = "";
 		this.nameBox.maxChars = 16;
-		this.nameBox.restrict = "a-zA-Z0-9 .'\\-";
 	}
 	public function moveCombatView(event:TimerEvent = null):void{
 		this.mainText.width -= 10;
@@ -868,27 +873,52 @@ public class MainView extends Block {
 	public function endCombatView():void{
 		if (!monsterStatsView.moved) return;
 		else monsterStatsView.moved = false;
-		//Now animate the bar.
-		var tmr:Timer = new Timer(30, 20);
-		tmr.addEventListener(TimerEvent.TIMER, moveCombatViewBack);
-		/*tmr.addEventListener(TimerEvent.TIMER_COMPLETE, function ():void {
-				this.monsterStatsView.x -= 200;
-			});*/
-		tmr.start();
+		
+		if (FEATURE_ANIMATED_MONSTER_STATS) {
+			var tmr:Timer = new Timer(30, 20);
+			tmr.addEventListener(TimerEvent.TIMER, moveCombatViewBack);
+			tmr.start();
+		}else{
+			nonCombatView();
+		}
+
 		this.monsterStatsView.hide();
 	}
 	
+	private function nonCombatView(): void {
+		this.mainText.x = TEXTZONE_X;
+		this.mainText.width = TEXTZONE_W;
+		this.scrollBar.x = TEXTZONE_X + TEXTZONE_W;
+		this.textBGTan.width = TEXTZONE_W;
+		this.textBGWhite.width = TEXTZONE_W;
+		this.textBGTranslucent.width = TEXTZONE_W;
+		this.monsterStatsView.x = MONSTER_X;
+	}
+
 	public function updateCombatView():void {
+		if (kGAMECLASS.flags[kFLAGS.ENEMY_STATS_BARS_ENABLED] <= 0) return; //Cancel if disabled 
 		monsterStatsView.show();
 		if (monsterStatsView.moved) return;
 		else monsterStatsView.moved = true;
-		//Now animate the bar.
-		var tmr:Timer = new Timer(30, 20);
-		tmr.addEventListener(TimerEvent.TIMER, moveCombatView);
-		/*tmr.addEventListener(TimerEvent.TIMER_COMPLETE, function ():void {
-				this.monsterStatsView.x -= 200;
-			});*/
-		tmr.start();
+		
+		if (FEATURE_ANIMATED_MONSTER_STATS) {
+			var tmr:Timer = new Timer(30, 20);
+			tmr.addEventListener(TimerEvent.TIMER, moveCombatView);
+			tmr.start();
+		}else{
+			combatView();
+		}
+	}
+	
+	private function combatView(): void {
+		this.mainText.x = TEXTZONE_X;
+		this.mainText.width = TEXTZONE_W - MONSTER_W;
+		this.scrollBar.x = TEXTZONE_X + TEXTZONE_W - MONSTER_W;
+		this.textBGTan.width = TEXTZONE_W - MONSTER_W;
+		this.textBGWhite.width = TEXTZONE_W - MONSTER_W;
+		this.textBGTranslucent.width = TEXTZONE_W - MONSTER_W;
+		this.monsterStatsView.x = MONSTER_X - MONSTER_W;
+		this.monsterStatsView.refreshStats(kGAMECLASS);
 	}
 }
 }

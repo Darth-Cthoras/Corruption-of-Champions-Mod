@@ -9,7 +9,7 @@ package classes.Items.Consumables
 	import classes.Items.ConsumableLib;
 	import classes.PerkLib;
 	import classes.StatusEffects;
-	import classes.VaginaClass;
+	import classes.Vagina;
 	import classes.lists.ColorLists;
 	
 	/**
@@ -25,22 +25,13 @@ package classes.Items.Consumables
 		override public function useItem():Boolean {
 			var tfSource:String = "equinum";
 			player.slimeFeed();
-			//Changes done
-			changes = 0;
-			//Change limit
-			changeLimit = 1;
 			//Temporary storage
 			var temp:Number = 0;
 			var temp2:Number = 0;
 			var temp3:Number = 0;
 			//Store location of cock to be changed
 			var old:Number = 0;
-			//Chancee to raise limit
-			if (rand(2) === 0) changeLimit++;
-			if (rand(3) === 0) changeLimit++;
-			if (player.findPerk(PerkLib.HistoryAlchemist) >= 0) changeLimit++;
-			if (player.findPerk(PerkLib.TransformationResistance) >= 0) changeLimit--;
-			//Used for random chances
+			mutations.initTransformation([2, 3]);
 
 			//Set up output
 			clearOutput();
@@ -111,7 +102,6 @@ package classes.Items.Consumables
 				else {
 					dynStats("str", 1);
 					outputText("\n\nYour muscles clench and surge, making you feel as strong as a horse.");
-					//[removed:1.4.10]//changes++;
 				}
 			}
 			//TOUGHNESS
@@ -126,7 +116,6 @@ package classes.Items.Consumables
 				else {
 					dynStats("tou", 1.25);
 					outputText("\n\nYour body suddenly feels tougher and more resilient.");
-					//[removed:1.4.10]//changes++;
 				}
 			}
 			//INTELLECT
@@ -137,27 +126,22 @@ package classes.Items.Consumables
 				if (player.inte100 < 10 && player.inte100 > 5) {
 					dynStats("int", -1);
 					outputText("\n\nYou smile vacantly as you drink the potion, knowing you're just a big dumb animal who loves to fuck.");
-					//[removed:1.4.10]//changes++;
 				}
 				if (player.inte100 <= 20 && player.inte100 >= 10) {
 					dynStats("int", -2);
 					outputText("\n\nYou find yourself looking down at the empty bottle in your hand and realize you haven't thought ANYTHING since your first sip.");
-					//[removed:1.4.10]//changes++;
 				}
 				if (player.inte100 <= 30 && player.inte100 > 20) {
 					dynStats("int", -3);
 					outputText("\n\nYou smile broadly as your cares seem to melt away.  A small part of you worries that you're getting dumber.");
-					//[removed:1.4.10]//changes++;
 				}
 				if (player.inte100 <= 50 && player.inte100 > 30) {
 					dynStats("int", -4);
 					outputText("\n\nIt becomes harder to keep your mind focused as your intellect diminishes.");
-					//[removed:1.4.10]//changes++;
 				}
 				if (player.inte100 > 50) {
 					dynStats("int", -5);
 					outputText("\n\nYour usually intelligent mind feels much more sluggish.");
-					//[removed:1.4.10]//changes++;
 				}
 			}
 			//Neck restore
@@ -317,12 +301,12 @@ package classes.Items.Consumables
 			if (player.gender === 2 || player.gender === 3) {
 				//Single vag
 				if (player.vaginas.length === 1) {
-					if (player.vaginas[0].vaginalLooseness <= VaginaClass.LOOSENESS_GAPING && changes < changeLimit && rand(2) === 0) {
+					if (player.vaginas[0].vaginalLooseness <= Vagina.LOOSENESS_GAPING && changes < changeLimit && rand(2) === 0) {
 						outputText("\n\nYou grip your gut in pain as you feel your organs shift slightly.  When the pressure passes, you realize your " + player.vaginaDescript(0) + " has grown larger, in depth AND size.");
 						player.vaginas[0].vaginalLooseness++;
 						changes++;
 					}
-					if (player.vaginas[0].vaginalWetness <= VaginaClass.WETNESS_NORMAL && changes < changeLimit && rand(2) === 0) {
+					if (player.vaginas[0].vaginalWetness <= Vagina.WETNESS_NORMAL && changes < changeLimit && rand(2) === 0) {
 						outputText("\n\nYour " + player.vaginaDescript(0) + " moistens perceptably, giving off an animalistic scent.");
 						player.vaginas[0].vaginalWetness++;
 						changes++;
@@ -344,7 +328,7 @@ package classes.Items.Consumables
 							temp2 = player.vaginas[temp].vaginalWetness;
 						}
 					}
-					if (player.vaginas[temp].vaginalWetness <= VaginaClass.WETNESS_NORMAL && changes < changeLimit && rand(2) === 0) {
+					if (player.vaginas[temp].vaginalWetness <= Vagina.WETNESS_NORMAL && changes < changeLimit && rand(2) === 0) {
 						outputText("\n\nOne of your " + player.vaginaDescript(temp) + " moistens perceptably, giving off an animalistic scent.");
 						player.vaginas[temp].vaginalWetness++;
 						changes++;
@@ -363,7 +347,7 @@ package classes.Items.Consumables
 							temp2 = player.vaginas[temp].vaginalLooseness;
 						}
 					}
-					if (player.vaginas[0].vaginalLooseness <= VaginaClass.LOOSENESS_GAPING && changes < changeLimit && rand(2) === 0) {
+					if (player.vaginas[0].vaginalLooseness <= Vagina.LOOSENESS_GAPING && changes < changeLimit && rand(2) === 0) {
 						outputText("\n\nYou grip your gut in pain as you feel your organs shift slightly.  When the pressure passes, you realize one of your " + player.vaginaDescript(temp) + " has grown larger, in depth AND size.");
 						player.vaginas[temp].vaginalLooseness++;
 						changes++;
@@ -517,7 +501,7 @@ package classes.Items.Consumables
 			//FAILSAFE CHANGE
 			if (changes === 0) {
 				outputText("\n\nInhuman vitality spreads through your body, invigorating you!\n");
-				game.HPChange(20, true);
+				player.HPChange(20, true);
 				dynStats("lus", 3);
 			}
 			player.refillHunger(15);

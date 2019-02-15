@@ -38,9 +38,20 @@ public class Shield extends Useable //Equipable
 		public function get perk():String { return _perk; }
 		
 		public function get name():String { return _name; }
-		
+
+		override public function get value():Number {
+			return this._value * (1 + (_tier / 2));
+		}
+
+		override public function get shortName():String {
+			var sn:String = this._shortName;
+			if (_tier > 0) sn += "+" + _tier;
+			return sn;
+		}
+
 		override public function get description():String {
 			var desc:String = _description;
+			var diff:int = 0;
 			switch(_tier) {
 				case 1:
 					desc += " This shield has been upgraded to be of fine quality.";
@@ -55,6 +66,11 @@ public class Shield extends Useable //Equipable
 			desc += "\n\nType: Shield";
 			//Block Rating
 			desc += "\nBlock: " + String(block);
+			diff = block - (game.player.shield.block);
+			if (diff > 0)
+				desc += " (<font color=\"#00d000\">+" + String(Math.abs(diff)) + "</font>)";
+			else if (diff < 0)
+				desc += " (<font color=\"#d00000\">-" + String(Math.abs(diff)) + "</font>)";
 			//Value
 			desc += "\nBase value: " + String(value);
 			return desc;
